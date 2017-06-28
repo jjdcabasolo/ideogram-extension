@@ -323,7 +323,8 @@
                 "onclick": "return toggleFilter(this)",
                 "tracks": "qtarogenes_sterility"
             }
-        } , {
+        }
+        , {
             "type": "li",
             "html": {
                 "name": "qtarogenes_submergency_tolerance",

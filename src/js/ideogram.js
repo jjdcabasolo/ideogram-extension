@@ -12,7 +12,7 @@ var Ideogram = function(config) {
     this.debug = false;
 
     if (!this.config.bandDir) {
-        this.config.bandDir = "/rice-ideogram/data";
+        this.config.bandDir = "/ideogram-extension/data";
     }
 
     if (!this.config.container) {

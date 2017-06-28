@@ -102,7 +102,7 @@ var filterMap = {
 
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
- * JSON format based on format of jquery.dform and should be:
+ *  JSON format based on format of jquery.dform and should be:
  *  {"html": {"type": html_wrapper_tag, "attr1": attr1,"attr2": attr2, ...
  *         "html": [
  *              {"item_type": item_tag, "item_attr1": item_attr1, ...
@@ -115,6 +115,7 @@ var filterMap = {
  */
 var renderForm = function(filepath) {
     $.getJSON(filepath, function(data) {
+        console.log(data['html']['id']);
             var list_items = [],
                 html_wrapper = "<" + data['html']['type'] + "/>",
                 html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
@@ -143,11 +144,19 @@ var renderForm = function(filepath) {
                 item = open_tag + attr + label + close_tag;
                 list_items.push(item);
             }
-
-            $(html_wrapper, {
-                "id": data['html']['id'],
-                html: list_items.join("")
-            }).appendTo("#form-render");
+            
+            if(data['html']['id'] === 'traitGenes'){
+                $(html_wrapper, {
+                    "id": data['html']['id'],
+                    html: list_items.join("")
+                }).appendTo("#form-render");
+            }
+            else if(data['html']['id'] === 'qtl'){
+                $(html_wrapper, {
+                    "id": data['html']['id'],
+                    html: list_items.join("")
+                }).appendTo("#form-render-qtl");
+            }
         })
         .done(function() {
             console.log("Form rendered");
@@ -156,8 +165,6 @@ var renderForm = function(filepath) {
             console.warn("Error form render");
         });
 }
-
-
 
 /*
  * toggles the spinner to show or hide

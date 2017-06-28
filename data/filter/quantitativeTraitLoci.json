@@ -1,0 +1,339 @@
+{
+    "html": {
+        "type": "ul",
+        "id": "qtl",
+        "html": [{
+            "type": "b",
+            "html": "QTL from Q-TARO database"
+        }, {
+            "type": "li",
+            "html": {
+                "name": "oryzabase_trait_genes",
+                "id": "filter-qtl-oryzabase_trait_genes",
+                "type": "checkbox",
+                "caption": "Oryzabase Trait Gene Loci",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "oryzabase_trait_genes"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl",
+                "id": "filter-qtl-qtaroqtl",
+                "type": "checkbox",
+                "caption": "Rice Quantitative Trait Loci (QTLs)",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_bacterial_blight_resistance",
+                "id": "filter-qtl-qtaroqtl_bacterial_blight_resistance",
+                "type": "checkbox",
+                "caption": "Bacterial blight resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_bacterial_blight_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_blast_resistance",
+                "id": "filter-qtl-qtaroqtl_blast_resistance",
+                "type": "checkbox",
+                "caption": "Blast resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_blast_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_cold_tolerance",
+                "id": "filter-qtl-qtaroqtl_cold_tolerance",
+                "type": "checkbox",
+                "caption": "Cold tolerance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_cold_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_culm_leaf",
+                "id": "filter-qtl-qtaroqtl_culm_leaf",
+                "type": "checkbox",
+                "caption": "Culm leaf QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_culm_leaf"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_drought_tolerance",
+                "id": "filter-qtl-qtaroqtl_drought_tolerance",
+                "type": "checkbox",
+                "caption": "Drought tolerance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_drought_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_dwarf",
+                "id": "filter-qtl-qtaroqtl_dwarf",
+                "type": "checkbox",
+                "caption": "Dwarf QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_dwarf"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_eating_quality",
+                "id": "filter-qtl-qtaroqtl_eating_quality",
+                "type": "checkbox",
+                "caption": "Eating quality QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_eating_quality"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_flowering",
+                "id": "filter-qtl-qtaroqtl_flowering",
+                "type": "checkbox",
+                "caption": "Flowering QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_flowering"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_germination_dormancy",
+                "id": "filter-qtl-qtaroqtl_germination_dormancy",
+                "type": "checkbox",
+                "caption": "Germination dormancy QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_germination_dormancy"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_insect_resistance",
+                "id": "filter-qtl-qtaroqtl_insect_resistance",
+                "type": "checkbox",
+                "caption": "Insect resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_insect_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_lethality",
+                "id": "filter-qtl-qtaroqtl_lethality",
+                "type": "checkbox",
+                "caption": "Lethality QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_lethality"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_lodging_resistance",
+                "id": "filter-qtl-qtaroqtl_lodging_resistance",
+                "type": "checkbox",
+                "caption": "Lodging resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_lodging_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_morphological_trait",
+                "id": "filter-qtl-qtaroqtl_morphological_trait",
+                "type": "checkbox",
+                "caption": "Morphological trait QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_morphological_trait"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_other_disease_resistance",
+                "id": "filter-qtl-qtaroqtl_other_disease_resistance",
+                "type": "checkbox",
+                "caption": "Other disease resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_other_disease_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_other_soil_stress_tolerance",
+                "id": "filter-qtl-qtaroqtl_other_soil_stress_tolerance",
+                "type": "checkbox",
+                "caption": "Other soil stress tolerance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_other_soil_stress_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_other_stress_resistance",
+                "id": "filter-qtl-qtaroqtl_other_stress_resistance",
+                "type": "checkbox",
+                "caption": "Other stress resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_other_stress_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_others",
+                "id": "filter-qtl-qtaroqtl_others",
+                "type": "checkbox",
+                "caption": "Others QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_others"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_panicle_flower",
+                "id": "filter-qtl-qtaroqtl_panicle_flower",
+                "type": "checkbox",
+                "caption": "Panicle flower QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_panicle_flower"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_physiological_trait",
+                "id": "filter-qtl-qtaroqtl_physiological_trait",
+                "type": "checkbox",
+                "caption": "Physiological trait QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_physiological_trait"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_resistance_or_tolerance",
+                "id": "filter-qtl-qtaroqtl_resistance_or_tolerance",
+                "type": "checkbox",
+                "caption": "Resistance or tolerance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_resistance_or_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_root",
+                "id": "filter-qtl-qtaroqtl_root",
+                "type": "checkbox",
+                "caption": "Root QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_root"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_salinity_tolerance",
+                "id": "filter-qtl-qtaroqtl_salinity_tolerance",
+                "type": "checkbox",
+                "caption": "Salinity tolerance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_salinity_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_seed",
+                "id": "filter-qtl-qtaroqtl_seed",
+                "type": "checkbox",
+                "caption": "Seed QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_seed"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_sheath_blight_resistance",
+                "id": "filter-qtl-qtaroqtl_sheath_blight_resistance",
+                "type": "checkbox",
+                "caption": "Sheath blight resistance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_sheath_blight_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_shoot_seedling",
+                "id": "filter-qtl-qtaroqtl_shoot_seedling",
+                "type": "checkbox",
+                "caption": "Shoot seedling QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_shoot_seedling"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_source_activity",
+                "id": "filter-qtl-qtaroqtl_source_activity",
+                "type": "checkbox",
+                "caption": "Source activity QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_source_activity"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_sterility",
+                "id": "filter-qtl-qtaroqtl_sterility",
+                "type": "checkbox",
+                "caption": "Sterility QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_sterility"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaroqtl_submergency_tolerance",
+                "id": "filter-qtl-qtaroqtl_submergency_tolerance",
+                "type": "checkbox",
+                "caption": "Submergency tolerance QTL",
+                "onclick": "return toggleFilter(this, qtl)",
+                "tracks": "qtaroqtl_submergency_tolerance"
+            }
+        }]
+    }
+}

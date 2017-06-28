@@ -54,6 +54,8 @@
       <br>
       <div id="form-render"></div>
       <br>
+      <div id="form-render-qtl"></div>
+      <br>
       <div id="instructions">
         <ul>
           <b>How to use</b>
@@ -67,7 +69,8 @@
             <br>feature in JBrowse</li>
         </ul>
 
-        <div style="position: absolute; margin-top: 200px;">          
+        <div style="position: absolute; margin-top: 180px; width: 400px;">          
+          <b>Genomic coordinates</b>
           <div>01 | <span id="from1"></span> - <span id="to1"></span> (<span id="extent1"></span> base pairs)</div>
           <div>02 | <span id="from2"></span> - <span id="to2"></span> (<span id="extent2"></span> base pairs)</div>
           <div>03 | <span id="from3"></span> - <span id="to3"></span> (<span id="extent3"></span> base pairs)</div>
@@ -90,17 +93,8 @@
     <div id="jb-div">
       <!-- <iframe id="jbrowse" src="http://oryzasnp.org/jbrowse-dev2/"></iframe> -->
     </div>
-<!--     <div id="menuhuhu">
-    <ul class="hover">
-    <li class="hoverli">
-    <ul class="file_menu">
-    <li><a href="#">Show in JBrowse</a></li>
-    <li><a href="#">Show statistics</a></li>
-    </ul>
-    </li>
-    </ul>
-    </div> -->
   </div>
+
   <script>
   var filterMap = {
     "traitGenes": {
@@ -134,128 +128,188 @@
       "qtarogenes_source_activity": 28,
       "qtarogenes_sterility": 29,
       "qtarogenes_submergency_tolerance": 30
+    },
+    "quantitativeTraitLoci": {
+      "qtaroqtl": 1,
+      "qtaroqtl_bacterial_blight_resistance": 2,
+      "qtaroqtl_blast_resistance": 3,
+      "qtaroqtl_cold_tolerance": 4,
+      "qtaroqtl_culm_leaf": 5,
+      "qtaroqtl_drought_tolerance": 6,
+      "qtaroqtl_dwarf": 7,
+      "qtaroqtl_eating_quality": 8,
+      "qtaroqtl_flowering": 9,
+      "qtaroqtl_germination_dormancy": 10,
+      "qtaroqtl_insect_resistance": 11,
+      "qtaroqtl_lethality": 12,
+      "qtaroqtl_lodging_resistance": 13,
+      "qtaroqtl_morphological_trait": 14,
+      "qtaroqtl_other_disease_resistance": 15,
+      "qtaroqtl_other_soil_stress_tolerance": 16,
+      "qtaroqtl_other_stress_resistance": 17,
+      "qtaroqtl_others": 18,
+      "qtaroqtl_panicle_flower": 19,
+      "qtaroqtl_physiological_trait": 20,
+      "qtaroqtl_resistance_or_tolerance": 21,
+      "qtaroqtl_root": 22,
+      "qtaroqtl_salinity_tolerance": 23,
+      "qtaroqtl_seed": 24,
+      "qtaroqtl_sheath_blight_resistance": 25,
+      "qtaroqtl_shoot_seedling": 26,
+      "qtaroqtl_source_activity": 27,
+      "qtaroqtl_sterility": 28,
+      "qtaroqtl_submergency_tolerance": 29
     }
   };
 
   /* annotColorConfig */
   var colors = [{
-    "id": "oryzabase_trait_genes",
-    "displayName": "Oryzabase Trait Gene Loci",
-    "color": "#ff0000"
+      "id": "oryzabase_trait_genes",   
+      "displayName": "Oryzabase Trait Gene Loci",
+      "color": "#ff0000"
     }, {
       "id": "qtaro_trait_genes",
+      "id2": "qtaroqtlt",      
       "displayName": "All QTARO trait genes",
       "color": "#ff4000"
     }, {
       "id": "qtarogenes_bacterial_blight_resistance",
+      "id2": "qtaroqtl_bacterial_blight_resistance",      
       "displayName": "Bacterial blight resistance",
       "color": "#ff8000"
     }, {
       "id": "qtarogenes_blast_resistance",
+      "id2": "qtaroqtl_blast_resistance",      
       "displayName": "Blast resistance",
       "color": "#ffbf00"
     }, {
       "id": "qtarogenes_cold_tolerance",
+      "id2": "qtaroqtl_cold_tolerance",      
       "displayName": "Cold tolerance",
       "color": "#bfff00"
     }, {
       "id": "qtarogenes_culm_leaf",
+      "id2": "qtaroqtl_culm_leaf",      
       "displayName": "Culm leaf",
       "color": "#80ff00"
     }, {
       "id": "qtarogenes_drought_tolerance",
+      "id2": "qtaroqtl_drought_tolerance",      
       "displayName": "Drought tolerance",
       "color": "#40ff00"
     }, {
       "id": "qtarogenes_dwarf",
+      "id2": "qtaroqtl_dwarf",      
       "displayName": "Dwarf",
       "color": "#00ff00"
     }, {
       "id": "qtarogenes_eating_quality",
+      "id2": "qtaroqtl_eating_quality",      
       "displayName": "Eating quality",
       "color": "#00ff40"
     }, {
       "id": "qtarogenes_flowering",
+      "id2": "qtaroqtl_flowering",      
       "displayName": "Flowering Trait",
       "color": "#00ff80"
     }, {
       "id": "qtarogenes_germination_dormancy",
+      "id2": "qtaroqtl_germination_dormancy",      
       "displayName": "Germination dormancy",
       "color": "#00ffbf"
     }, {
       "id": "qtarogenes_insect_resistance",
+      "id2": "qtaroqtl_insect_resistance",      
       "displayName": "Insect resistance",
       "color": "#00ffff"
     }, {
       "id": "qtarogenes_lethality",
+      "id2": "qtaroqtl_lethality",      
       "displayName": "Lethality Trait",
       "color": "#00bfff"
     }, {
       "id": "qtarogenes_lodging_resistance",
+      "id2": "qtaroqtl_lodging_resistance",      
       "displayName": "Lodging resistance",
       "color": "#0080ff"
     }, {
       "id": "qtarogenes_morphological_trait",
+      "id2": "qtaroqtl_morphological_trait",      
       "displayName": "Morphological trait",
       "color": "#0040ff"
     }, {
       "id": "qtarogenes_other_disease_resistance",
+      "id2": "qtaroqtl_other_disease_resistance",      
       "displayName": "Other disease resistance",
       "color": "#0000ff"
     }, {
       "id": "qtarogenes_other_soil_stress_tolerance",
+      "id2": "qtaroqtl_other_soil_stress_tolerance",      
       "displayName": "Other soil stress tolerance",
       "color": "#4000ff"
     }, {
       "id": "qtarogenes_other_stress_resistance",
+      "id2": "qtaroqtl_other_stress_resistance",      
       "displayName": "Other stress resistance",
       "color": "#8000ff"
     }, {
       "id": "qtarogenes_others",
+      "id2": "qtaroqtl_others",      
       "displayName": "Others",
       "color": "#bf00ff"
     }, {
       "id": "qtarogenes_panicle_flower",
+      "id2": "qtaroqtl_panicle_flower",      
       "displayName": "Panicle flower",
       "color": "#ff00ff"
     }, {
       "id": "qtarogenes_physiological_trait",
+      "id2": "qtaroqtl_physiological_trait",      
       "displayName": "Physiological trait",
       "color": "#ff00bf"
     }, {
       "id": "qtarogenes_resistance_or_tolerance",
+      "id2": "qtaroqtl_resistance_or_tolerance",      
       "displayName": "Resistance or tolerance",
       "color": "#ff0080"
     }, {
       "id": "qtarogenes_root",
+      "id2": "qtaroqtl_root",      
       "displayName": "Root",
       "color": "#ff0040"
     }, {
       "id": "qtarogenes_salinity_tolerance",
+      "id2": "qtaroqtl_salinity_tolerance",      
       "displayName": "Salinity tolerance",
       "color": "#b94646"
     }, {
       "id": "qtarogenes_seed",
+      "id2": "qtaroqtl_seed",      
       "displayName": "Seed",
       "color": "#99ccff"
     }, {
       "id": "qtarogenes_sheath_blight_resistance",
+      "id2": "qtaroqtl_sheath_blight_resistance",      
       "displayName": "Sheath blight resistance",
       "color": "#D0906D"
     }, {
       "id": "qtarogenes_shoot_seedling",
+      "id2": "qtaroqtl_shoot_seedling",      
       "displayName": "Shoot seedling",
       "color": "#004080"
     }, {
       "id": "qtarogenes_source_activity",
+      "id2": "qtaroqtl_source_activity",      
       "displayName": "Source activity",
       "color": "#ddb880"
     }, {
       "id": "qtarogenes_sterility",
+      "id2": "qtaroqtl_sterility",      
       "displayName": "Sterility",
       "color": "#a6ccf2"
     }, {
       "id": "qtarogenes_submergency_tolerance",
+      "id2": "qtaroqtl_submergency_tolerance",      
       "displayName": "Submergency tolerance",
       "color": "#ff9999"
   }];
@@ -330,10 +384,18 @@
     var id = checkbox.id,
       color, counts, key, count;
 
+      console.log(checkbox.id);
+      console.log(checkbox.id.match('traitGenes'));
+
     /* get value of tracks attribute */
     var selectedTrack = $("#" + id).attr("tracks");
 
-    color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+    if(checkbox.id.match('traitGenes') != null){
+      color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+    }
+    else if(checkbox.id.match('qtl') != null){
+      color = colors[filterMap["qtl"][selectedTrack] - 1]["color"];      
+    }
 
     if ($("#" + id).is(':checked')) {
       addTrack(selectedTrack);
@@ -378,7 +440,11 @@
   getViewType("Histogram");
 
   /* render form */
-  var filepath = "/rice-ideogram/data/filter/traitGenes.json";
+  var filepath = "/ideogram-extension/data/filter/traitGenes.json";
+  renderForm(filepath);
+
+  // &+- addition of the quantitativeTraitLoci.json
+  var filepath = "/ideogram-extension/data/filter/quantitativeTraitLoci.json";
   renderForm(filepath);
 
   /* default of jbrowse is hidden */

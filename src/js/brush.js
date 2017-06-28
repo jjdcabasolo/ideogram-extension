@@ -39,7 +39,7 @@ $(document).ready(function() {
             $('.file_menu').css('display', 'visible');
 
             // for the foreignobject tag inside the svg tag
-            $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-250) + ', ' + (event.pageY-50) + ')'); 
+            $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-270) + ', ' + (event.pageY-50) + ')'); 
             $('ul.file_menu').stop(true, true).slideDown('medium');
 
             // makes the brush visible when the mouse is on the menu
@@ -63,4 +63,4 @@ $(document).ready(function() {
         // resets the brush
         $('.extent').attr('height', '0'); 
     });
-}); 
+});  
