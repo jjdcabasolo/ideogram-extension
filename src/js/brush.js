@@ -63,4 +63,4 @@ $(document).ready(function() {
         // resets the brush
         $('.extent').attr('height', '0'); 
     });
-});
+}); 
