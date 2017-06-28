@@ -1,0 +1,338 @@
+{
+    "html": {
+        "type": "ul",
+        "id": "traitGenes",
+        "html": [{
+            "type": "b",
+            "html": "Trait genes"
+        }, {
+            "type": "li",
+            "html": {
+                "name": "oryzabase_trait_genes",
+                "id": "filter-traitGenes-oryzabase_trait_genes",
+                "type": "checkbox",
+                "caption": "Oryzabase Trait Gene Loci",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "oryzabase_trait_genes"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtaro_trait_genes",
+                "id": "filter-traitGenes-qtaro_trait_genes",
+                "type": "checkbox",
+                "caption": "All QTARO trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtaro_trait_genes"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_bacterial_blight_resistance",
+                "id": "filter-traitGenes-qtarogenes_bacterial_blight_resistance",
+                "type": "checkbox",
+                "caption": "Bacterial blight resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_bacterial_blight_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_blast_resistance",
+                "id": "filter-traitGenes-qtarogenes_blast_resistance",
+                "type": "checkbox",
+                "caption": "Blast resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_blast_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_cold_tolerance",
+                "id": "filter-traitGenes-qtarogenes_cold_tolerance",
+                "type": "checkbox",
+                "caption": "Cold tolerance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_cold_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_culm_leaf",
+                "id": "filter-traitGenes-qtarogenes_culm_leaf",
+                "type": "checkbox",
+                "caption": "Culm leaf Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_culm_leaf"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_drought_tolerance",
+                "id": "filter-traitGenes-qtarogenes_drought_tolerance",
+                "type": "checkbox",
+                "caption": "Drought tolerance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_drought_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_dwarf",
+                "id": "filter-traitGenes-qtarogenes_dwarf",
+                "type": "checkbox",
+                "caption": "Dwarf Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_dwarf"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_eating_quality",
+                "id": "filter-traitGenes-qtarogenes_eating_quality",
+                "type": "checkbox",
+                "caption": "Eating quality Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_eating_quality"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_flowering",
+                "id": "filter-traitGenes-qtarogenes_flowering",
+                "type": "checkbox",
+                "caption": "Flowering Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_flowering"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_germination_dormancy",
+                "id": "filter-traitGenes-qtarogenes_germination_dormancy",
+                "type": "checkbox",
+                "caption": "Germination dormancy Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_germination_dormancy"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_insect_resistance",
+                "id": "filter-traitGenes-qtarogenes_insect_resistance",
+                "type": "checkbox",
+                "caption": "Insect resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_insect_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_lethality",
+                "id": "filter-traitGenes-qtarogenes_lethality",
+                "type": "checkbox",
+                "caption": "Lethality Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_lethality"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_lodging_resistance",
+                "id": "filter-traitGenes-qtarogenes_lodging_resistance",
+                "type": "checkbox",
+                "caption": "Lodging resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_lodging_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_morphological_trait",
+                "id": "filter-traitGenes-qtarogenes_morphological_trait",
+                "type": "checkbox",
+                "caption": "Morphological trait Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_morphological_trait"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_other_disease_resistance",
+                "id": "filter-traitGenes-qtarogenes_other_disease_resistance",
+                "type": "checkbox",
+                "caption": "Other disease resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_other_disease_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_other_soil_stress_tolerance",
+                "id": "filter-traitGenes-qtarogenes_other_soil_stress_tolerance",
+                "type": "checkbox",
+                "caption": "Other soil stress tolerance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_other_soil_stress_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_other_stress_resistance",
+                "id": "filter-traitGenes-qtarogenes_other_stress_resistance",
+                "type": "checkbox",
+                "caption": "Other stress resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_other_stress_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_others",
+                "id": "filter-traitGenes-qtarogenes_others",
+                "type": "checkbox",
+                "caption": "Others Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_others"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_panicle_flower",
+                "id": "filter-traitGenes-qtarogenes_panicle_flower",
+                "type": "checkbox",
+                "caption": "Panicle flower Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_panicle_flower"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_physiological_trait",
+                "id": "filter-traitGenes-qtarogenes_physiological_trait",
+                "type": "checkbox",
+                "caption": "Physiological trait Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_physiological_trait"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_resistance_or_tolerance",
+                "id": "filter-traitGenes-qtarogenes_resistance_or_tolerance",
+                "type": "checkbox",
+                "caption": "Resistance or tolerance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_resistance_or_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_root",
+                "id": "filter-traitGenes-qtarogenes_root",
+                "type": "checkbox",
+                "caption": "Root Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_root"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_salinity_tolerance",
+                "id": "filter-traitGenes-qtarogenes_salinity_tolerance",
+                "type": "checkbox",
+                "caption": "Salinity tolerance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_salinity_tolerance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_seed",
+                "id": "filter-traitGenes-qtarogenes_seed",
+                "type": "checkbox",
+                "caption": "Seed Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_seed"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_sheath_blight_resistance",
+                "id": "filter-traitGenes-qtarogenes_sheath_blight_resistance",
+                "type": "checkbox",
+                "caption": "Sheath blight resistance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_sheath_blight_resistance"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_shoot_seedling",
+                "id": "filter-traitGenes-qtarogenes_shoot_seedling",
+                "type": "checkbox",
+                "caption": "Shoot seedling Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_shoot_seedling"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_source_activity",
+                "id": "filter-traitGenes-qtarogenes_source_activity",
+                "type": "checkbox",
+                "caption": "Source activity Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_source_activity"
+            }
+        }
+        , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_sterility",
+                "id": "filter-traitGenes-qtarogenes_sterility",
+                "type": "checkbox",
+                "caption": "Sterility Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_sterility"
+            }
+        } , {
+            "type": "li",
+            "html": {
+                "name": "qtarogenes_submergency_tolerance",
+                "id": "filter-traitGenes-qtarogenes_submergency_tolerance",
+                "type": "checkbox",
+                "caption": "Submergency tolerance Trait genes",
+                "onclick": "return toggleFilter(this)",
+                "tracks": "qtarogenes_submergency_tolerance"
+            }
+        }]
+    }
+}

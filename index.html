@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Rice Ideogram</title>
+  <script src="src/js/d3.min.new.js"></script>
+
+  <!-- for linear scale render -->
+  <script src="http://mbostock.github.com/d3/d3.v2.js"></script>
+  <!-- for chromosomes render -->
+  <link type="text/css" rel="stylesheet" href="src/css/ideogram.css" />
+  <script type="text/javascript" src="src/js/d3.min.js"></script>
+  <script type="text/javascript" src="src/js/ideogram.js"></script>
+  <script type="text/javascript" src="src/js/crossfilter.min.js"></script>
+  <script type="text/javascript" src="src/js/ideogram.filter.js"></script>
+  <!-- for form render -->
+  <script type="text/javascript" src="src/js/jquery-3.2.1.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" > -->
+   <!-- </script> -->
+  <!-- <script type="text/javascript" src="src/js/jquery-3.0.0.min.js"></script> -->
+  <script type="text/javascript" src="src/js/jrf.form.js"></script>
+  <!-- for spinner -->
+  <script type="text/javascript" src="src/js/spin.min.js"></script>
+  
+  <!-- for jquery on brushes -->
+  <script type="text/javascript" src="src/js/brush.js"></script>
+
+  <!-- dropdown menu css -->
+  <link type="text/css" rel="stylesheet" href="src/css/dropdownMenu.css">
+</head>
+
+<body>
+  <div id="main-container">
+    <div id="sidebar">
+      <div>
+        <h1>Rice<br>Ideogram</h1>
+      </div>
+      <div>
+        <ul id="view-type">
+          <b>View type</b>
+          <br/>
+          <li>
+            <label for="view-type_histogram">
+              <input type="radio" name="view-type" id="view-type_histogram" onclick="getViewType(this.value)" value="Histogram" checked="checked">Histogram</input>
+            </label>
+          </li>
+          <li>
+            <label for="view-type_tracks">
+              <input type="radio" name="view-type" id="view-type_tracks" onclick="getViewType(this.value)" value="Tracks">Tracks</input>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <br>
+      <div id="form-render"></div>
+      <br>
+      <div id="instructions">
+        <ul>
+          <b>How to use</b>
+          <li>* <u>Select trait gene(s).</u></li>
+          <li>* <u>For histogram view</u>
+            <br>- hover mouse on a bar to see count</li>
+          <li>* <u>For tracks view</u>
+            <br>- hover mouse on annotation to see
+            <br>gene feature's name
+            <br>- click annotation to view gene
+            <br>feature in JBrowse</li>
+        </ul>
+
+        <div style="position: absolute; margin-top: 200px;">          
+          <div>01 | <span id="from1"></span> - <span id="to1"></span> (<span id="extent1"></span> base pairs)</div>
+          <div>02 | <span id="from2"></span> - <span id="to2"></span> (<span id="extent2"></span> base pairs)</div>
+          <div>03 | <span id="from3"></span> - <span id="to3"></span> (<span id="extent3"></span> base pairs)</div>
+          <div>04 | <span id="from4"></span> - <span id="to4"></span> (<span id="extent4"></span> base pairs)</div>
+          <div>05 | <span id="from5"></span> - <span id="to5"></span> (<span id="extent5"></span> base pairs)</div>
+          <div>06 | <span id="from6"></span> - <span id="to6"></span> (<span id="extent6"></span> base pairs)</div>
+          <div>07 | <span id="from7"></span> - <span id="to7"></span> (<span id="extent7"></span> base pairs)</div>
+          <div>08 | <span id="from8"></span> - <span id="to8"></span> (<span id="extent8"></span> base pairs)</div>
+          <div>09 | <span id="from9"></span> - <span id="to9"></span> (<span id="extent9"></span> base pairs)</div>
+          <div>10 | <span id="from10"></span> - <span id="to10"></span> (<span id="extent10"></span> base pairs)</div>
+          <div>11 | <span id="from11"></span> - <span id="to11"></span> (<span id="extent11"></span> base pairs)</div>
+          <div>12 | <span id="from12"></span> - <span id="to12"></span> (<span id="extent12"></span> base pairs)</div>
+        </div>
+
+      </div>
+    </div>
+    <div id="chromosome-render"></div>
+    <br>
+
+    <div id="jb-div">
+      <!-- <iframe id="jbrowse" src="http://oryzasnp.org/jbrowse-dev2/"></iframe> -->
+    </div>
+<!--     <div id="menuhuhu">
+    <ul class="hover">
+    <li class="hoverli">
+    <ul class="file_menu">
+    <li><a href="#">Show in JBrowse</a></li>
+    <li><a href="#">Show statistics</a></li>
+    </ul>
+    </li>
+    </ul>
+    </div> -->
+  </div>
+  <script>
+  var filterMap = {
+    "traitGenes": {
+      "oryzabase_trait_genes": 1,
+      "qtaro_trait_genes": 2,
+      "qtarogenes_bacterial_blight_resistance": 3,
+      "qtarogenes_blast_resistance": 4,
+      "qtarogenes_cold_tolerance": 5,
+      "qtarogenes_culm_leaf": 6,
+      "qtarogenes_drought_tolerance": 7,
+      "qtarogenes_dwarf": 8,
+      "qtarogenes_eating_quality": 9,
+      "qtarogenes_flowering": 10,
+      "qtarogenes_germination_dormancy": 11,
+      "qtarogenes_insect_resistance": 12,
+      "qtarogenes_lethality": 13,
+      "qtarogenes_lodging_resistance": 14,
+      "qtarogenes_morphological_trait": 15,
+      "qtarogenes_other_disease_resistance": 16,
+      "qtarogenes_other_soil_stress_tolerance": 17,
+      "qtarogenes_other_stress_resistance": 18,
+      "qtarogenes_others": 19,
+      "qtarogenes_panicle_flower": 20,
+      "qtarogenes_physiological_trait": 21,
+      "qtarogenes_resistance_or_tolerance": 22,
+      "qtarogenes_root": 23,
+      "qtarogenes_salinity_tolerance": 24,
+      "qtarogenes_seed": 25,
+      "qtarogenes_sheath_blight_resistance": 26,
+      "qtarogenes_shoot_seedling": 27,
+      "qtarogenes_source_activity": 28,
+      "qtarogenes_sterility": 29,
+      "qtarogenes_submergency_tolerance": 30
+    }
+  };
+
+  /* annotColorConfig */
+  var colors = [{
+    "id": "oryzabase_trait_genes",
+    "displayName": "Oryzabase Trait Gene Loci",
+    "color": "#ff0000"
+    }, {
+      "id": "qtaro_trait_genes",
+      "displayName": "All QTARO trait genes",
+      "color": "#ff4000"
+    }, {
+      "id": "qtarogenes_bacterial_blight_resistance",
+      "displayName": "Bacterial blight resistance",
+      "color": "#ff8000"
+    }, {
+      "id": "qtarogenes_blast_resistance",
+      "displayName": "Blast resistance",
+      "color": "#ffbf00"
+    }, {
+      "id": "qtarogenes_cold_tolerance",
+      "displayName": "Cold tolerance",
+      "color": "#bfff00"
+    }, {
+      "id": "qtarogenes_culm_leaf",
+      "displayName": "Culm leaf",
+      "color": "#80ff00"
+    }, {
+      "id": "qtarogenes_drought_tolerance",
+      "displayName": "Drought tolerance",
+      "color": "#40ff00"
+    }, {
+      "id": "qtarogenes_dwarf",
+      "displayName": "Dwarf",
+      "color": "#00ff00"
+    }, {
+      "id": "qtarogenes_eating_quality",
+      "displayName": "Eating quality",
+      "color": "#00ff40"
+    }, {
+      "id": "qtarogenes_flowering",
+      "displayName": "Flowering Trait",
+      "color": "#00ff80"
+    }, {
+      "id": "qtarogenes_germination_dormancy",
+      "displayName": "Germination dormancy",
+      "color": "#00ffbf"
+    }, {
+      "id": "qtarogenes_insect_resistance",
+      "displayName": "Insect resistance",
+      "color": "#00ffff"
+    }, {
+      "id": "qtarogenes_lethality",
+      "displayName": "Lethality Trait",
+      "color": "#00bfff"
+    }, {
+      "id": "qtarogenes_lodging_resistance",
+      "displayName": "Lodging resistance",
+      "color": "#0080ff"
+    }, {
+      "id": "qtarogenes_morphological_trait",
+      "displayName": "Morphological trait",
+      "color": "#0040ff"
+    }, {
+      "id": "qtarogenes_other_disease_resistance",
+      "displayName": "Other disease resistance",
+      "color": "#0000ff"
+    }, {
+      "id": "qtarogenes_other_soil_stress_tolerance",
+      "displayName": "Other soil stress tolerance",
+      "color": "#4000ff"
+    }, {
+      "id": "qtarogenes_other_stress_resistance",
+      "displayName": "Other stress resistance",
+      "color": "#8000ff"
+    }, {
+      "id": "qtarogenes_others",
+      "displayName": "Others",
+      "color": "#bf00ff"
+    }, {
+      "id": "qtarogenes_panicle_flower",
+      "displayName": "Panicle flower",
+      "color": "#ff00ff"
+    }, {
+      "id": "qtarogenes_physiological_trait",
+      "displayName": "Physiological trait",
+      "color": "#ff00bf"
+    }, {
+      "id": "qtarogenes_resistance_or_tolerance",
+      "displayName": "Resistance or tolerance",
+      "color": "#ff0080"
+    }, {
+      "id": "qtarogenes_root",
+      "displayName": "Root",
+      "color": "#ff0040"
+    }, {
+      "id": "qtarogenes_salinity_tolerance",
+      "displayName": "Salinity tolerance",
+      "color": "#b94646"
+    }, {
+      "id": "qtarogenes_seed",
+      "displayName": "Seed",
+      "color": "#99ccff"
+    }, {
+      "id": "qtarogenes_sheath_blight_resistance",
+      "displayName": "Sheath blight resistance",
+      "color": "#D0906D"
+    }, {
+      "id": "qtarogenes_shoot_seedling",
+      "displayName": "Shoot seedling",
+      "color": "#004080"
+    }, {
+      "id": "qtarogenes_source_activity",
+      "displayName": "Source activity",
+      "color": "#ddb880"
+    }, {
+      "id": "qtarogenes_sterility",
+      "displayName": "Sterility",
+      "color": "#a6ccf2"
+    }, {
+      "id": "qtarogenes_submergency_tolerance",
+      "displayName": "Submergency tolerance",
+      "color": "#ff9999"
+  }];
+
+
+  /* width and height config */
+  var w = $(window).width() * .01,
+    h = $(window).height() * .9;
+
+  // brush function:: data presentation
+  function writeSelectedRange() {
+    for(var i = 0; i < ideogram.selectedRegion.length; i++){
+      var r = ideogram.selectedRegion[i],
+          to = r.from.toLocaleString(), // Adds thousands-separator
+          from = r.to.toLocaleString(),
+          extent = r.extent.toLocaleString();
+
+      document.getElementById("from" + (i+1)).innerHTML = to;
+      document.getElementById("to" + (i+1)).innerHTML = from;
+      document.getElementById("extent" + (i+1)).innerHTML = extent;
+    }
+  }
+
+  var config = {
+    organism: "rice",
+    barWidth: 4,
+    chrWidth: 18,
+    chrHeight: 800,
+    chrMargin: 30,
+    annotationHeight: 4,
+    annotationTracks: colors,
+    annotationsLayout: "tracks",
+    container: "#chromosome-render",
+
+    brush: true,
+    onBrushMove: writeSelectedRange,
+    onLoad: writeSelectedRange
+  };
+
+  var ideogram;
+
+  /* 
+   * toggles view using radio buttons
+   */
+  function getViewType(viewType) {
+
+    var text = "";
+
+    // change view to viewType
+    if (viewType === "Histogram") {
+      config.annotationsLayout = "histogram";
+      text = "<b>Histogram view</b><br>Hover your mouse on a histogram bar to see count";
+    } else if (viewType === "Tracks") {
+      config.annotationsLayout = "tracks";
+      text = "<b>Tracks view</b><br>Hover your mouse on an annotation to see gene feature's name";
+    }
+
+    // show linear scale
+    toggleLinearScale("show");
+
+    // clear current view
+    d3.select("svg").remove();
+
+    ideogram = new Ideogram(config);
+  };
+
+  /*
+   * triggered when checkbox is clicked to filter both histogram
+   * and tracks view, as well the data in allTraitData
+   */
+  function toggleFilter(checkbox) {
+    var id = checkbox.id,
+      color, counts, key, count;
+
+    /* get value of tracks attribute */
+    var selectedTrack = $("#" + id).attr("tracks");
+
+    color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+
+    if ($("#" + id).is(':checked')) {
+      addTrack(selectedTrack);
+
+      /* get trackData urls */
+      var trackDataUrls = getTrackDataUrls(selectedTrack);
+
+      /* empty traitData to avoid duplication */
+      traitData = [];
+
+      /* clear current view */
+      d3.select("#ideogram").remove();
+
+      /* create new view w/ selectedTrack annots */
+      ideogram = getTrackData(selectedTrack, trackDataUrls, config);
+
+      /* show annots/tracks (tracks view filtering) */
+      d3.selectAll("path[fill = '" + color + "']").attr("visibility", "show");
+
+    } else {
+      removeTrack(selectedTrack);
+
+      /* update allTraitData */
+      var ra = removeSelectedTrack(selectedTrack);
+      config.rawAnnots = ra;
+
+      /* clear current view */
+      d3.select("#ideogram").remove();
+
+      /* new view without selectedTrack*/
+      ideogram = new Ideogram(config);
+
+      /* hide annots/tracks (tracks view filtering) */
+      d3.selectAll("path[fill = '" + color + "']").attr("visibility", "hidden");
+    }
+    if (getAllTracksCount() > 0) {
+      $("#jb-div").show();
+    }
+  }
+
+  /* render default view as histogram */
+  getViewType("Histogram");
+
+  /* render form */
+  var filepath = "/rice-ideogram/data/filter/traitGenes.json";
+  renderForm(filepath);
+
+  /* default of jbrowse is hidden */
+  $("#jbrowse").hide();
+  </script>
+</body>
+
+</html>
