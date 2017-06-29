@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Rice Ideogram</title>
-  <script src="src/js/d3.min.new.js"></script>
 
   <!-- for linear scale render -->
   <script src="http://mbostock.github.com/d3/d3.v2.js"></script>
@@ -13,16 +12,15 @@
   <script type="text/javascript" src="src/js/ideogram.js"></script>
   <script type="text/javascript" src="src/js/crossfilter.min.js"></script>
   <script type="text/javascript" src="src/js/ideogram.filter.js"></script>
+
   <!-- for form render -->
   <script type="text/javascript" src="src/js/jquery-3.2.1.js"></script>
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" > -->
-   <!-- </script> -->
-  <!-- <script type="text/javascript" src="src/js/jquery-3.0.0.min.js"></script> -->
   <script type="text/javascript" src="src/js/jrf.form.js"></script>
   <!-- for spinner -->
   <script type="text/javascript" src="src/js/spin.min.js"></script>
   
-  <!-- for jquery on brushes -->
+  <!-- jqueries -->
+  <!-- brush -->
   <script type="text/javascript" src="src/js/brush.js"></script>
 
   <!-- dropdown menu css -->
@@ -52,9 +50,15 @@
         </ul>
       </div>
       <br>
-      <div id="form-render"></div>
+      <!-- <b>trait genes</b> -->
+      <div id="form-render">
+
+      </div>
       <br>
-      <div id="form-render-qtl"></div>
+      <!-- <b>trait genes</b> -->
+      <div id="form-render-qtl">
+
+      </div>
       <br>
       <div id="instructions">
         <ul>
@@ -68,6 +72,8 @@
             <br>- click annotation to view gene
             <br>feature in JBrowse</li>
         </ul>
+
+        <div id="box"></div>
 
         <div style="position: absolute; margin-top: 180px; width: 400px;">          
           <b>Genomic coordinates</b>
@@ -319,7 +325,7 @@
   var w = $(window).width() * .01,
     h = $(window).height() * .9;
 
-  // brush function:: data presentation
+  // $+- brush function:: data presentation
   function writeSelectedRange() {
     for(var i = 0; i < ideogram.selectedRegion.length; i++){
       var r = ideogram.selectedRegion[i],
@@ -332,6 +338,9 @@
       document.getElementById("extent" + (i+1)).innerHTML = extent;
     }
   }
+
+  // &+- to determine whether the color blocks must appear or not
+  var isTracksOn = false;
 
   var config = {
     organism: "rice",
@@ -362,9 +371,38 @@
     if (viewType === "Histogram") {
       config.annotationsLayout = "histogram";
       text = "<b>Histogram view</b><br>Hover your mouse on a histogram bar to see count";
+      
+      // &+- reinitialize colors (color blocks)
+      for (i = 0; i < colors.length; i++) {
+        colorFillBlock = "white";
+        traitGeneID = '#color-block-' + (i);
+        qtlID = '#color-block-' + (i + 30);
+        $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+        $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      }
+      isTracksOn = false;
+    
     } else if (viewType === "Tracks") {
       config.annotationsLayout = "tracks";
       text = "<b>Tracks view</b><br>Hover your mouse on an annotation to see gene feature's name";
+    
+      // &+- determine whether the user has clicked a trait/qtl while the user was on histogram mode going to track mode
+      // &+- toggles on trait genes
+      jQuery.each(filterMap["traitGenes"], function(key, value){
+        var IDForm = "filter-traitGenes-" + key;
+        if($('input#' + IDForm).is(':checked')){
+          fillColorBlock("traitGenes");
+        }
+        isTracksOn = true;
+      });
+      // &+- toggles on qtl 
+      jQuery.each(filterMap["qtl"], function(key, value){
+        var IDForm = "filter-qtl-" + key;
+        if($('input#' + IDForm).is(':checked')){
+          fillColorBlock("qtl");
+        }
+        isTracksOn = true;
+      });
     }
 
     // show linear scale
@@ -384,17 +422,28 @@
     var id = checkbox.id,
       color, counts, key, count;
 
-      console.log(checkbox.id);
-      console.log(checkbox.id.match('traitGenes'));
-
     /* get value of tracks attribute */
     var selectedTrack = $("#" + id).attr("tracks");
 
-    if(checkbox.id.match('traitGenes') != null){
-      color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+    // &+- reinitialize colors (color blocks)
+    for (i = 0; i < colors.length; i++) {
+      colorFillBlock = "white";
+      traitGeneID = '#color-block-' + (i);
+      qtlID = '#color-block-' + (i + 30);
+      $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
     }
-    else if(checkbox.id.match('qtl') != null){
-      color = colors[filterMap["qtl"][selectedTrack] - 1]["color"];      
+    // &+- color blocks will only trigger when the user picks tracks view
+    if(isTracksOn){
+      // &+- added qtl data, more filering, more fun!
+      if(checkbox.id.match('traitGenes') != null){
+        fillColorBlock("traitGenes");
+        color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+      }
+      else if(checkbox.id.match('qtl') != null){
+        fillColorBlock("qtl");
+        color = colors[filterMap["qtl"][selectedTrack]]["color"];      
+      }
     }
 
     if ($("#" + id).is(':checked')) {
@@ -436,6 +485,61 @@
     }
   }
 
+  // &+- fills up the color blocks. the colors in the colors blocks will correspond to the
+  // colors used in the tracks annotations (only) || triggered when a user picks one from the 
+  // checkbox of trait genes/qtl
+  function fillColorBlock(category){
+    var colors = [
+        "#ff0000",
+        "#ff4000",
+        "#ff8000",
+        "#ffbf00",
+        "#bfff00",
+        "#80ff00",
+        "#40ff00",
+        "#00ff00",
+        "#00ff40",
+        "#00ff80",
+        "#00ffbf",
+        "#00ffff",
+        "#00bfff",
+        "#0080ff",
+        "#0040ff",
+        "#0000ff",
+        "#4000ff",
+        "#8000ff",
+        "#bf00ff",
+        "#ff00ff",
+        "#ff00bf",
+        "#ff0080",
+        "#ff0040",
+        "#b94646",
+        "#99ccff",
+        "#D0906D",
+        "#004080",
+        "#ddb880",
+        "#a6ccf2",
+        "#ff9999"
+    ];
+
+    $(document).ready(function(){
+        var colorFillBlock, traitGeneID, qtlID, i;
+
+        // &+- adding color blocks to the trait genes section
+        for (i = 0; i < colors.length; i++) {
+            colorFillBlock = colors[i];
+            traitGeneID = '#color-block-' + (i);
+            qtlID = '#color-block-' + (i + 30);
+            if(category === "traitGenes"){
+              $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+            }
+            else if(category === "qtl"){
+              $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+            }
+        }
+    });
+  }
+
   /* render default view as histogram */
   getViewType("Histogram");
 
@@ -451,5 +555,4 @@
   $("#jbrowse").hide();
   </script>
 </body>
-
 </html>

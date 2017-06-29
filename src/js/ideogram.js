@@ -1826,20 +1826,25 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .attr("class", "annot")
             .attr("transform", function(d) {
                 var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
+                // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
 
                 return "translate(" + d.px + "," + y + ")";
             })
             .append("path")
             .attr("d", function(d) {
-                // return "m0,0" + triangle;
-                return horizontalLine;
-                // return circle;
+                return "m0,0" + triangle;
             })
-            .attr("stroke-width", 1)
-            .attr("stroke", function(d) {
+            .attr("fill", function(d) {
                 return d.color;
             })
+            // .append("path")
+            // .attr("d", function(d) {
+            //     return horizontalLine;
+            // })
+            // .attr("stroke-width", 1)
+            // .attr("stroke", function(d) {
+            //     return d.color;
+            // })
             .attr("visibility", "show")
             .append("title") // add tooltip [*]
             .html(function(d) {

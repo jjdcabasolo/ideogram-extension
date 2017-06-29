@@ -222,3 +222,20 @@ ul {
     margin-left: 250px;
     width: 2000px;    
 }
+
+.color-block{
+    outline: 3px;
+    outline-style: solid;
+    width: 8px;
+    height: 8px;
+    outline-color: white;
+    background-color: white;
+    display: inline;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: red;
+}    
+
+.spinner {
+    margin-top: 23%;
+}

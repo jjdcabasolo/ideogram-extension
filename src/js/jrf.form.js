@@ -91,15 +91,14 @@ var filterMap = {
         fps: 20,
         zIndex: 2e9,
         className: 'spinner',
-        top: '50%',
-        left: '50%',
+        top: '20%',
+        left: '25%',
         shadow: true,
         hwaccel: false,
         position: 'absolute'
     },
     traitData = [],
     lfUrls = [];
-
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
  *  JSON format based on format of jquery.dform and should be:
@@ -115,7 +114,7 @@ var filterMap = {
  */
 var renderForm = function(filepath) {
     $.getJSON(filepath, function(data) {
-        console.log(data['html']['id']);
+        // console.log(data['html']['id']);
             var list_items = [],
                 html_wrapper = "<" + data['html']['type'] + "/>",
                 html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
@@ -127,13 +126,22 @@ var renderForm = function(filepath) {
                     close_tag = "</" + data['html']['html'][i]['type'] + ">",
                     attr = "<input",
                     label = "",
-                    id = "";
+                    id = "",
+                    colorBlock;
+
+                if(data['html']['id'] === 'traitGenes'){
+                    colorBlock = '<div class="color-block" id="color-block-' + (i-1) + '"></div>';
+                }
+                else if(data['html']['id'] === 'qtl'){
+                    colorBlock = '<div class="color-block" id="color-block-' + (i-1+30) + '"></div>';                    
+                }
 
                 $.each(data['html']['html'][i]['html'], function(key, val) {
                     var item;
                     if (key == 'id') id = val;
                     if (key == 'caption') {
-                        label = "<label for='" + id + "'>" + val + "</label>";
+                        // &+- added color block for color coding
+                        label = "<label for='" + id + "'>" + colorBlock + val + "</label>";
                     } else {
                         var new_attr = " " + key + "='" + val + "'";
                         attr = attr + new_attr;
@@ -144,6 +152,7 @@ var renderForm = function(filepath) {
                 item = open_tag + attr + label + close_tag;
                 list_items.push(item);
             }
+            // console.log(list_items);
             
             if(data['html']['id'] === 'traitGenes'){
                 $(html_wrapper, {
