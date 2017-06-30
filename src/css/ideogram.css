@@ -193,11 +193,53 @@ ul {
 #instructions {
     float: left;
     height: 100px;
+    position: absolute;
+    margin-top: 450px;
 }
 
 #form-render {
-    height: 300px;
+    height: 200px;
+    width: 250px;
     float: left;
     overflow: auto;
     overflow-x: hidden;
+    position: absolute;
+    margin-top: 55px;
+}
+
+#form-render-qtl {
+    height: 200px;
+    width: 250px;
+    float: left;
+    overflow: auto;
+    overflow-x: hidden;
+    position: absolute;
+    margin-top: 250px;
+}
+
+#chromosome-render {
+    position: absolute;
+    margin-left: 250px;
+    width: 2000px;    
+}
+
+.color-block{
+    outline: 3px;
+    outline-style: solid;
+    width: 8px;
+    height: 8px;
+    outline-color: white;
+    background-color: white;
+    display: inline;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: red;
+}    
+
+.spinner {
+    margin-top: 23%;
+}
+
+#divider {
+    border: 1px solid #757575;
 }
