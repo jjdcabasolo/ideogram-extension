@@ -41,7 +41,16 @@ other changes made
    ✔ isang disenteng desktop -- modify theme (grabe kapanget ng desktop) @created(17-06-28 15:39) @done (17-06-28 15:39)
 
 28 June 2018 wed || Updating annotations:
- ☐ ayusin yung traitGenes.json, idadgdag yung QTL (files in email) @created(17-06-28 15:36)
+ ✔ ayusin yung traitGenes.json, idadgdag yung QTL (files in email) @created(17-06-28 15:36) @done (17-06-29 13:20)
  ☐ as of the moment, kapag ang difference nung startPx at stopPx ay more than 5, gawing horizontal line @created(17-06-28 15:36) 
    ☐ gawin na lang sigurong dot? pag nagdikit-dikit naman sila ay mukha na silang guhit -- nasa gitna daw, leave a space. @created(17-06-28 15:38)
  ✔ make backup -- GITHUB IS LIFE @created(17-06-28 15:40) @done (17-06-28 16:03)
+ ✘ ilipat yung genomic coordinates sa right side @created(17-06-28 17:53) @cancelled (17-06-29 13:19)
+ ✔ lagay ka ng parang maliit na checkbox pero yung fill ay yung color niya sa annotation @created(17-06-29 08:33) @done (17-06-29 13:18)
+
+ 29 June 2017 thurs || Progress presentation week 2:
+ ☐ gawin visible lahat ng brush ulit @created(17-06-29 13:18)
+ ☐ lagyan ng extra menu @created(17-06-29 13:18)
+   ☐ delete this brush @created(17-06-29 13:18)
+   ☐ delete all brush @created(17-06-29 13:18)
+   ☐ enter refined coordinates @created(17-06-29 13:18)

@@ -135,8 +135,8 @@
       "qtarogenes_sterility": 29,
       "qtarogenes_submergency_tolerance": 30
     },
-    "quantitativeTraitLoci": {
-      "qtaroqtl": 1,
+    "qtl": {
+      "QTARO QTL": 1,
       "qtaroqtl_bacterial_blight_resistance": 2,
       "qtaroqtl_blast_resistance": 3,
       "qtaroqtl_cold_tolerance": 4,
@@ -353,6 +353,7 @@
     annotationsLayout: "tracks",
     container: "#chromosome-render",
 
+    // &+- added the brush feature
     brush: true,
     onBrushMove: writeSelectedRange,
     onLoad: writeSelectedRange
@@ -387,21 +388,31 @@
       text = "<b>Tracks view</b><br>Hover your mouse on an annotation to see gene feature's name";
     
       // &+- determine whether the user has clicked a trait/qtl while the user was on histogram mode going to track mode
-      // &+- toggles on trait genes
-      jQuery.each(filterMap["traitGenes"], function(key, value){
-        var IDForm = "filter-traitGenes-" + key;
-        if($('input#' + IDForm).is(':checked')){
-          fillColorBlock("traitGenes");
-        }
-        isTracksOn = true;
-      });
-      // &+- toggles on qtl 
       jQuery.each(filterMap["qtl"], function(key, value){
+        if(key === "QTARO QTL") key = "qtaroqtl"; 
+
+        // &+- toggles on qtl 
         var IDForm = "filter-qtl-" + key;
         if($('input#' + IDForm).is(':checked')){
           fillColorBlock("qtl");
         }
         isTracksOn = true;
+
+        // &+- changes radio to checkbox
+        $('#filter-qtl-' + key).attr('name', key);
+        $('#filter-qtl-' + key).attr('type', 'checkbox');
+      });
+      jQuery.each(filterMap["traitGenes"], function(key, value){
+        // &+- toggles on trait genes
+        var IDForm = "filter-traitGenes-" + key;
+        if($('input#' + IDForm).is(':checked')){
+          fillColorBlock("traitGenes");
+        }
+        isTracksOn = true;
+
+        // &+- changes radio to checkbox
+        $('#filter-traitGenes-' + key).attr('name', key);
+        $('#filter-traitGenes-' + key).attr('type', 'checkbox');
       });
     }
 
@@ -410,6 +421,10 @@
 
     // clear current view
     d3.select("svg").remove();
+
+    for(count = 0; count < this.numChromosomes; count++) {
+        ideo.selectedRegion[count] = {from: 0, to: 0, extent: 0};
+    }
 
     ideogram = new Ideogram(config);
   };
@@ -486,8 +501,8 @@
   }
 
   // &+- fills up the color blocks. the colors in the colors blocks will correspond to the
-  // colors used in the tracks annotations (only) || triggered when a user picks one from the 
-  // checkbox of trait genes/qtl
+  // &+- colors used in the tracks annotations (only) || triggered when a user picks one from the 
+  // &+- checkbox of trait genes/qtl
   function fillColorBlock(category){
     var colors = [
         "#ff0000",
@@ -540,16 +555,36 @@
     });
   }
 
+  function deleteThisBrush(){
+
+  }
+
+  // &+- this just resets the brush
+  function deleteAllBrush(){
+    $('.extent').attr('height', '0');
+    $('ul.file_menu').stop(true, true).slideUp('medium');        
+    $('.dynamic-dropdown').attr('transform', 'translate(-200, -200)');   
+  }
+
+
   /* render default view as histogram */
   getViewType("Histogram");
 
+  var category;
+  if($("#view-type_histogram").is(':checked')) {
+    category = "histogram";
+  }
+  else{
+    category = "tracks";
+  }
+
   /* render form */
   var filepath = "/ideogram-extension/data/filter/traitGenes.json";
-  renderForm(filepath);
+  renderForm(filepath, category);
 
   // &+- addition of the quantitativeTraitLoci.json
   var filepath = "/ideogram-extension/data/filter/quantitativeTraitLoci.json";
-  renderForm(filepath);
+  renderForm(filepath, category);
 
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();

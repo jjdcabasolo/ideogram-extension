@@ -2089,6 +2089,7 @@ Ideogram.prototype.createBrush = function(from, to) {
         }
     }
 };
+
 /**
  * Called when Ideogram has finished initializing.
  * Accounts for certain ideogram properties not being set until
@@ -2632,6 +2633,8 @@ Ideogram.prototype.init = function() {
                             locOnChr = d.start.toString() + ".." + (d.start + d.length).toString(),
                             track = "&tracks=DNA%2C" + ideo.config.selectedTrack + "&highlight=",
                             chrNum;
+
+                        console.log("src", pathname + chrNum + locOnChr + track);
 
                         if (d.chr < 10) {
                             chrNum = "?loc=chr0" + d.chr + "%3A"

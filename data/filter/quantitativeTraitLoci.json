@@ -5,16 +5,6 @@
         "html": [{
             "type": "b",
             "html": "QTL from Q-TARO database"
-        }, {
-            "type": "li",
-            "html": {
-                "name": "oryzabase_trait_genes",
-                "id": "filter-qtl-oryzabase_trait_genes",
-                "type": "checkbox",
-                "caption": "Oryzabase Trait Gene Loci",
-                "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "oryzabase_trait_genes"
-            }
         }
         , {
             "type": "li",
@@ -24,7 +14,7 @@
                 "type": "checkbox",
                 "caption": "Rice Quantitative Trait Loci (QTLs)",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl"
+                "tracks": "QTARO QTL"
             }
         }
         , {

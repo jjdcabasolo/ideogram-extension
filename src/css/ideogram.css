@@ -239,3 +239,7 @@ ul {
 .spinner {
     margin-top: 23%;
 }
+
+#divider {
+    border: 1px solid #757575;
+}

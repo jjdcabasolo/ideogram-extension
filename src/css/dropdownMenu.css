@@ -5,31 +5,31 @@ li {
     list-style: none;
 }
 
-.menu_class {
-    border: 1px solid #1c1c1c;
-}
-
 .file_menu {
     width: 200px;
-    border: 1px solid #1c1c1c;
+    padding: 15px;
+    background-color: #212121;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 .file_menu li {
-    background-color: #302f2f;
 }
 
 .file_menu li a {
     color: #FFFFFF;
     text-decoration: none;
-    padding: 10px;
     display: block;
 }
 
 .file_menu li a:hover {
-    padding: 10px;
     font-weight: bold;
 }
 
 .hover {
-	font-size: 20px;
+	font-size: 15px;
+}
+
+.white-text {
+    font-size: 17px;
+    color: #E0E0E0;
 }

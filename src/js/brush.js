@@ -19,18 +19,18 @@ $(document).ready(function() {
         $('#' + this.id).css('visibility', 'visible');
     }, function(){ 
         var number = parseInt(this.id.replace(/[^0-9\.]/g, ''), 10);
-        if(!isMenuOpen[number]){
-            // resets the brush after the brush disappears
-            $('.extent').attr('height', '0'); 
-        }
+        // if(!isMenuOpen[number]){
+        //     // resets the brush after the brush disappears
+        //     $('.extent').attr('height', '0'); 
+        // }
     });
     
     // DROPDOWN MENU
     // makes the dropdown be located somewhere outside the user's view
-    $('.dynamic-dropdown').attr('transform', 'translate(-100, -100)');
+    $('.dynamic-dropdown').attr('transform', 'translate(-200, -200)');
 
     // add dropdown menu after using the brush
-    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li><a href="#">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li></ul></li></ul></foreignObject>');
+    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li><b class="white-text">Options</b></li><li><a href="#">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li><b class="white-text">Brush</b></li><li><a href="#" onclick="deleteThisBrush()">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li></ul></li></ul></foreignObject>');
     
     // makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
@@ -38,7 +38,7 @@ $(document).ready(function() {
             // make the menu visible
             $('.file_menu').css('display', 'visible');
 
-            // for the foreignobject tag inside the svg tag
+            // for the foreignObjectobject tag inside the svg tag
             $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-270) + ', ' + (event.pageY-50) + ')'); 
             $('ul.file_menu').stop(true, true).slideDown('medium');
 
@@ -58,9 +58,23 @@ $(document).ready(function() {
     }, function(){ 
         // make the menu return to nowhere
         $('ul.file_menu').stop(true, true).slideUp('medium');        
-        $('.dynamic-dropdown').attr('transform', 'translate(-100, -100)');    
+        $('.dynamic-dropdown').attr('transform', 'translate(-200, -200)');    
 
         // resets the brush
-        $('.extent').attr('height', '0'); 
+        // $('.extent').attr('height', '0'); 
     });
 });  
+
+// &+- this just resets the brush and makes the menu disappear [all brushes]
+function deleteAllBrush(){
+    $('.extent').attr('height', '0');
+    $('ul.file_menu').stop(true, true).slideUp('medium');        
+    $('.dynamic-dropdown').attr('transform', 'translate(-200, -200)');   
+}
+
+// &+- this just resets the brush and makes the menu disappear [selected brush]
+function deleteThisBrush(){
+    $('.extent').attr('height', '0');
+    $('ul.file_menu').stop(true, true).slideUp('medium');        
+    $('.dynamic-dropdown').attr('transform', 'translate(-200, -200)');  
+}

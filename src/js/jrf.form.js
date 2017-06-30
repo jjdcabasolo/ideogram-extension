@@ -112,9 +112,8 @@ var filterMap = {
  *                  }                    
  *              }....]}}
  */
-var renderForm = function(filepath) {
+var renderForm = function(filepath, category) {
     $.getJSON(filepath, function(data) {
-        // console.log(data['html']['id']);
             var list_items = [],
                 html_wrapper = "<" + data['html']['type'] + "/>",
                 html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
@@ -140,9 +139,31 @@ var renderForm = function(filepath) {
                     var item;
                     if (key == 'id') id = val;
                     if (key == 'caption') {
+
                         // &+- added color block for color coding
                         label = "<label for='" + id + "'>" + colorBlock + val + "</label>";
                     } else {
+
+                        // &+- added constraints :: used in transforming checkboxes to radiobuttons
+                        if(category === 'histogram'){
+                            if(key === 'name'){
+                                // &+- if viewtype == histogram, inputtype = radiobutton
+                                var qtlIdentifier = new RegExp("(qtaro|oryza)");
+                                if(qtlIdentifier.test(val)){
+                                    val = "histogram-qtaro";
+                                }
+
+                                var qtlIdentifier = new RegExp("(qtl|QTL)");
+                                if(qtlIdentifier.test(val)){
+                                    val = "histogram-qtl";
+                                }
+                            }
+
+                            // &+- else, inputtype = checkbox
+                            if(val === 'checkbox'){
+                                val = 'radio';
+                            }
+                        }
                         var new_attr = " " + key + "='" + val + "'";
                         attr = attr + new_attr;
                     }
@@ -191,8 +212,8 @@ function getJsonData(addr, func) {
     d3.json(addr, function(error, data) {
         if (error) {
             // console.log(addr + ":" + error);
-            // data = [-1];
-            // func(data);
+            data = null;
+            func(data);
         } else {
             func(data, addr);
         }
@@ -224,7 +245,15 @@ var asyncLoop = function(o) {
  * change format of annots from jBrowse to the format of ideogram.js
  */
 function reformatTraitData(selectedTrack) {
-    var i, j;
+    var i, j, category;
+
+    // &+- added to determine if the option is a qtl
+    var qtlIdentifier = new RegExp("(qtl|QTL)");
+    if(qtlIdentifier.test(selectedTrack)){
+        category = "qtl";
+    } else {
+        category = "traitGenes";
+    }
 
     /* assign annots */
     for (i = 0; i < traitData.length; i++) {
@@ -246,7 +275,9 @@ function reformatTraitData(selectedTrack) {
                 annot[0] = d[j][7]; // name
                 annot[1] = d[j][1]; // start
                 annot[2] = d[j][2] - d[j][1]; // length
-                annot[3] = filterMap["traitGenes"][selectedTrack]; // numerical value of selected track
+
+                // &+- changed into a dynamic variable to take different data sources
+                annot[3] = filterMap[category][selectedTrack]; // numerical value of selected track
                 annots.push(annot);
             }
 
@@ -261,6 +292,7 @@ function reformatTraitData(selectedTrack) {
 /* 
  * populate arr with trackData.json filepaths given selected track
  */
+var isURLExisting = [];
 function getTrackDataUrls(selectedTrack) {
     var i, arr = [];
 
@@ -272,9 +304,26 @@ function getTrackDataUrls(selectedTrack) {
         } else {
             initFilepath = initFilepath + "0" + i.toString();
         }
-        arr.push(initFilepath + "/trackData.json");
-    }
 
+        // &+- non-asynchronous function that determines if the filepath exists
+        var request;
+        if(window.XMLHttpRequest){
+            request = new XMLHttpRequest();
+        }
+        else{
+            request = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        request.open('GET', (initFilepath + "/trackData.json"), false);
+        request.send();
+        if (request.status !== 404) {
+            // &+- the URL exists
+            arr.push(initFilepath + "/trackData.json");
+        }
+        else{
+            // &+- URL DNE :(
+            arr.push("");
+        };
+    }
     return arr;
 }
 
@@ -286,6 +335,7 @@ function populateLfUrls(initFilepath, size, chrNum) {
     var i, lfUrl;
     for (i = 1; i <= size; i++) {
         lfUrl = initFilepath + "/lf-" + i.toString() + ".json";
+        // console.log(lfUrls);
         lfUrls.push([lfUrl, chrNum]);
     }
 }
@@ -309,7 +359,6 @@ function getTrackData(selectedTrack, trackDataUrls) {
             setTimeout(function() {
                 getJsonData(trackDataUrls[i - 1],
                     function(trackData, tdUrl) {
-
                         /* if featureCount is not 0 */
                         if (trackData.featureCount) {
                             var data = trackData.intervals.nclist,
@@ -318,6 +367,7 @@ function getTrackData(selectedTrack, trackDataUrls) {
 
                             /* perform async again */
                             if (data[0].length == 4) {
+                                // console.log("entering == 4");
                                 data = [];
 
                                 /* get initial file path */
@@ -331,11 +381,9 @@ function getTrackData(selectedTrack, trackDataUrls) {
                                 obj["data"] = data;
                                 traitData.push(obj);
                             }
-
                         }
-
-                    });
-
+                    }
+                );
                 loop();
             }, 100);
         },
