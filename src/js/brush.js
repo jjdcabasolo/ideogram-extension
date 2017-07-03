@@ -27,10 +27,10 @@ $(document).ready(function() {
     
     // DROPDOWN MENU
     // &+- makes the dropdown be located somewhere outside the user's view
-    $('.dynamic-dropdown').attr('transform', 'translate(300, 300)');
+    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
     // &+- add dropdown menu after using the brush
-    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="show-jbrowse">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
     
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
@@ -41,7 +41,22 @@ $(document).ready(function() {
             if(previousBrush === 'some-id-i-used-to-know') $('#' + previousBrush).attr('id', ('some-id-' + brushID));
             else $('#some-id-' + previousBrush).attr('id', ('some-id-' + brushID));
             previousBrush = brushID;
-            
+
+            // &+- makes the show in JBrowse unable to click
+            var countingTrue = 0;
+            for (var i = 0; i < ideogram.numChromosomes; i++) {
+                if(isBrushActive[i]) countingTrue++;
+            }
+            if(countingTrue > 1){
+                // &+- make it inactive
+                $('#show-jbrowse').attr('class', 'inactive-link'); 
+            }
+            else{
+                // &+- make it active again
+                $('#show-jbrowse').attr('class', 'active-link');                 
+            }
+
+            // &+- displays the current chromosome name in the bottom of the menu
             var number = parseInt(brushID.replace(/[^0-9\.]/g, ''), 10),
                 limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
             $('#chr-name').text('chr ' + (number + 1) + ' | ');
@@ -105,7 +120,12 @@ $(document).ready(function() {
 function deleteAllBrush(){
     $('.extent').attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    $('.dynamic-dropdown').attr('transform', 'translate(300, 300)');   
+    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');   
+
+    // &+- makes the brush inactive in the back end
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        isBrushActive[i] = false;
+    }
 }
 
 // &+- this just resets the brush and makes the menu disappear [selected brush]
@@ -113,9 +133,13 @@ function deleteThisBrush(brush){
     var brushToChange = '#' + brush + ' > .extent';
     $(brushToChange).attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    $('.dynamic-dropdown').attr('transform', 'translate(300, 300)');  
+    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');  
+
+    // &+- makes the brush inactive in the back end
+    isBrushActive[parseInt(brush.replace(/[^0-9\.]/g, ''), 10)] = false;
 }
 
+// &+- setting the brush extent by inputting start and end coordinates
 function setTheBrush(brushIndex){
     var start = $('#startBPTextbox').val();
     var end = $('#endBPTextbox').val();
@@ -163,7 +187,7 @@ function setTheBrush(brushIndex){
             $('#message-input-menu').css('color', '#EF6C00');        
         }
         else{
-            // &+- the user has encountered no errors
+            // &+- the user had encountered no error/s
             $('#startBPTextbox').css('background-color', 'white');
             $('#startBPTextbox').css('color', 'black');
             $('#endBPTextbox').css('background-color', 'white');

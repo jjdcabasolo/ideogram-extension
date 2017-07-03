@@ -1997,7 +1997,7 @@ Ideogram.prototype.onBrushMove = function() {
     call(this.onBrushMoveCallback);
 };
 
-var arrayOfBrushes = [], isMouseInside = false, totalBrushCount = this.numChromosomes, chromosomeLength;
+var arrayOfBrushes = [], totalBrushCount = this.numChromosomes, chromosomeLength, isBrushActive = [];
 
 Ideogram.prototype.createBrush = function(from, to) {
     var increment = 0, totalCounter = 0;
@@ -2071,27 +2071,37 @@ Ideogram.prototype.createBrush = function(from, to) {
       .attr("class", "dynamic-dropdown")
       .attr("id", "some-id-i-used-to-know");
 
+
+    // &+- used in determining if brush is active or not | initialization
+    for (var i = 0; i < this.numChromosomes; i++) {
+        isBrushActive[i] = false;
+    }
+
     function onBrushMove() {
         var extent = 0,
             from = 0,
             to = 0;
 
-        $('#brush0').mouseenter(function(){totalCounter = 0; isMouseInside = true;});
-        $('#brush1').mouseenter(function(){totalCounter = 1; isMouseInside = true;});
-        $('#brush2').mouseenter(function(){totalCounter = 2; isMouseInside = true;});
-        $('#brush3').mouseenter(function(){totalCounter = 3; isMouseInside = true;});
-        $('#brush4').mouseenter(function(){totalCounter = 4; isMouseInside = true;});
-        $('#brush5').mouseenter(function(){totalCounter = 5; isMouseInside = true;});
-        $('#brush6').mouseenter(function(){totalCounter = 6; isMouseInside = true;});
-        $('#brush7').mouseenter(function(){totalCounter = 7; isMouseInside = true;});
-        $('#brush8').mouseenter(function(){totalCounter = 8; isMouseInside = true;});
-        $('#brush9').mouseenter(function(){totalCounter = 9; isMouseInside = true;});
-        $('#brush10').mouseenter(function(){totalCounter = 10; isMouseInside = true;});
-        $('#brush11').mouseenter(function(){totalCounter = 11; isMouseInside = true;});
+        $('#brush0').mouseenter(function(){totalCounter = 0;});
+        $('#brush1').mouseenter(function(){totalCounter = 1;});
+        $('#brush2').mouseenter(function(){totalCounter = 2;});
+        $('#brush3').mouseenter(function(){totalCounter = 3;});
+        $('#brush4').mouseenter(function(){totalCounter = 4;});
+        $('#brush5').mouseenter(function(){totalCounter = 5;});
+        $('#brush6').mouseenter(function(){totalCounter = 6;});
+        $('#brush7').mouseenter(function(){totalCounter = 7;});
+        $('#brush8').mouseenter(function(){totalCounter = 8;});
+        $('#brush9').mouseenter(function(){totalCounter = 9;});
+        $('#brush10').mouseenter(function(){totalCounter = 10;});
+        $('#brush11').mouseenter(function(){totalCounter = 11;});
     
         extent = arrayOfBrushes[totalCounter].extent(),
         from = Math.floor(extent[0]),
         to = Math.ceil(extent[1]);
+
+        if((from - to) != 0){
+            isBrushActive[totalCounter] = true;
+        }
 
         ideo.selectedRegion[totalCounter] = { "from": from, "to": to, "extent": (to - from) };
 
@@ -2215,18 +2225,18 @@ function createAnotherBrush(from, to, brushIndex) {
             from = 0,
             to = 0;
 
-        // $('#brush0').mouseenter(function(){totalCounter = 0; isMouseInside = true;});
-        // $('#brush1').mouseenter(function(){totalCounter = 1; isMouseInside = true;});
-        // $('#brush2').mouseenter(function(){totalCounter = 2; isMouseInside = true;});
-        // $('#brush3').mouseenter(function(){totalCounter = 3; isMouseInside = true;});
-        // $('#brush4').mouseenter(function(){totalCounter = 4; isMouseInside = true;});
-        // $('#brush5').mouseenter(function(){totalCounter = 5; isMouseInside = true;});
-        // $('#brush6').mouseenter(function(){totalCounter = 6; isMouseInside = true;});
-        // $('#brush7').mouseenter(function(){totalCounter = 7; isMouseInside = true;});
-        // $('#brush8').mouseenter(function(){totalCounter = 8; isMouseInside = true;});
-        // $('#brush9').mouseenter(function(){totalCounter = 9; isMouseInside = true;});
-        // $('#brush10').mouseenter(function(){totalCounter = 10; isMouseInside = true;});
-        // $('#brush11').mouseenter(function(){totalCounter = 11; isMouseInside = true;});
+        // $('#brush0').mouseenter(function(){totalCounter = 0; isBrushActive[totalCounter] = true;});
+        // $('#brush1').mouseenter(function(){totalCounter = 1; isBrushActive[totalCounter] = true;});
+        // $('#brush2').mouseenter(function(){totalCounter = 2; isBrushActive[totalCounter] = true;});
+        // $('#brush3').mouseenter(function(){totalCounter = 3; isBrushActive[totalCounter] = true;});
+        // $('#brush4').mouseenter(function(){totalCounter = 4; isBrushActive[totalCounter] = true;});
+        // $('#brush5').mouseenter(function(){totalCounter = 5; isBrushActive[totalCounter] = true;});
+        // $('#brush6').mouseenter(function(){totalCounter = 6; isBrushActive[totalCounter] = true;});
+        // $('#brush7').mouseenter(function(){totalCounter = 7; isBrushActive[totalCounter] = true;});
+        // $('#brush8').mouseenter(function(){totalCounter = 8; isBrushActive[totalCounter] = true;});
+        // $('#brush9').mouseenter(function(){totalCounter = 9; isBrushActive[totalCounter] = true;});
+        // $('#brush10').mouseenter(function(){totalCounter = 10; isBrushActive[totalCounter] = true;});
+        // $('#brush11').mouseenter(function(){totalCounter = 11; isBrushActive[totalCounter] = true;});
     
         // extent = arrayOfBrushes[totalCounter].extent(),
         // from = Math.floor(extent[0]),

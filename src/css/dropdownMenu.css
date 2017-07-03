@@ -93,3 +93,14 @@ li {
     color: #EF5350;
     line-height: 10px;
 }
+
+.inactive-link {
+    color: #616161 !important;
+    pointer-events: none;
+    cursor: default;
+}
+
+.active-link {
+    pointer-events: all;
+    cursor: default;
+}
