@@ -166,6 +166,8 @@ var Ideogram = function(config) {
     this.numChromosomes = 0;
     this.bandData = {};
 
+    this.selectedRegion = [];
+
     this.init();
 };
 
@@ -1795,7 +1797,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
 
     annotHeight = ideo.config.annotationHeight;
 
-    // M 1,1 L 8,1
     horizontalLine = 'm 0 0 l 0 ' + (2 * annotHeight);
     triangle = 'l -' + annotHeight + ' ' + (2 * annotHeight) + ' l ' + (2 * annotHeight) + ' 0 z';
 
@@ -1825,69 +1826,31 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             })
             .attr("class", "annot")
             .attr("transform", function(d) {
-                // console.log(d.trackIndex +"|"+ chrMargin + "|" + chrWidth + "|" + annotHeight);
                 var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                // console.log(d);
-                // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
-                // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
-                
+
+                // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
-                // console.log(ideo.chromosomesArray[d.trackIndex - 1].length);
-                // console.log(d.px + "|" + d.startPx);
                 if(difference >= 5){
-                    // console.log("x == startPx " + Math.ceil(d.startPx));
                     return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
                 }
-                // console.log("x == px " + d.px);
                 return "translate(" + d.px + "," + y + ")";
             })
-            // .append("path")
-            // .attr("d", function(d) {
-            //     return "m0,0" + triangle;
-            // })
-            // .attr("fill", function(d) {
-            //     return d.color;
-            // })
             .append("path")
             .attr("d", function(d) {
-                // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+                // &+- if the ranged trait/QTL is more than 5, the triangle track annotation will be changed to a line annotation
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
-
-                // var differencePx = Math.ceil(d.stopPx - d.startPx);
-                // var bpdiff = d.stop - d.start;
-                // console.log(d.convertBpToPx(bpdiff));
-                // var differenceBp = Math.ceil(ideo.convertBpToPx(d.stop - d.start));
-                // console.log("px"+differencePx+" | bp:"+differenceBp);
-
-                // var difference = Math.round(d.stopPx - d.startPx) - 28;
-                // console.log(d);
-
-                // console.log("start:"+d.startPx +" | average:" + d.px + " | end:"+d.stopPx + " | diff:" + difference);
                 if(difference >= 5){
-                    // console.log(Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1])) + "|" + Math.ceil(d.stopPx));
-                    // console.log(Math.ceil(d.stopPx) + " old");
-                    // if((Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]))) <= Math.ceil(d.stopPx)){
-                    //     difference = Math.ceil(d.stopPx) - Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]));
-                    // }
-
-                    // difference = Math.ceil(d.stopPx);
-                    // M 0 0 L 8 0
-                    // M 4 0 L 4 100
-                    // M 0 100 L 8 100
-
-                    // horizontalLine = 'M 0 0 L 0 8 M 0 4 L ' + (difference) + ' 4';
                     horizontalLine =
                         'M 0 0 L 0 8 ' +
                         'M 0 4 L ' + (difference) + ' 4 ' +
                         'M ' + (difference) + ' 0 L ' + (difference) + ' 8';
-                    // console.log("its a horizontalLine!");
                     return horizontalLine;
                 }
-                // console.log("its a triangle!");
                 return "m0,0" + triangle;                        
             })
             .attr("stroke-width", 1)
             .attr("stroke", function(d) {
+                // &+- will work if the track annotation is ranged
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
                 if(difference >= 5){
                     return d.color;
@@ -1895,10 +1858,10 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
                 return null;
             })
             .attr("fill", function(d) {
-                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                // &+- will work if the track annotation is in a single position
+                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
                 if(difference >= 5){
                     return null;
-                    // return d.color;
                 }
                 return d.color;
             })
@@ -1909,7 +1872,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             });
     } else if (layout === "overlay") {
         // Overlaid annotations appear directly on chromosomes
-
         chrAnnot.append("polygon")
             .attr("id", function(d, i) {
                 return d.id;
@@ -2035,11 +1997,11 @@ Ideogram.prototype.onBrushMove = function() {
     call(this.onBrushMoveCallback);
 };
 
-var arrayOfBrushes = [], isMouseInside = false, totalBrushCount = this.numChromosomes;
+var arrayOfBrushes = [], isMouseInside = false, totalBrushCount = this.numChromosomes, chromosomeLength;
 
 Ideogram.prototype.createBrush = function(from, to) {
     var increment = 0, totalCounter = 0;
-    this.selectedRegion = [];
+    // this.selectedRegion = [];
 
     for(count = 0; count < this.numChromosomes; count++) {
         // add to-from-extent variables for each brushes
@@ -2106,7 +2068,8 @@ Ideogram.prototype.createBrush = function(from, to) {
     }
 
     d3.select("#ideogram").append("svg:foreignObject")
-      .attr("class", "dynamic-dropdown");
+      .attr("class", "dynamic-dropdown")
+      .attr("id", "some-id-i-used-to-know");
 
     function onBrushMove() {
         var extent = 0,

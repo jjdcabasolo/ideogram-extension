@@ -42,24 +42,35 @@ other changes made
 
 28 June 2018 wed || Updating annotations:
  ✔ ayusin yung traitGenes.json, idadgdag yung QTL (files in email) @created(17-06-28 15:36) @done (17-06-29 13:20)
- ☐ as of the moment, kapag ang difference nung startPx at stopPx ay more than 5, gawing horizontal line @created(17-06-28 15:36) 
-   ☐ gawin na lang sigurong dot? pag nagdikit-dikit naman sila ay mukha na silang guhit -- nasa gitna daw, leave a space. @created(17-06-28 15:38)
+ ✔ as of the moment, kapag ang difference nung startPx at stopPx ay more than 5, gawing horizontal line @created(17-06-28 15:36) @done (17-07-03 10:01)
+   ✔ gawin na lang sigurong dot? pag nagdikit-dikit naman sila ay mukha na silang guhit -- nasa gitna daw, leave a space. @created(17-06-28 15:38) @done (17-07-03 10:01)
  ✔ make backup -- GITHUB IS LIFE @created(17-06-28 15:40) @done (17-06-28 16:03)
  ✘ ilipat yung genomic coordinates sa right side @created(17-06-28 17:53) @cancelled (17-06-29 13:19)
  ✔ lagay ka ng parang maliit na checkbox pero yung fill ay yung color niya sa annotation @created(17-06-29 08:33) @done (17-06-29 13:18)
 
  29 June 2017 thurs || Progress presentation week 2:
  ✔ gawin visible lahat ng brush ulit @created(17-06-29 13:18) @done (17-06-30 10:54)
- ☐ lagyan ng extra menu @created(17-06-29 13:18)
+ ✔ lagyan ng extra menu @created(17-06-29 13:18) @done (17-07-03 10:01)
    ✔ delete this brush @created(17-06-29 13:18) @done (17-06-30 10:54)
    ✔ delete all brush @created(17-06-29 13:18) @done (17-06-30 10:54)
-   ☐ enter refined coordinates @created(17-06-29 13:18)
+   ✔ enter refined coordinates @created(17-06-29 13:18) @done (17-07-03 10:01)
 
 30 June 2017 fri || Chatting with my supervisor sa GMail and the QTL success:
  ☐ nawawala yung show in jbrowse na menu kapag marami nang brushes @created(17-06-30 10:54)
  ✔ paganahin yung delete this/all brush @created(17-06-30 10:54) @done (17-06-30 10:55)
  ✔ paganahin ng ayos yung data ng QTL @created(17-06-30 10:55) @done (17-06-30 10:55)
- ☐ please verify daw yung pagbabago ng kulay sa histogram hahaha complicated daw @created(17-06-30 10:55)
+ ✘ please verify daw yung pagbabago ng kulay sa histogram hahaha complicated daw @created(17-06-30 10:55) @cancelled (17-07-03 09:12)
  ☐ try daw yung multiple brushes sa isang chromosome @created(17-06-30 10:56)
 <from l.mansueto@irri.org> "Yung refine coordinate, when selected shows a dialog that asks for the start and end coordinates (initial value set to the current values)) of and applies to the currently hovered brush.."
- ☐ refined coordinate settings @created(17-06-30 11:45)
+ ✔ refined coordinate settings @created(17-06-30 11:45) @done (17-07-03 10:01)
+
+3 July 2017 mon || console.logger():
+ ✔ ayusin yung mga annotations @created(17-07-03 09:03) @done (17-07-03 09:12)
+   ✔ yung positioning nung annotations, parang mga naliligaw @created(17-07-03 09:03) @done (17-07-03 09:04)
+   ✔ ayusin yung add tracks @created(17-07-03 09:04) @done (17-07-03 09:07)
+   ✔ ayusin yung remove tracks @created(17-07-03 09:04) @done (17-07-03 09:07)
+ ☐ BUG: pag both pinindot yung riceQTL at oryzabase @created(17-07-03 09:05)
+ ☐ FIX: yung color tracks sana kapag may check yung both parties dapat hindi mawawala yung color block sa trait or QTL @created(17-07-03 09:06)
+ ☐ BUG: hindi nagana yung brush kapag may annotations na yung chromosome :( @created(17-07-03 09:11)
+ ☐ TODO: lagyan ng start-end info yung form @created(17-07-03 10:01)
+ ☐ TODO: form checking siguro for start and end? @created(17-07-03 10:01)
