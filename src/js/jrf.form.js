@@ -33,6 +33,37 @@ var filterMap = {
             "qtarogenes_source_activity": 28,
             "qtarogenes_sterility": 29,
             "qtarogenes_submergency_tolerance": 30
+        },
+        "qtl": {
+            "QTARO QTL": 1,
+            "qtaroqtl_bacterial_blight_resistance": 2,
+            "qtaroqtl_blast_resistance": 3,
+            "qtaroqtl_cold_tolerance": 4,
+            "qtaroqtl_culm_leaf": 5,
+            "qtaroqtl_drought_tolerance": 6,
+            "qtaroqtl_dwarf": 7,
+            "qtaroqtl_eating_quality": 8,
+            "qtaroqtl_flowering": 9,
+            "qtaroqtl_germination_dormancy": 10,
+            "qtaroqtl_insect_resistance": 11,
+            "qtaroqtl_lethality": 12,
+            "qtaroqtl_lodging_resistance": 13,
+            "qtaroqtl_morphological_trait": 14,
+            "qtaroqtl_other_disease_resistance": 15,
+            "qtaroqtl_other_soil_stress_tolerance": 16,
+            "qtaroqtl_other_stress_resistance": 17,
+            "qtaroqtl_others": 18,
+            "qtaroqtl_panicle_flower": 19,
+            "qtaroqtl_physiological_trait": 20,
+            "qtaroqtl_resistance_or_tolerance": 21,
+            "qtaroqtl_root": 22,
+            "qtaroqtl_salinity_tolerance": 23,
+            "qtaroqtl_seed": 24,
+            "qtaroqtl_sheath_blight_resistance": 25,
+            "qtaroqtl_shoot_seedling": 26,
+            "qtaroqtl_source_activity": 27,
+            "qtaroqtl_sterility": 28,
+            "qtaroqtl_submergency_tolerance": 29
         }
     },
     allTraitData = {
@@ -144,26 +175,26 @@ var renderForm = function(filepath, category) {
                         label = "<label for='" + id + "'>" + colorBlock + val + "</label>";
                     } else {
 
-                        // &+- added constraints :: used in transforming checkboxes to radiobuttons
-                        if(category === 'histogram'){
-                            if(key === 'name'){
-                                // &+- if viewtype == histogram, inputtype = radiobutton
-                                var qtlIdentifier = new RegExp("(qtaro|oryza)");
-                                if(qtlIdentifier.test(val)){
-                                    val = "histogram-qtaro";
-                                }
+                        // // &+- added constraints :: used in transforming checkboxes to radiobuttons
+                        // if(category === 'histogram'){
+                        //     if(key === 'name'){
+                        //         // &+- if viewtype == histogram, inputtype = radiobutton
+                        //         var qtlIdentifier = new RegExp("(qtaro|oryza)");
+                        //         if(qtlIdentifier.test(val)){
+                        //             val = "histogram-qtaro";
+                        //         }
 
-                                var qtlIdentifier = new RegExp("(qtl|QTL)");
-                                if(qtlIdentifier.test(val)){
-                                    val = "histogram-qtl";
-                                }
-                            }
+                        //         var qtlIdentifier = new RegExp("(qtl|QTL)");
+                        //         if(qtlIdentifier.test(val)){
+                        //             val = "histogram-qtl";
+                        //         }
+                        //     }
 
-                            // &+- else, inputtype = checkbox
-                            if(val === 'checkbox'){
-                                val = 'radio';
-                            }
-                        }
+                        //     // &+- else, inputtype = checkbox
+                        //     if(val === 'checkbox'){
+                        //         val = 'radio';
+                        //     }
+                        // }
                         var new_attr = " " + key + "='" + val + "'";
                         attr = attr + new_attr;
                     }
@@ -245,19 +276,19 @@ var asyncLoop = function(o) {
  * change format of annots from jBrowse to the format of ideogram.js
  */
 function reformatTraitData(selectedTrack) {
-    var i, j, category;
+    var i, j, category, isQTL = false;
 
     // &+- added to determine if the option is a qtl
     var qtlIdentifier = new RegExp("(qtl|QTL)");
     if(qtlIdentifier.test(selectedTrack)){
         category = "qtl";
+        isQTL = true;
     } else {
         category = "traitGenes";
     }
 
     /* assign annots */
     for (i = 0; i < traitData.length; i++) {
-
         var td = traitData[i],
             annots = [],
             chrNum;
@@ -286,6 +317,7 @@ function reformatTraitData(selectedTrack) {
         }
     }
 
+    // console.log(allTraitData);
     return allTraitData;
 }
 
@@ -415,6 +447,8 @@ function getTrackData(selectedTrack, trackDataUrls) {
 
             lfUrls = [];
 
+            console.log(allTracks);
+
             config.rawAnnots = reformatTraitData(selectedTrack);
             config.selectedTrack = selectedTrack;
             config.allTracks = allTracks;
@@ -428,7 +462,16 @@ function getTrackData(selectedTrack, trackDataUrls) {
  * remove data of selectedTrack in the allTraitData array
  */
 function removeSelectedTrack(selectedTrack) {
-    var num = filterMap["traitGenes"][selectedTrack],
+    // console.log("etoh" + selectedTrack);
+    // &+-
+    var qtlIdentifier = new RegExp("(qtl|QTL)"),
+        category;
+    if(qtlIdentifier.test(selectedTrack)){
+        category = "qtl";
+    } else {
+        category = "traitGenes";
+    }
+    var num = filterMap[category][selectedTrack],
         i, j;
 
     for (i = 0; i < 12; i++) {
@@ -460,10 +503,21 @@ var allTracks = [],
     allTracksCount = 0;
 
 function addTrack(track) {
+    // console.log(track+"asdfasdfasdf");
+    // &+- 
+    var qtlIdentifier = new RegExp("(qtl|QTL)"),
+        category;
+    if(qtlIdentifier.test(track)){
+        category = "qtl";
+    } else {
+        category = "traitGenes";
+    }
+    console.log(filterMap[category][track] + "|" + allTracksCount);
+
     allTracks.push({
         track: track,
         trackIndex: allTracksCount,
-        mapping: filterMap["traitGenes"][track]
+        mapping: filterMap[category][track]
     });
     allTracksCount++;
 }

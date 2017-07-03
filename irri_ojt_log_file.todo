@@ -49,8 +49,17 @@ other changes made
  ✔ lagay ka ng parang maliit na checkbox pero yung fill ay yung color niya sa annotation @created(17-06-29 08:33) @done (17-06-29 13:18)
 
  29 June 2017 thurs || Progress presentation week 2:
- ☐ gawin visible lahat ng brush ulit @created(17-06-29 13:18)
+ ✔ gawin visible lahat ng brush ulit @created(17-06-29 13:18) @done (17-06-30 10:54)
  ☐ lagyan ng extra menu @created(17-06-29 13:18)
-   ☐ delete this brush @created(17-06-29 13:18)
-   ☐ delete all brush @created(17-06-29 13:18)
+   ✔ delete this brush @created(17-06-29 13:18) @done (17-06-30 10:54)
+   ✔ delete all brush @created(17-06-29 13:18) @done (17-06-30 10:54)
    ☐ enter refined coordinates @created(17-06-29 13:18)
+
+30 June 2017 fri || Chatting with my supervisor sa GMail and the QTL success:
+ ☐ nawawala yung show in jbrowse na menu kapag marami nang brushes @created(17-06-30 10:54)
+ ✔ paganahin yung delete this/all brush @created(17-06-30 10:54) @done (17-06-30 10:55)
+ ✔ paganahin ng ayos yung data ng QTL @created(17-06-30 10:55) @done (17-06-30 10:55)
+ ☐ please verify daw yung pagbabago ng kulay sa histogram hahaha complicated daw @created(17-06-30 10:55)
+ ☐ try daw yung multiple brushes sa isang chromosome @created(17-06-30 10:56)
+<from l.mansueto@irri.org> "Yung refine coordinate, when selected shows a dialog that asks for the start and end coordinates (initial value set to the current values)) of and applies to the currently hovered brush.."
+ ☐ refined coordinate settings @created(17-06-30 11:45)

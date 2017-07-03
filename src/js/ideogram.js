@@ -1818,39 +1818,117 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
         .enter();
 
     if (layout === "tracks") {
-        chrAnnot
-            .append("g")
-            .attr("id", function(d, i) {
-                return d.id;
-            })
-            .attr("class", "annot")
-            .attr("transform", function(d) {
-                var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
 
-                return "translate(" + d.px + "," + y + ")";
-            })
-            .append("path")
-            .attr("d", function(d) {
-                return "m0,0" + triangle;
-            })
-            .attr("fill", function(d) {
-                return d.color;
-            })
-            // .append("path")
-            // .attr("d", function(d) {
-            //     return horizontalLine;
-            // })
-            // .attr("stroke-width", 1)
-            // .attr("stroke", function(d) {
-            //     return d.color;
-            // })
-            .attr("visibility", "show")
-            .append("title") // add tooltip [*]
-            .html(function(d) {
-                return d.name;
-            });
+/*        console.log(
+            chrAnnot
+                .html(function(d) {
+                    return d.name;
+                })
+        );
+*/
 
+        // chrAnnot.attr("id", function(d, i) {
+        //     return d.id;
+        // })
+        // console.log(chrAnnot.attr("id", function(d, i) {
+        //     return d.id;
+        // }));
+        // var difference = Math.ceil(d.stopPx-d.startPx);
+        // console.log(difference + "asdf");
+        // if(difference >= 2){
+            // for(var i = 100; i < ; i++){
+            //     chrAnnot
+            //         .append("g")
+            //         .attr("id", function(d, i) {
+            //             return d.id;
+            //         })
+            //         .attr("class", "annot")
+            //         .attr("transform", function(d) {
+            //             var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+            //             // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
+            //             console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+
+            //             return "translate(" + i + "," + y + ")";
+            //         })
+            //         .append("path")
+            //         .attr("d", function(d) {
+            //             return horizontalLine;
+            //         })
+            //         .attr("stroke-width", 1)
+            //         .attr("stroke", function(d) {
+            //             return d.color;
+            //         })
+            //         .attr("visibility", "show")
+            //         .append("title") // add tooltip [*]
+            //         .html(function(d) {
+            //             return d.name;
+            //         });
+            // }
+        // }
+        // else{
+            chrAnnot
+                .append("g")
+                .attr("id", function(d, i) {
+                    return d.id;
+                })
+                .attr("class", "annot")
+                .attr("transform", function(d) {
+                    console.log(d.trackIndex +"|"+ chrMargin + "|" + chrWidth + "|" + annotHeight);
+                    var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                    // console.log(d);
+                    // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
+                    // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+                    
+                    var difference = Math.ceil(d.stopPx - d.startPx);
+                    // console.log(ideo.chromosomesArray[d.trackIndex - 1].length);
+                    if(difference >= 2){
+                        return "translate(" + d.startPx + "," + y + ")";                        
+                    }
+                    return "translate(" + d.px + "," + y + ")";
+                })
+                // .append("path")
+                // .attr("d", function(d) {
+                //     return "m0,0" + triangle;
+                // })
+                // .attr("fill", function(d) {
+                //     return d.color;
+                // })
+                .append("path")
+                .attr("d", function(d) {
+                    // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+                    var difference = Math.ceil(d.stopPx - d.startPx);
+                    if(difference >= 5){
+                        // console.log(Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1])) + "|" + Math.ceil(d.stopPx));
+                        if((Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]))) <= Math.ceil(d.stopPx)){
+                            // console.log(Math.ceil(d.stopPx) + " old");
+                            difference = Math.ceil(d.stopPx) - Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]));
+                        }
+                        // M 0 0 L 8 0
+                        // M 4 0 L 4 100
+                        // M 0 100 L 8 100
+
+                        // horizontalLine = 'M 0 0 L 0 8 M 0 4 L ' + (difference) + ' 4';
+                        horizontalLine =
+                            'M 0 0 L 0 8 ' +
+                            'M 0 4 L ' + (difference) + ' 4 ' +
+                            'M ' + (difference) + ' 0 L ' + (difference) + ' 8';
+                        return horizontalLine;
+                    }
+                    return "m0,0" + triangle;                        
+                })
+                .attr("stroke-width", 1)
+                .attr("stroke", function(d) {
+                    return d.color;
+                })
+                .attr("fill", function(d) {
+                    return d.color;
+                })
+                .attr("visibility", "show")
+                .append("title") // add tooltip [*]
+                .html(function(d) {
+                    return d.name;
+                });
+        // }
     } else if (layout === "overlay") {
         // Overlaid annotations appear directly on chromosomes
 
@@ -1979,7 +2057,8 @@ Ideogram.prototype.onBrushMove = function() {
     call(this.onBrushMoveCallback);
 };
 
-var arrayOfBrushes = [], isMouseInside = false;
+var arrayOfBrushes = [], isMouseInside = false, totalBrushCount = this.numChromosomes;
+
 Ideogram.prototype.createBrush = function(from, to) {
     var increment = 0, totalCounter = 0;
     this.selectedRegion = [];
@@ -1999,9 +2078,6 @@ Ideogram.prototype.createBrush = function(from, to) {
         var ideo = this,
             length = ideo.config.chrWidth + 6.5,
             width = ideo.config.chrHeight,
-
-            // width = ideo.config.chrWidth + 6.5,
-            // length = ideo.config.chrHeight,
             chr = ideo.chromosomesArray[count],
             chrLengthBp = chr.bands[chr.bands.length - 1].bp.stop,
             y, x0, x1,
@@ -2032,16 +2108,12 @@ Ideogram.prototype.createBrush = function(from, to) {
         x0 = 0;
         x1 = 0;
 
-        // ideo.selectedRegion = { "from": from, "to": to, "extent": (to - from) };
         ideo.selectedRegion[count] = {from: 0, to: 0, extent: 0};
 
         arrayOfBrushes[count] = d3.svg.brush()
             .y(y)
             .extent([x0, x1])
             .on("brush", onBrushMove);
-
-        // arrayOfBrushes[count] = ideo.brush;
-        // console.log(arrayOfBrushes[count]);
 
         var brushg = d3.select("#ideogram").append("g")
             .attr("class", "brush")
@@ -2076,11 +2148,150 @@ Ideogram.prototype.createBrush = function(from, to) {
         $('#brush10').mouseenter(function(){totalCounter = 10; isMouseInside = true;});
         $('#brush11').mouseenter(function(){totalCounter = 11; isMouseInside = true;});
     
-        // if(isMouseInside){
-            extent = arrayOfBrushes[totalCounter].extent(),
-            from = Math.floor(extent[0]),
-            to = Math.ceil(extent[1]);
-        // }
+        extent = arrayOfBrushes[totalCounter].extent(),
+        from = Math.floor(extent[0]),
+        to = Math.ceil(extent[1]);
+
+        ideo.selectedRegion[totalCounter] = { "from": from, "to": to, "extent": (to - from) };
+
+        if (ideo.onBrushMove) {
+            ideo.onBrushMoveCallback();
+        }
+    }
+};
+
+
+Ideogram.prototype.drawBrushes = function(from, to, brushIndex) {
+  var brushSelection = gBrushes
+    .selectAll('.brush')
+    .data(brushes, function (d){return d.id});
+
+    // Set up new brushes
+  brushSelection.enter()
+    .insert("g", '.brush')
+    .attr('class', 'brush')
+    .attr('id', function(brush){ return "brush-" + brush.id; })
+    .each(function(brushObject) {
+      //call the brush
+      brushObject.brush(d3.select(this));
+    });
+
+    /* REMOVE POINTER EVENTS ON BRUSH OVERLAYS
+     *
+     * This part is abbit tricky and requires knowledge of how brushes are implemented.
+     * They register pointer events on a .overlay rectangle within them.
+     * For existing brushes, make sure we disable their pointer events on their overlay.
+     * This frees the overlay for the most current (as of yet with an empty selection) brush to listen for click and drag events
+     * The moving and resizing is done with other parts of the brush, so that will still work.
+     */
+  brushSelection
+    .each(function (brushObject){
+      d3.select(this)
+        .attr('class', 'brush')
+        .selectAll('.overlay')
+        .style('pointer-events', function() {
+          var brush = brushObject.brush;
+          if (brushObject.id === brushes.length-1 && brush !== undefined) {
+            return 'all';
+          } else {
+            return 'none';
+          }
+        });
+    })
+
+  brushSelection.exit()
+    .remove();
+}
+
+function createAnotherBrush(from, to, brushIndex) {
+    // var increment = 0, totalCounter = 0;
+    // this.selectedRegion = [];
+    var increment = (76 * (brushIndex - 1));
+    totalBrushCount = totalBrushCount + 1;
+    console.log(this)
+    // add to-from-extent variables for each brushes
+    // var fromName = "from",
+    //     from = "0",
+    //     toName = "to",
+    //     to = "0",
+    //     extentName = "extent";
+
+    // this.chromosomesArray[count][fromName] = from;
+    // this.chromosomesArray[count][toName] = to;
+    // this.chromosomesArray[count][extentName] = null;
+
+    var ideo = this,
+        length = ideo.config.chrWidth + 6.5,
+        width = ideo.config.chrHeight,
+        chr = ideo.chromosomesArray[brushIndex],
+        chrLengthBp = chr.bands[chr.bands.length - 1].bp.stop,
+        y, x0, x1,
+        translationVariable,
+        domain = [0],
+        range = [0],
+        band,
+        yOffset = 29,
+        xOffset = 52.5;
+
+    for (var i = 0; i < chr.bands.length; i++) {
+        band = chr.bands[i];
+        domain.push(band.bp.stop);
+        range.push(band.px.stop);
+    }
+
+    y = d3.scale.linear().domain(domain).range(range);
+    translationVariable = d3.select(".band")[0][0].getBBox().y - 3.25;
+
+    if (typeof left === "undefined") {
+        from = Math.floor(chrLengthBp / 10);
+    }
+
+    if (typeof right === "undefined") {
+        to = Math.ceil(from * 2);
+    }
+
+    x0 = 0;
+    x1 = 0;
+
+    ideo.selectedRegion[totalBrushCount] = {from: 0, to: 0, extent: 0};
+
+    arrayOfBrushes[totalBrushCount] = d3.svg.brush()
+        .y(y)
+        .extent([x0, x1])
+        .on("brush", onBrushMove);
+
+    var brushg = d3.select("#ideogram").append("g")
+        .attr("class", "brush")
+        .attr("id", "brush" + totalBrushCount)
+        .attr("transform", "translate(" + (xOffset+increment) + ", " + yOffset + ")")
+        .call(arrayOfBrushes[totalBrushCount]);
+
+    brushg.selectAll("rect")
+        .attr("width", length);
+
+    function onBrushMove() {
+        var extent = 0,
+            from = 0,
+            to = 0;
+
+        // $('#brush0').mouseenter(function(){totalCounter = 0; isMouseInside = true;});
+        // $('#brush1').mouseenter(function(){totalCounter = 1; isMouseInside = true;});
+        // $('#brush2').mouseenter(function(){totalCounter = 2; isMouseInside = true;});
+        // $('#brush3').mouseenter(function(){totalCounter = 3; isMouseInside = true;});
+        // $('#brush4').mouseenter(function(){totalCounter = 4; isMouseInside = true;});
+        // $('#brush5').mouseenter(function(){totalCounter = 5; isMouseInside = true;});
+        // $('#brush6').mouseenter(function(){totalCounter = 6; isMouseInside = true;});
+        // $('#brush7').mouseenter(function(){totalCounter = 7; isMouseInside = true;});
+        // $('#brush8').mouseenter(function(){totalCounter = 8; isMouseInside = true;});
+        // $('#brush9').mouseenter(function(){totalCounter = 9; isMouseInside = true;});
+        // $('#brush10').mouseenter(function(){totalCounter = 10; isMouseInside = true;});
+        // $('#brush11').mouseenter(function(){totalCounter = 11; isMouseInside = true;});
+    
+        // extent = arrayOfBrushes[totalCounter].extent(),
+        // from = Math.floor(extent[0]),
+        // to = Math.ceil(extent[1]);
+
+        totalCounter = 100;
 
         ideo.selectedRegion[totalCounter] = { "from": from, "to": to, "extent": (to - from) };
 
