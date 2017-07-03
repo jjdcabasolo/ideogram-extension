@@ -1,0 +1,61 @@
+<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml">
+<ul class="hover">
+<li class="hoverli">
+<ul class="file_menu">
+<li class="header-menu">
+<b class="white-text">
+Options</b>
+</li>
+<li>
+<a href="#">
+Show in JBrowse</a>
+</li>
+<li>
+<a href="#">
+Show statistics</a>
+</li>
+<hr id="divider">
+<li class="header-menu">
+<b class="white-text">
+Brush</b>
+</li>
+<li>
+<a href="#" id="brush0" class="identifyTheBrush" onclick="deleteThisBrush(this.id)">
+Delete this brush</a>
+</li>
+<li>
+<a href="#" onclick="deleteAllBrush()">
+Delete all brush</a>
+</li>
+<hr id="divider">
+<li class="header-menu">
+<b class="white-text">
+Set range</b>
+</li>
+<li>
+<form class="white-text-default">
+<label for="StartBP">
+Start:</label>
+<input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox">
+</form>
+</li>
+<li>
+<form class="white-text-default">
+<label for="EndBP">
+End:</label>
+<input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox">
+</form>
+</li>
+<li id="range-details">
+<p class="white-text-smaller" id="chr-name-details">
+<b class="white-text-smaller" id="chr-name">
+</b>
+max:<b class="white-text-smaller" id="chr-name-max">
+</b>
+</p>
+<button type="button" onclick="myFunction()">Submit</button>
+</li>
+</ul>
+</li>
+</ul>
+</foreignObject>
