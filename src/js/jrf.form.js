@@ -447,8 +447,6 @@ function getTrackData(selectedTrack, trackDataUrls) {
 
             lfUrls = [];
 
-            console.log(allTracks);
-
             config.rawAnnots = reformatTraitData(selectedTrack);
             config.selectedTrack = selectedTrack;
             config.allTracks = allTracks;

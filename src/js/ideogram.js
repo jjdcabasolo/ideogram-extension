@@ -1818,117 +1818,95 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
         .enter();
 
     if (layout === "tracks") {
+        chrAnnot
+            .append("g")
+            .attr("id", function(d, i) {
+                return d.id;
+            })
+            .attr("class", "annot")
+            .attr("transform", function(d) {
+                // console.log(d.trackIndex +"|"+ chrMargin + "|" + chrWidth + "|" + annotHeight);
+                var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                // console.log(d);
+                // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
+                // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+                
+                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                // console.log(ideo.chromosomesArray[d.trackIndex - 1].length);
+                // console.log(d.px + "|" + d.startPx);
+                if(difference >= 5){
+                    // console.log("x == startPx " + Math.ceil(d.startPx));
+                    return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
+                }
+                // console.log("x == px " + d.px);
+                return "translate(" + d.px + "," + y + ")";
+            })
+            // .append("path")
+            // .attr("d", function(d) {
+            //     return "m0,0" + triangle;
+            // })
+            // .attr("fill", function(d) {
+            //     return d.color;
+            // })
+            .append("path")
+            .attr("d", function(d) {
+                // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
 
-/*        console.log(
-            chrAnnot
-                .html(function(d) {
-                    return d.name;
-                })
-        );
-*/
+                // var differencePx = Math.ceil(d.stopPx - d.startPx);
+                // var bpdiff = d.stop - d.start;
+                // console.log(d.convertBpToPx(bpdiff));
+                // var differenceBp = Math.ceil(ideo.convertBpToPx(d.stop - d.start));
+                // console.log("px"+differencePx+" | bp:"+differenceBp);
 
-        // chrAnnot.attr("id", function(d, i) {
-        //     return d.id;
-        // })
-        // console.log(chrAnnot.attr("id", function(d, i) {
-        //     return d.id;
-        // }));
-        // var difference = Math.ceil(d.stopPx-d.startPx);
-        // console.log(difference + "asdf");
-        // if(difference >= 2){
-            // for(var i = 100; i < ; i++){
-            //     chrAnnot
-            //         .append("g")
-            //         .attr("id", function(d, i) {
-            //             return d.id;
-            //         })
-            //         .attr("class", "annot")
-            //         .attr("transform", function(d) {
-            //             var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-            //             // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
-            //             console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
+                // var difference = Math.round(d.stopPx - d.startPx) - 28;
+                // console.log(d);
 
-            //             return "translate(" + i + "," + y + ")";
-            //         })
-            //         .append("path")
-            //         .attr("d", function(d) {
-            //             return horizontalLine;
-            //         })
-            //         .attr("stroke-width", 1)
-            //         .attr("stroke", function(d) {
-            //             return d.color;
-            //         })
-            //         .attr("visibility", "show")
-            //         .append("title") // add tooltip [*]
-            //         .html(function(d) {
-            //             return d.name;
-            //         });
-            // }
-        // }
-        // else{
-            chrAnnot
-                .append("g")
-                .attr("id", function(d, i) {
-                    return d.id;
-                })
-                .attr("class", "annot")
-                .attr("transform", function(d) {
-                    console.log(d.trackIndex +"|"+ chrMargin + "|" + chrWidth + "|" + annotHeight);
-                    var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                    // console.log(d);
-                    // console.log("[bp] start:" + d.start + " | end:" + d.stop + " || [px] start:" + d.startPx + " | end:" + d.stopPx);
-                    // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
-                    
-                    var difference = Math.ceil(d.stopPx - d.startPx);
-                    // console.log(ideo.chromosomesArray[d.trackIndex - 1].length);
-                    if(difference >= 2){
-                        return "translate(" + d.startPx + "," + y + ")";                        
-                    }
-                    return "translate(" + d.px + "," + y + ")";
-                })
-                // .append("path")
-                // .attr("d", function(d) {
-                //     return "m0,0" + triangle;
-                // })
-                // .attr("fill", function(d) {
-                //     return d.color;
-                // })
-                .append("path")
-                .attr("d", function(d) {
-                    // console.log("[px] start:" + d.startPx + " | end:" + d.stopPx + " diff: " + Math.round(d.stopPx-d.startPx));
-                    var difference = Math.ceil(d.stopPx - d.startPx);
-                    if(difference >= 5){
-                        // console.log(Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1])) + "|" + Math.ceil(d.stopPx));
-                        if((Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]))) <= Math.ceil(d.stopPx)){
-                            // console.log(Math.ceil(d.stopPx) + " old");
-                            difference = Math.ceil(d.stopPx) - Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]));
-                        }
-                        // M 0 0 L 8 0
-                        // M 4 0 L 4 100
-                        // M 0 100 L 8 100
+                // console.log("start:"+d.startPx +" | average:" + d.px + " | end:"+d.stopPx + " | diff:" + difference);
+                if(difference >= 5){
+                    // console.log(Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1])) + "|" + Math.ceil(d.stopPx));
+                    // console.log(Math.ceil(d.stopPx) + " old");
+                    // if((Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]))) <= Math.ceil(d.stopPx)){
+                    //     difference = Math.ceil(d.stopPx) - Math.ceil(ideo.convertBpToPx(ideo.chromosomesArray[d.trackIndex - 1]));
+                    // }
 
-                        // horizontalLine = 'M 0 0 L 0 8 M 0 4 L ' + (difference) + ' 4';
-                        horizontalLine =
-                            'M 0 0 L 0 8 ' +
-                            'M 0 4 L ' + (difference) + ' 4 ' +
-                            'M ' + (difference) + ' 0 L ' + (difference) + ' 8';
-                        return horizontalLine;
-                    }
-                    return "m0,0" + triangle;                        
-                })
-                .attr("stroke-width", 1)
-                .attr("stroke", function(d) {
+                    // difference = Math.ceil(d.stopPx);
+                    // M 0 0 L 8 0
+                    // M 4 0 L 4 100
+                    // M 0 100 L 8 100
+
+                    // horizontalLine = 'M 0 0 L 0 8 M 0 4 L ' + (difference) + ' 4';
+                    horizontalLine =
+                        'M 0 0 L 0 8 ' +
+                        'M 0 4 L ' + (difference) + ' 4 ' +
+                        'M ' + (difference) + ' 0 L ' + (difference) + ' 8';
+                    // console.log("its a horizontalLine!");
+                    return horizontalLine;
+                }
+                // console.log("its a triangle!");
+                return "m0,0" + triangle;                        
+            })
+            .attr("stroke-width", 1)
+            .attr("stroke", function(d) {
+                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                if(difference >= 5){
                     return d.color;
-                })
-                .attr("fill", function(d) {
-                    return d.color;
-                })
-                .attr("visibility", "show")
-                .append("title") // add tooltip [*]
-                .html(function(d) {
-                    return d.name;
-                });
-        // }
+                }
+                return null;
+            })
+            .attr("fill", function(d) {
+                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                if(difference >= 5){
+                    return null;
+                    // return d.color;
+                }
+                return d.color;
+            })
+            .attr("visibility", "show")
+            .append("title") // add tooltip [*]
+            .html(function(d) {
+                return d.name;
+            });
     } else if (layout === "overlay") {
         // Overlaid annotations appear directly on chromosomes
 
