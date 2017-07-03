@@ -178,7 +178,7 @@ function setTheBrush(brushIndex){
             d3.select('#' + brushIndex).call(brushdelete.clear());
 
             // &+- then recreates it with the specified end and start values
-            d3.select('#' + brushIndex).call(brushdelete.extent([1000000, 4000000]));
+            d3.select('#' + brushIndex).call(brushdelete.extent([parseInt(start, 10), parseInt(end, 10)]));
         }
     }
 } 
