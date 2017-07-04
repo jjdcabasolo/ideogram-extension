@@ -7,7 +7,7 @@
 Options</b>
 </li>
 <li>
-<a href="#">
+<a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse()">
 Show in JBrowse</a>
 </li>
 <li>
@@ -20,7 +20,7 @@ Show statistics</a>
 Brush</b>
 </li>
 <li>
-<a href="#" id="brush0" class="identifyTheBrush" onclick="deleteThisBrush(this.id)">
+<a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">
 Delete this brush</a>
 </li>
 <li>
@@ -30,7 +30,7 @@ Delete all brush</a>
 <hr id="divider">
 <li class="header-menu">
 <b class="white-text">
-Set range</b>
+Set base pair range</b>
 </li>
 <li>
 <form class="white-text-default">
@@ -52,8 +52,12 @@ End:</label>
 </b>
 max:<b class="white-text-smaller" id="chr-name-max">
 </b>
+<button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">
+Submit</button>
 </p>
-<button type="button" onclick="myFunction()">Submit</button>
+</li>
+<li>
+<p class="red-text" id="message-input-menu">
 </li>
 </ul>
 </li>

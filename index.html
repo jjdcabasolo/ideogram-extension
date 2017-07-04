@@ -13,8 +13,11 @@
   <script type="text/javascript" src="src/js/crossfilter.min.js"></script>
   <script type="text/javascript" src="src/js/ideogram.filter.js"></script>
 
-  <!-- for form render -->
+  <!-- jQuery library -->
   <script type="text/javascript" src="src/js/jquery-3.2.1.js"></script>
+  <!-- <script type="text/javascript" src="src/js/jquery-ui.min.js"></script> -->
+  
+  <!-- for form render -->
   <script ty1pe="text/javascript" src="src/js/jrf.form.js"></script>
   <!-- for spinner -->
   <script type="text/javascript" src="src/js/spin.min.js"></script>
@@ -74,23 +77,6 @@
         </ul>
 
         <div id="box"></div>
-
-        <div style="position: absolute; margin-top: 180px; width: 400px;">          
-          <b>Genomic coordinates</b>
-          <div>01 | <span id="from1"></span> - <span id="to1"></span> (<span id="extent1"></span> base pairs)</div>
-          <div>02 | <span id="from2"></span> - <span id="to2"></span> (<span id="extent2"></span> base pairs)</div>
-          <div>03 | <span id="from3"></span> - <span id="to3"></span> (<span id="extent3"></span> base pairs)</div>
-          <div>04 | <span id="from4"></span> - <span id="to4"></span> (<span id="extent4"></span> base pairs)</div>
-          <div>05 | <span id="from5"></span> - <span id="to5"></span> (<span id="extent5"></span> base pairs)</div>
-          <div>06 | <span id="from6"></span> - <span id="to6"></span> (<span id="extent6"></span> base pairs)</div>
-          <div>07 | <span id="from7"></span> - <span id="to7"></span> (<span id="extent7"></span> base pairs)</div>
-          <div>08 | <span id="from8"></span> - <span id="to8"></span> (<span id="extent8"></span> base pairs)</div>
-          <div>09 | <span id="from9"></span> - <span id="to9"></span> (<span id="extent9"></span> base pairs)</div>
-          <div>10 | <span id="from10"></span> - <span id="to10"></span> (<span id="extent10"></span> base pairs)</div>
-          <div>11 | <span id="from11"></span> - <span id="to11"></span> (<span id="extent11"></span> base pairs)</div>
-          <div>12 | <span id="from12"></span> - <span id="to12"></span> (<span id="extent12"></span> base pairs)</div>
-        </div>
-
       </div>
     </div>
 
@@ -99,7 +85,7 @@
     <br>
 
     <div id="jb-div">
-      <!-- <iframe id="jbrowse" src="http://oryzasnp.org/jbrowse-dev2/"></iframe> -->
+      <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
     </div>
   </div>
 
@@ -329,16 +315,16 @@
 
   // $+- brush function:: data presentation
   function writeSelectedRange() {
-    for(var i = 0; i < ideogram.selectedRegion.length; i++){
-      var r = ideogram.selectedRegion[i],
-          to = r.from.toLocaleString(), // Adds thousands-separator
-          from = r.to.toLocaleString(),
-          extent = r.extent.toLocaleString();
+    // for(var i = 0; i < selectedRegion.length; i++){
+    //   var r = selectedRegion[i],
+    //       to = r.from.toLocaleString(), // Adds thousands-separator
+    //       from = r.to.toLocaleString(),
+    //       extent = r.extent.toLocaleString();
 
-      document.getElementById("from" + (i+1)).innerHTML = to;
-      document.getElementById("to" + (i+1)).innerHTML = from;
-      document.getElementById("extent" + (i+1)).innerHTML = extent;
-    }
+    //   document.getElementById("from" + (i+1)).innerHTML = to;
+    //   document.getElementById("to" + (i+1)).innerHTML = from;
+    //   document.getElementById("extent" + (i+1)).innerHTML = extent;
+    // }
   }
 
   // &+- to determine whether the color blocks must appear or not
@@ -424,10 +410,6 @@
     // clear current view
     d3.select("svg").remove();
 
-    for(count = 0; count < this.numChromosomes; count++) {
-        ideo.selectedRegion[count] = {from: 0, to: 0, extent: 0};
-    }
-
     ideogram = new Ideogram(config);
   };
 
@@ -480,6 +462,13 @@
 
       /* show annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "show");
+
+      // console.log(ideogram);
+      // var cou = 0;
+      // while(ideogram === undefined){
+      //   console.log(cou);
+      //   cou = cou + 1;
+      // }
 
     } else {
       removeTrack(selectedTrack);

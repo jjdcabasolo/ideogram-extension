@@ -14,7 +14,8 @@
                 "type": "checkbox",
                 "caption": "Rice Quantitative Trait Loci (QTLs)",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "QTARO QTL"
+                "tracks": "QTARO QTL",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -25,7 +26,8 @@
                 "type": "checkbox",
                 "caption": "Bacterial blight resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_bacterial_blight_resistance"
+                "tracks": "qtaroqtl_bacterial_blight_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -36,7 +38,8 @@
                 "type": "checkbox",
                 "caption": "Blast resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_blast_resistance"
+                "tracks": "qtaroqtl_blast_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -47,7 +50,8 @@
                 "type": "checkbox",
                 "caption": "Cold tolerance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_cold_tolerance"
+                "tracks": "qtaroqtl_cold_tolerance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -58,7 +62,8 @@
                 "type": "checkbox",
                 "caption": "Culm leaf QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_culm_leaf"
+                "tracks": "qtaroqtl_culm_leaf",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -69,7 +74,8 @@
                 "type": "checkbox",
                 "caption": "Drought tolerance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_drought_tolerance"
+                "tracks": "qtaroqtl_drought_tolerance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -80,7 +86,8 @@
                 "type": "checkbox",
                 "caption": "Dwarf QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_dwarf"
+                "tracks": "qtaroqtl_dwarf",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -91,7 +98,8 @@
                 "type": "checkbox",
                 "caption": "Eating quality QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_eating_quality"
+                "tracks": "qtaroqtl_eating_quality",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -102,7 +110,8 @@
                 "type": "checkbox",
                 "caption": "Flowering QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_flowering"
+                "tracks": "qtaroqtl_flowering",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -113,7 +122,8 @@
                 "type": "checkbox",
                 "caption": "Germination dormancy QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_germination_dormancy"
+                "tracks": "qtaroqtl_germination_dormancy",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -124,7 +134,8 @@
                 "type": "checkbox",
                 "caption": "Insect resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_insect_resistance"
+                "tracks": "qtaroqtl_insect_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -135,7 +146,8 @@
                 "type": "checkbox",
                 "caption": "Lethality QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_lethality"
+                "tracks": "qtaroqtl_lethality",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -146,7 +158,8 @@
                 "type": "checkbox",
                 "caption": "Lodging resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_lodging_resistance"
+                "tracks": "qtaroqtl_lodging_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -157,7 +170,8 @@
                 "type": "checkbox",
                 "caption": "Morphological trait QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_morphological_trait"
+                "tracks": "qtaroqtl_morphological_trait",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -168,7 +182,8 @@
                 "type": "checkbox",
                 "caption": "Other disease resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_other_disease_resistance"
+                "tracks": "qtaroqtl_other_disease_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -179,7 +194,8 @@
                 "type": "checkbox",
                 "caption": "Other soil stress tolerance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_other_soil_stress_tolerance"
+                "tracks": "qtaroqtl_other_soil_stress_tolerance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -190,7 +206,8 @@
                 "type": "checkbox",
                 "caption": "Other stress resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_other_stress_resistance"
+                "tracks": "qtaroqtl_other_stress_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -201,7 +218,8 @@
                 "type": "checkbox",
                 "caption": "Others QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_others"
+                "tracks": "qtaroqtl_others",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -212,7 +230,8 @@
                 "type": "checkbox",
                 "caption": "Panicle flower QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_panicle_flower"
+                "tracks": "qtaroqtl_panicle_flower",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -223,7 +242,8 @@
                 "type": "checkbox",
                 "caption": "Physiological trait QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_physiological_trait"
+                "tracks": "qtaroqtl_physiological_trait",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -234,7 +254,8 @@
                 "type": "checkbox",
                 "caption": "Resistance or tolerance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_resistance_or_tolerance"
+                "tracks": "qtaroqtl_resistance_or_tolerance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -245,7 +266,8 @@
                 "type": "checkbox",
                 "caption": "Root QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_root"
+                "tracks": "qtaroqtl_root",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -256,7 +278,8 @@
                 "type": "checkbox",
                 "caption": "Salinity tolerance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_salinity_tolerance"
+                "tracks": "qtaroqtl_salinity_tolerance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -267,7 +290,8 @@
                 "type": "checkbox",
                 "caption": "Seed QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_seed"
+                "tracks": "qtaroqtl_seed",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -278,7 +302,8 @@
                 "type": "checkbox",
                 "caption": "Sheath blight resistance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_sheath_blight_resistance"
+                "tracks": "qtaroqtl_sheath_blight_resistance",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -289,7 +314,8 @@
                 "type": "checkbox",
                 "caption": "Shoot seedling QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_shoot_seedling"
+                "tracks": "qtaroqtl_shoot_seedling",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -300,7 +326,8 @@
                 "type": "checkbox",
                 "caption": "Source activity QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_source_activity"
+                "tracks": "qtaroqtl_source_activity",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -311,7 +338,8 @@
                 "type": "checkbox",
                 "caption": "Sterility QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_sterility"
+                "tracks": "qtaroqtl_sterility",
+                "class": "checkbox-data-qtl"
             }
         }
         , {
@@ -322,7 +350,8 @@
                 "type": "checkbox",
                 "caption": "Submergency tolerance QTL",
                 "onclick": "return toggleFilter(this, qtl)",
-                "tracks": "qtaroqtl_submergency_tolerance"
+                "tracks": "qtaroqtl_submergency_tolerance",
+                "class": "checkbox-data-qtl"
             }
         }]
     }

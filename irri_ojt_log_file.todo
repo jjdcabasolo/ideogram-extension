@@ -56,11 +56,11 @@ other changes made
    ✔ enter refined coordinates @created(17-06-29 13:18) @done (17-07-03 10:01)
 
 30 June 2017 fri || Chatting with my supervisor sa GMail and the QTL success:
- ☐ nawawala yung show in jbrowse na menu kapag marami nang brushes @created(17-06-30 10:54)
+ ✔ nawawala yung show in jbrowse na menu kapag marami nang brushes @created(17-06-30 10:54) @done (17-07-03 14:36)
  ✔ paganahin yung delete this/all brush @created(17-06-30 10:54) @done (17-06-30 10:55)
  ✔ paganahin ng ayos yung data ng QTL @created(17-06-30 10:55) @done (17-06-30 10:55)
  ✘ please verify daw yung pagbabago ng kulay sa histogram hahaha complicated daw @created(17-06-30 10:55) @cancelled (17-07-03 09:12)
- ☐ try daw yung multiple brushes sa isang chromosome @created(17-06-30 10:56)
+ ✘ try daw yung multiple brushe   s sa isang chromosome @created(17-06-30 10:56) @cancelled (17-07-03 16:57)
 <from l.mansueto@irri.org> "Yung refine coordinate, when selected shows a dialog that asks for the start and end coordinates (initial value set to the current values)) of and applies to the currently hovered brush.."
  ✔ refined coordinate settings @created(17-06-30 11:45) @done (17-07-03 10:01)
 
@@ -71,6 +71,21 @@ other changes made
    ✔ ayusin yung remove tracks @created(17-07-03 09:04) @done (17-07-03 09:07)
  ☐ BUG: pag both pinindot yung riceQTL at oryzabase @created(17-07-03 09:05)
  ☐ FIX: yung color tracks sana kapag may check yung both parties dapat hindi mawawala yung color block sa trait or QTL @created(17-07-03 09:06)
- ☐ BUG: hindi nagana yung brush kapag may annotations na yung chromosome :( @created(17-07-03 09:11)
- ☐ TODO: lagyan ng start-end info yung form @created(17-07-03 10:01)
- ☐ TODO: form checking siguro for start and end? @created(17-07-03 10:01)
+ ✔ BUG: hindi nagana yung brush kapag may annotations na yung chromosome :( @created(17-07-03 09:11) @done (17-07-04 10:13)
+ ✔ TODO: lagyan ng start-end info yung form @created(17-07-03 10:01) @done (17-07-03 14:37)
+ ✔ TODO: form checking siguro for start and end? @created(17-07-03 10:01) @done (17-07-03 14:37)
+ ✔ TODO: form checking:: kapag sobra sa max :( @created(17-07-03 16:56) @done (17-07-04 08:58)
+<from l.mansueto@irri.org> 
+ ☐ use QTL (blue description) on hover, @created(17-07-03 16:57)
+ ☐ append descriptions for overlapping QTL, @created(17-07-03 16:57)
+ ✔ initialize start-end with current boundaries, @created(17-07-03 16:57) @done (17-07-04 09:09)
+ ✔ display brush with tracks, @created(17-07-03 16:57) @done (17-07-04 10:13)
+ ✔ link QTL click to JBrowse, @created(17-07-03 16:57) @done (17-07-04 12:44)
+
+4 Jul 2017 tues || meeting jbrowse:
+ ☐ BUG: sa unang creation ng brush, kapag hindi siya sa first ginawa, hindi magrereflect yung change (extent) @created(17-07-04 10:14)
+ ✔ lakihan ng kaunti yung width ng ranged track annotation @created(17-07-04 10:17) @done (17-07-04 11:31)
+ ☐ add length nung brush @created(17-07-04 10:27)
+ ☐ WHYNOT: draggable and resizable jbrowse frame! @created(17-07-04 10:56)
+ ☐ update on overlapping:: di kaya because of the use of asynchronous function @created(17-07-04 13:25)
+   ☐ what if lagyan na lang ng triangle pataas (coming from the middle) tapos may effect na colorchange?? on hover @created(17-07-04 13:25)

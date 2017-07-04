@@ -13,7 +13,8 @@
                 "type": "checkbox",
                 "caption": "Oryzabase Trait Gene Loci",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "oryzabase_trait_genes"
+                "tracks": "oryzabase_trait_genes",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -24,7 +25,8 @@
                 "type": "checkbox",
                 "caption": "All QTARO trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtaro_trait_genes"
+                "tracks": "qtaro_trait_genes",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -35,7 +37,8 @@
                 "type": "checkbox",
                 "caption": "Bacterial blight resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_bacterial_blight_resistance"
+                "tracks": "qtarogenes_bacterial_blight_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -46,7 +49,8 @@
                 "type": "checkbox",
                 "caption": "Blast resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_blast_resistance"
+                "tracks": "qtarogenes_blast_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -57,7 +61,8 @@
                 "type": "checkbox",
                 "caption": "Cold tolerance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_cold_tolerance"
+                "tracks": "qtarogenes_cold_tolerance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -68,7 +73,8 @@
                 "type": "checkbox",
                 "caption": "Culm leaf trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_culm_leaf"
+                "tracks": "qtarogenes_culm_leaf",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -79,7 +85,8 @@
                 "type": "checkbox",
                 "caption": "Drought tolerance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_drought_tolerance"
+                "tracks": "qtarogenes_drought_tolerance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -90,7 +97,8 @@
                 "type": "checkbox",
                 "caption": "Dwarf trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_dwarf"
+                "tracks": "qtarogenes_dwarf",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -101,7 +109,8 @@
                 "type": "checkbox",
                 "caption": "Eating quality trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_eating_quality"
+                "tracks": "qtarogenes_eating_quality",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -112,7 +121,8 @@
                 "type": "checkbox",
                 "caption": "Flowering trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_flowering"
+                "tracks": "qtarogenes_flowering",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -123,7 +133,8 @@
                 "type": "checkbox",
                 "caption": "Germination dormancy trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_germination_dormancy"
+                "tracks": "qtarogenes_germination_dormancy",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -134,7 +145,8 @@
                 "type": "checkbox",
                 "caption": "Insect resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_insect_resistance"
+                "tracks": "qtarogenes_insect_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -145,7 +157,8 @@
                 "type": "checkbox",
                 "caption": "Lethality trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_lethality"
+                "tracks": "qtarogenes_lethality",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -156,7 +169,8 @@
                 "type": "checkbox",
                 "caption": "Lodging resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_lodging_resistance"
+                "tracks": "qtarogenes_lodging_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -167,7 +181,8 @@
                 "type": "checkbox",
                 "caption": "Morphological trait trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_morphological_trait"
+                "tracks": "qtarogenes_morphological_trait",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -178,7 +193,8 @@
                 "type": "checkbox",
                 "caption": "Other disease resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_other_disease_resistance"
+                "tracks": "qtarogenes_other_disease_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -189,7 +205,8 @@
                 "type": "checkbox",
                 "caption": "Other soil stress tolerance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_other_soil_stress_tolerance"
+                "tracks": "qtarogenes_other_soil_stress_tolerance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -200,7 +217,8 @@
                 "type": "checkbox",
                 "caption": "Other stress resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_other_stress_resistance"
+                "tracks": "qtarogenes_other_stress_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -211,7 +229,8 @@
                 "type": "checkbox",
                 "caption": "Others trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_others"
+                "tracks": "qtarogenes_others",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -222,7 +241,8 @@
                 "type": "checkbox",
                 "caption": "Panicle flower trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_panicle_flower"
+                "tracks": "qtarogenes_panicle_flower",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -233,7 +253,8 @@
                 "type": "checkbox",
                 "caption": "Physiological trait trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_physiological_trait"
+                "tracks": "qtarogenes_physiological_trait",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -244,7 +265,8 @@
                 "type": "checkbox",
                 "caption": "Resistance or tolerance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_resistance_or_tolerance"
+                "tracks": "qtarogenes_resistance_or_tolerance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -255,7 +277,8 @@
                 "type": "checkbox",
                 "caption": "Root trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_root"
+                "tracks": "qtarogenes_root",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -266,7 +289,8 @@
                 "type": "checkbox",
                 "caption": "Salinity tolerance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_salinity_tolerance"
+                "tracks": "qtarogenes_salinity_tolerance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -277,7 +301,8 @@
                 "type": "checkbox",
                 "caption": "Seed trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_seed"
+                "tracks": "qtarogenes_seed",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -288,7 +313,8 @@
                 "type": "checkbox",
                 "caption": "Sheath blight resistance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_sheath_blight_resistance"
+                "tracks": "qtarogenes_sheath_blight_resistance",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -299,7 +325,8 @@
                 "type": "checkbox",
                 "caption": "Shoot seedling trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_shoot_seedling"
+                "tracks": "qtarogenes_shoot_seedling",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -310,7 +337,8 @@
                 "type": "checkbox",
                 "caption": "Source activity trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_source_activity"
+                "tracks": "qtarogenes_source_activity",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -321,7 +349,8 @@
                 "type": "checkbox",
                 "caption": "Sterility trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_sterility"
+                "tracks": "qtarogenes_sterility",
+                "class": "checkbox-data-trait"
             }
         }
         , {
@@ -332,7 +361,8 @@
                 "type": "checkbox",
                 "caption": "Submergency tolerance trait genes",
                 "onclick": "return toggleFilter(this)",
-                "tracks": "qtarogenes_submergency_tolerance"
+                "tracks": "qtarogenes_submergency_tolerance",
+                "class": "checkbox-data-trait"
             }
         }]
     }
