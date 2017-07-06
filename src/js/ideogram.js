@@ -1813,18 +1813,16 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
     //         'L ' + (d.px + 4) + '0 ' +
     //         'Z ';
 
-            // M 0 0
-            // L 4 4
-            // L 0 8
-            // Z
+    // M 0 0
+    // L 4 4
+    // L 0 8
+    // Z
 
     // triangle = 
     //         'M ' + (d.px + 4) + (d.px - 2) +
     //         'L ' + '0 ' + (d.px) +
     //         'L ' + (d.px + 4) + (d.px + 2) +
     //         'Z ';
-
-            // 4 === d.px
 
     // From http://stackoverflow.com/a/10477334, with a minor change ("m -r, r")
     // Circles are supported natively via <circle>, but having it as a path
@@ -1856,6 +1854,8 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                var popo = Math.ceil(d.stopPx - d.startPx);
+                console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
                 if(difference >= 5){
                     return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
                 }
