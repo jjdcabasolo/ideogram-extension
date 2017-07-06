@@ -250,16 +250,18 @@ function setTheBrush(brush){
 } 
 
 function showStatiscalTable(table){
-    var myList = [
-      { "name": "abc", "age": 50 },
-      { "age": "25", "hobby": "swimming" },
-      { "name": "xyz", "hobby": "programming" }
-    ];
+    // var myList = [
+    //   { "name": "abc", "age": 50 },
+    //   { "age": "25", "hobby": "swimming" },
+    //   { "name": "xyz", "hobby": "programming" }
+    // ];
 
-    var pathname = "http://snp-seek.irri.org/ws/genomics/gene/osnippo/",                     
+    $('#gene-table-content').empty();
+
+    var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
         start = 'start=' + $('#startBPTextbox').val() + '&',
         end = 'end=' + $('#endBPTextbox').val(),
-        chrNum, webService, extent, from, to, arrayCatch;
+        chrNum, webService, extent, from, to, arrayCatch, myList;
 
     for (var i = 0; i < ideogram.numChromosomes; i++) {
         if(isBrushActive[i]){
@@ -277,38 +279,40 @@ function showStatiscalTable(table){
             start = 'start=' + from + '&';
             end = 'end=' + to;
 
+            // snp-seek.irri.org -> 172.29.4.215:8080/iric-portal
             // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
             webService = pathname + chrNum + start + end;
     
-                            $.ajax({
-                                dataType: "json",
-                                async: false,
-                                crossDomain: true,
-                                url: webService,
-                                data: arrayCatch,
-                                success: function(arrayCatch) {
-                                    // tempData.push.apply(tempData, lfData);
-                                    console.log(arrayCatch);
-                                }
-                            });
+            $.ajax({
+                dataType: "json",
+                // async: false,
+                crossDomain: true,
+                url: webService,
+                data: arrayCatch,
+                success: function(arrayCatch) {
+                    buildHtmlTable(arrayCatch, "#gene-table-content");    
+                }
+            });
         }
 
     }
 
-
+    // &+- code snippet for converting JSON to HTML table coming from: https://stackoverflow.com/a/11480797
     // Builds the HTML Table out of myList.
-    function buildHtmlTable(selector) {
-      var columns = addAllColumnHeaders(myList, selector);
+    function buildHtmlTable(myList, selector) {
+        var columns = addAllColumnHeaders(myList, "#gene-table-header");
+        var tBodyProper = $('<tbody/>');
 
-      for (var i = 0; i < myList.length; i++) {
-        var row$ = $('<tr/>');
-        for (var colIndex = 0; colIndex < columns.length; colIndex++) {
-          var cellValue = myList[i][columns[colIndex]];
-          if (cellValue == null) cellValue = "";
-          row$.append($('<td/>').html(cellValue));
+        for(var i = 0; i < myList.length; i++) {
+            var row = $('<tr/>');
+            for(var colIndex = 0; colIndex < columns.length; colIndex++) {
+                var cellValue = myList[i][columns[colIndex]];
+                if(cellValue == null) cellValue = "";
+                row.append($('<td/>').html(cellValue));
+            }
+            $(selector).append(row);
         }
-        $(selector).append(row$);
-      }
+        $(selector).append(tBodyProper);
     }
 
     // Adds a header row to the table and returns the set of columns.
@@ -316,18 +320,21 @@ function showStatiscalTable(table){
     // all records.
     function addAllColumnHeaders(myList, selector) {
       var columnSet = [];
-      var headerTr$ = $('<tr/>');
+      var headerTr = $('<tr/>');
+      var tHeadProper = $('<thead/>');
 
       for (var i = 0; i < myList.length; i++) {
         var rowHash = myList[i];
         for (var key in rowHash) {
           if ($.inArray(key, columnSet) == -1) {
             columnSet.push(key);
-            headerTr$.append($('<th/>').html(key));
+            console.log($('<th/>').html(key));
+            headerTr.append($('<th/>').html(key));
           }
         }
       }
-      $(selector).append(headerTr$);
+      $(selector).append(headerTr);
+      // $().append(tHeadProper);
 
       return columnSet;
     }
