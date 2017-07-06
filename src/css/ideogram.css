@@ -306,29 +306,106 @@ table{
     margin: 1em 0;
 }
 
-.gene-table {
-    height: 400px;
-    overflow-y: scroll;
-    position: absolute;
-}
-
-.gene-table {
-    /*width: 352px;*/
-}
-
-.gene-table table {
-    /*width: 300px;*/
-    table-layout: fixed;
-}
-
-table tr td {
-    padding: 5px;
-    border: 1px solid #eee;
-    width: 100px;
-    word-wrap: break-word;
-}
-
 #gene-table-content {
-    height: 100px;
-    overflow-y: auto;
+  /*width: 750px;*/
+  position: absolute;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+#gene-table-content th {
+  text-decoration: underline;
+}
+#gene-table-content th,
+#gene-table-content td {
+  padding: 5px;
+  text-align: left;
+}
+#gene-table-content td:nth-child(1),
+#gene-table-content th:nth-child(1) {
+  min-width: 50px;
+}
+#gene-table-content td:nth-child(2),
+#gene-table-content th:nth-child(2) {
+  min-width: 200px;
+}
+#gene-table-content td:nth-child(3),
+#gene-table-content th:nth-child(3) {
+  width: 350px;
+}
+#gene-table-content thead {
+  background-color: #333;
+  color: #FDFDFD;
+}
+#gene-table-content thead tr {
+  display: block;
+  position: relative;
+}
+#gene-table-content tbody {
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height: 300px;
+}
+#gene-table-content tbody tr:nth-child(even) {
+  background-color: #DDD;
+}
+.old_ie_wrapper {
+  height: 300px;
+  width: 750px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.old_ie_wrapper tbody {
+  height: auto;
+}
+#gene-table-content {
+  width: 750px;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+#gene-table-content th {
+  text-decoration: underline;
+}
+#gene-table-content th,
+#gene-table-content td {
+  padding: 5px;
+  text-align: left;
+}
+#gene-table-content td:nth-child(1),
+#gene-table-content th:nth-child(1) {
+  min-width: 200px;
+}
+#gene-table-content td:nth-child(2),
+#gene-table-content th:nth-child(2) {
+  min-width: 200px;
+}
+#gene-table-content td:nth-child(3),
+#gene-table-content th:nth-child(3) {
+  width: 350px;
+}
+#gene-table-content thead {
+  background-color: #333;
+  color: #FDFDFD;
+}
+#gene-table-content thead tr {
+  display: block;
+  position: relative;
+}
+#gene-table-content tbody {
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height: 300px;
+}
+#gene-table-content tbody tr:nth-child(even) {
+  background-color: #DDD;
+}
+.old_ie_wrapper {
+  height: 300px;
+  width: 750px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.old_ie_wrapper tbody {
+  height: auto;
 }

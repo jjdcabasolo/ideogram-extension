@@ -300,7 +300,7 @@ function showStatiscalTable(table){
     // &+- code snippet for converting JSON to HTML table coming from: https://stackoverflow.com/a/11480797
     // Builds the HTML Table out of myList.
     function buildHtmlTable(myList, selector) {
-        var columns = addAllColumnHeaders(myList, "#gene-table-header");
+        var columns = addAllColumnHeaders(myList, selector);
         var tBodyProper = $('<tbody/>');
 
         for(var i = 0; i < myList.length; i++) {
@@ -310,7 +310,7 @@ function showStatiscalTable(table){
                 if(cellValue == null) cellValue = "";
                 row.append($('<td/>').html(cellValue));
             }
-            $(selector).append(row);
+            $(tBodyProper).append(row);
         }
         $(selector).append(tBodyProper);
     }
@@ -333,8 +333,8 @@ function showStatiscalTable(table){
           }
         }
       }
-      $(selector).append(headerTr);
-      // $().append(tHeadProper);
+      $(tHeadProper).append(headerTr);
+      $(selector).append(tHeadProper);
 
       return columnSet;
     }
