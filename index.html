@@ -13,8 +13,11 @@
   <script type="text/javascript" src="src/js/crossfilter.min.js"></script>
   <script type="text/javascript" src="src/js/ideogram.filter.js"></script>
 
-  <!-- for form render -->
+  <!-- jQuery library -->
   <script type="text/javascript" src="src/js/jquery-3.2.1.js"></script>
+  <!-- <script type="text/javascript" src="src/js/jquery-ui.min.js"></script> -->
+  
+  <!-- for form render -->
   <script ty1pe="text/javascript" src="src/js/jrf.form.js"></script>
   <!-- for spinner -->
   <script type="text/javascript" src="src/js/spin.min.js"></script>
@@ -74,23 +77,6 @@
         </ul>
 
         <div id="box"></div>
-
-        <div style="position: absolute; margin-top: 180px; width: 400px;">          
-          <b>Genomic coordinates</b>
-          <div>01 | <span id="from1"></span> - <span id="to1"></span> (<span id="extent1"></span> base pairs)</div>
-          <div>02 | <span id="from2"></span> - <span id="to2"></span> (<span id="extent2"></span> base pairs)</div>
-          <div>03 | <span id="from3"></span> - <span id="to3"></span> (<span id="extent3"></span> base pairs)</div>
-          <div>04 | <span id="from4"></span> - <span id="to4"></span> (<span id="extent4"></span> base pairs)</div>
-          <div>05 | <span id="from5"></span> - <span id="to5"></span> (<span id="extent5"></span> base pairs)</div>
-          <div>06 | <span id="from6"></span> - <span id="to6"></span> (<span id="extent6"></span> base pairs)</div>
-          <div>07 | <span id="from7"></span> - <span id="to7"></span> (<span id="extent7"></span> base pairs)</div>
-          <div>08 | <span id="from8"></span> - <span id="to8"></span> (<span id="extent8"></span> base pairs)</div>
-          <div>09 | <span id="from9"></span> - <span id="to9"></span> (<span id="extent9"></span> base pairs)</div>
-          <div>10 | <span id="from10"></span> - <span id="to10"></span> (<span id="extent10"></span> base pairs)</div>
-          <div>11 | <span id="from11"></span> - <span id="to11"></span> (<span id="extent11"></span> base pairs)</div>
-          <div>12 | <span id="from12"></span> - <span id="to12"></span> (<span id="extent12"></span> base pairs)</div>
-        </div>
-
       </div>
     </div>
 
@@ -99,7 +85,7 @@
     <br>
 
     <div id="jb-div">
-      <!-- <iframe id="jbrowse" src="http://oryzasnp.org/jbrowse-dev2/"></iframe> -->
+      <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
     </div>
   </div>
 
@@ -329,16 +315,16 @@
 
   // $+- brush function:: data presentation
   function writeSelectedRange() {
-    for(var i = 0; i < ideogram.selectedRegion.length; i++){
-      var r = ideogram.selectedRegion[i],
-          to = r.from.toLocaleString(), // Adds thousands-separator
-          from = r.to.toLocaleString(),
-          extent = r.extent.toLocaleString();
+    // for(var i = 0; i < selectedRegion.length; i++){
+    //   var r = selectedRegion[i],
+    //       to = r.from.toLocaleString(), // Adds thousands-separator
+    //       from = r.to.toLocaleString(),
+    //       extent = r.extent.toLocaleString();
 
-      document.getElementById("from" + (i+1)).innerHTML = to;
-      document.getElementById("to" + (i+1)).innerHTML = from;
-      document.getElementById("extent" + (i+1)).innerHTML = extent;
-    }
+    //   document.getElementById("from" + (i+1)).innerHTML = to;
+    //   document.getElementById("to" + (i+1)).innerHTML = from;
+    //   document.getElementById("extent" + (i+1)).innerHTML = extent;
+    // }
   }
 
   // &+- to determine whether the color blocks must appear or not
@@ -424,11 +410,94 @@
     // clear current view
     d3.select("svg").remove();
 
-    for(count = 0; count < this.numChromosomes; count++) {
-        ideo.selectedRegion[count] = {from: 0, to: 0, extent: 0};
-    }
-
     ideogram = new Ideogram(config);
+    // &+- added brush settings
+    // &+- providing a larger svg for the dropdown menu 
+            $('#ideogram').attr('width', '100%');
+            $('#ideogram').attr('height', '1200');
+
+            // &+- change cursor
+            $('.background').css('cursor', 'zoom-in');
+
+            // &+- makes the dropdown be located somewhere outside the user's view
+            $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
+
+            // &+- add dropdown menu after using the brush
+            $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+            
+            // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
+            $(".extent").hover(
+                function( event ) {
+                    brushID = $(this).parent().attr('id');
+                    
+                    // &+- used in getting the details for start and end
+                    if(previousBrush === 'some-id-i-used-to-know') $('#' + previousBrush).attr('id', ('some-id-' + brushID));
+                    else $('#some-id-' + previousBrush).attr('id', ('some-id-' + brushID));
+                    previousBrush = brushID;
+
+                    // &+- makes the show in JBrowse unable to click
+                    var countingTrue = 0;
+                    for (var i = 0; i < ideogram.numChromosomes; i++) {
+                        if(isBrushActive[i]) countingTrue++;
+                    }
+                    if(countingTrue > 1){
+                        // &+- make it inactive
+                        $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
+                    }
+                    else{
+                        // &+- make it active again
+                        $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
+                    }
+
+                    // &+- displays the current chromosome name in the bottom of the menu
+                    var number = parseInt(brushID.replace(/[^0-9\.]/g, ''), 10),
+                        limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
+                    $('#chr-name').text('chr ' + (number + 1) + ' | ');
+                    $('#chr-name-max').text(' ' + limit);
+
+                    // &+- displays the current base pairs on focus
+                    $('#startBPTextbox').val(selectedRegion[number].from);
+                    $('#endBPTextbox').val(selectedRegion[number].to);
+
+                    // &+- make the menu visible
+                    $('.file_menu').css('display', 'visible');
+
+                    // &+- for the foreignObjectobject tag inside the svg tag
+                    $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-270) + ', ' + (event.pageY-50) + ')'); 
+                    $('ul.file_menu').stop(true, true).slideDown('medium');
+
+                    // &+- add the brush id to the anchor tag (used in brush deletion and submission of coordinates)
+                    $('.identify-the-brush').attr('id', brushID); 
+                    $('.submit-chr-details').attr('id', brushID);
+                    $('.show-jbrowse').attr('id', brushID);  
+
+                    // &+- makes the brush visible when the mouse is on the menu
+                    $('#' + $(this).parent().attr('id')).css('visibility', 'visible');
+
+                    isMenuOpen[number] = true;
+                },
+                function() {
+                }
+            );
+
+            // &+- makes the brush re-appear again when the mouse is on the menu
+            $('.dynamic-dropdown').hover(function(){ 
+            }, function(){ 
+                // &+- make the menu return to nowhere
+                $('ul.file_menu').stop(true, true).slideUp('medium');        
+
+                // &+- clear form contents
+                $('#startBPTextbox').val('');
+                $('#endBPTextbox').val('');
+                $('#message-input-menu').text('');        
+
+                // &+- reset colors
+                $('#startBPTextbox').css('background-color', 'white');
+                $('#startBPTextbox').css('color', 'black');
+
+                $('#endBPTextbox').css('background-color', 'white');
+                $('#endBPTextbox').css('color', 'black');
+            });
   };
 
   /*
@@ -480,6 +549,13 @@
 
       /* show annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "show");
+
+      // console.log(ideogram);
+      // var cou = 0;
+      // while(ideogram === undefined){
+      //   console.log(cou);
+      //   cou = cou + 1;
+      // }
 
     } else {
       removeTrack(selectedTrack);
@@ -558,8 +634,8 @@
   }
 
   /* render default view as histogram */
-  // getViewType("Histogram");
-  getViewType("Tracks");
+  getViewType("Histogram");
+  // getViewType("Tracks");
 
   var category;
   if($("#view-type_histogram").is(':checked')) {

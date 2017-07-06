@@ -1,36 +1,31 @@
 // HTML DOM changes on brush-related elements
-$(document).ready(function() {
-    var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know';
-    
-    // SVG MENU SETTINGS
+var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know';
+
+function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
     $('#ideogram').attr('width', '100%');
     $('#ideogram').attr('height', '1200');
+}
 
-    // BRUSH SETTINGS
+function widenBrush(){
     // &+- providing wider space for the overlay of each chromosome
     var count = 0, numChromosomes = 12;
     for(count = 0; count < numChromosomes; count++) {
         isMenuOpen[count] = false;
-        $('#brush' + count + ' .background').attr('x', "-26");        
-        $('#brush' + count + ' .background').attr('width', (parseFloat($('#brush' + count + ' .background').attr('width')) + parseFloat(54)));        
+        $('#brush' + count + ' .background').attr('x', '-26');        
+        $('#brush' + count + ' .background').attr('width', '78.5');        
     }
 
     // &+- change cursor
     $('.background').css('cursor', 'zoom-in');
+}
 
-    // &+- disappearing / appearing brush
-    $('.brush').hover(function(){ 
-        $('#' + this.id).css('visibility', 'visible');
-    }, function(){ 
-    });
-    
-    // DROPDOWN MENU
+function dropdownMenuSetup(){
     // &+- makes the dropdown be located somewhere outside the user's view
     $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
     // &+- add dropdown menu after using the brush
-    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="show-jbrowse">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
     
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
@@ -49,11 +44,11 @@ $(document).ready(function() {
             }
             if(countingTrue > 1){
                 // &+- make it inactive
-                $('#show-jbrowse').attr('class', 'inactive-link'); 
+                $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
             }
             else{
                 // &+- make it active again
-                $('#show-jbrowse').attr('class', 'active-link');                 
+                $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
             }
 
             // &+- displays the current chromosome name in the bottom of the menu
@@ -61,6 +56,10 @@ $(document).ready(function() {
                 limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
             $('#chr-name').text('chr ' + (number + 1) + ' | ');
             $('#chr-name-max').text(' ' + limit);
+
+            // &+- displays the current base pairs on focus
+            $('#startBPTextbox').val(selectedRegion[number].from);
+            $('#endBPTextbox').val(selectedRegion[number].to);
 
             // &+- make the menu visible
             $('.file_menu').css('display', 'visible');
@@ -72,6 +71,7 @@ $(document).ready(function() {
             // &+- add the brush id to the anchor tag (used in brush deletion and submission of coordinates)
             $('.identify-the-brush').attr('id', brushID); 
             $('.submit-chr-details').attr('id', brushID); 
+            $('.show-jbrowse').attr('id', brushID); 
 
             // &+- makes the brush visible when the mouse is on the menu
             $('#' + $(this).parent().attr('id')).css('visibility', 'visible');
@@ -91,6 +91,7 @@ $(document).ready(function() {
         // &+- clear form contents
         $('#startBPTextbox').val('');
         $('#endBPTextbox').val('');
+        $('#message-input-menu').text('');        
 
         // &+- reset colors
         $('#startBPTextbox').css('background-color', 'white');
@@ -98,8 +99,18 @@ $(document).ready(function() {
 
         $('#endBPTextbox').css('background-color', 'white');
         $('#endBPTextbox').css('color', 'black');
-
     });
+}
+
+$(document).ready(function() {    
+    // SVG MENU SETTINGS
+    adjustIdeogramSVG();
+
+    // BRUSH SETTINGS
+    widenBrush();
+
+    // DROPDOWN MENU
+    dropdownMenuSetup();
 
     // &+- TODO: multiple brushes
     // $('#brush0').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 0)});
@@ -116,11 +127,35 @@ $(document).ready(function() {
     // $('#brush11').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 11)});
 });  
 
+// &+- makes the JBrowse appear with the set coordinates
+function redirectToJBrowse(brush){
+
+    var number = (parseInt(brush.replace(/[^0-9\.]/g, ''), 10) + 1),
+        startBP = $('#startBPTextbox').val(),
+        endBP = $('#endBPTextbox').val(),
+        pathname = 'http://172.29.4.215:8080/jbrowse-dev2/',           
+        chrLocation,         
+        extent = startBP + '..' + endBP,
+        footer = '&tracks=DNA';
+
+    if(number < 10){
+        chrLocation = '?loc=chr0' + number + '%3A';
+    } else {
+        chrLocation = '?loc=chr' + number + '%3A';
+    }
+
+    // console.log('src', pathname + chrLocation + extent + footer);
+    // $('#wewwew').text('src' + pathname + chrLocation + extent + footer);
+
+    $('#jbrowse').prop('src', pathname + chrLocation + extent + footer);
+    $('#jbrowse').show();
+}
+
 // &+- this just resets the brush and makes the menu disappear [all brushes]
 function deleteAllBrush(){
     $('.extent').attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');   
+    // $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');   
 
     // &+- makes the brush inactive in the back end
     for (var i = 0; i < ideogram.numChromosomes; i++) {
@@ -133,16 +168,18 @@ function deleteThisBrush(brush){
     var brushToChange = '#' + brush + ' > .extent';
     $(brushToChange).attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');  
+    // $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');  
 
     // &+- makes the brush inactive in the back end
     isBrushActive[parseInt(brush.replace(/[^0-9\.]/g, ''), 10)] = false;
 }
 
 // &+- setting the brush extent by inputting start and end coordinates
-function setTheBrush(brushIndex){
-    var start = $('#startBPTextbox').val();
-    var end = $('#endBPTextbox').val();
+function setTheBrush(brush){
+    var start = $('#startBPTextbox').val(),
+        end = $('#endBPTextbox').val(),
+        number = parseInt(brush.replace(/[^0-9\.]/g, ''), 10),
+        limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
 
     // &+- empty input fields
     if(start === '' && end === ''){
@@ -186,6 +223,16 @@ function setTheBrush(brushIndex){
             $('#message-input-menu').text('Invalid range. Please check your start and end base pairs.');        
             $('#message-input-menu').css('color', '#EF6C00');        
         }
+        else if(parseInt(end, 10) > limit){
+            // &+- upper range is more than the upper boundary
+            $('#startBPTextbox').css('background-color', 'white');
+            $('#startBPTextbox').css('color', 'black');
+            $('#endBPTextbox').css('background-color', '#FF5722');
+            $('#endBPTextbox').css('color', '#EEEEEE');
+
+            $('#message-input-menu').text('The end range exceeded the chromosome length.');        
+            $('#message-input-menu').css('color', '#FF5722');      
+        }
         else{
             // &+- the user had encountered no error/s
             $('#startBPTextbox').css('background-color', 'white');
@@ -195,14 +242,14 @@ function setTheBrush(brushIndex){
 
             $('#message-input-menu').text('');        
 
-            var count = parseInt(brushIndex.replace(/[^0-9\.]/g, ''), 10);
+            var count = parseInt(brush.replace(/[^0-9\.]/g, ''), 10);
             var brushdelete = arrayOfBrushes[count];
 
             // &+- clears the brush first
-            d3.select('#' + brushIndex).call(brushdelete.clear());
+            d3.select('#' + brush).call(brushdelete.clear());
 
             // &+- then recreates it with the specified end and start values
-            d3.select('#' + brushIndex).call(brushdelete.extent([parseInt(start, 10), parseInt(end, 10)]));
+            d3.select('#' + brush).call(brushdelete.extent([parseInt(start, 10), parseInt(end, 10)]));
         }
     }
 } 

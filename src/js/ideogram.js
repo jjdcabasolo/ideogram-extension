@@ -166,8 +166,6 @@ var Ideogram = function(config) {
     this.numChromosomes = 0;
     this.bandData = {};
 
-    this.selectedRegion = [];
-
     this.init();
 };
 
@@ -1799,6 +1797,32 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
 
     horizontalLine = 'm 0 0 l 0 ' + (2 * annotHeight);
     triangle = 'l -' + annotHeight + ' ' + (2 * annotHeight) + ' l ' + (2 * annotHeight) + ' 0 z';
+    
+    // M 5,50 97.5,5 97.5,95 Z
+    // triangle = M 5,50 97.5,5 97.5,95 Z
+
+    // triangle = 
+    //         'M ' + '0 ' + '0 ' +
+    //         'L ' + '4 ' + '6 ' +
+    //         'L ' + '8 ' + '0 ' +
+    //         'Z ';
+
+    // triangle = 
+    //         'M ' + (d.px - 4) + '0 ' +
+    //         'L ' + (d.px) + '6 ' +
+    //         'L ' + (d.px + 4) + '0 ' +
+    //         'Z ';
+
+    // M 0 0
+    // L 4 4
+    // L 0 8
+    // Z
+
+    // triangle = 
+    //         'M ' + (d.px + 4) + (d.px - 2) +
+    //         'L ' + '0 ' + (d.px) +
+    //         'L ' + (d.px + 4) + (d.px + 2) +
+    //         'Z ';
 
     // From http://stackoverflow.com/a/10477334, with a minor change ("m -r, r")
     // Circles are supported natively via <circle>, but having it as a path
@@ -1830,6 +1854,8 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                var popo = Math.ceil(d.stopPx - d.startPx);
+                console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
                 if(difference >= 5){
                     return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
                 }
@@ -1838,12 +1864,22 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .append("path")
             .attr("d", function(d) {
                 // &+- if the ranged trait/QTL is more than 5, the triangle track annotation will be changed to a line annotation
-                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                var difference = Math.ceil(d.stopPx - d.startPx) - 28,
+                    median = difference / 2,
+                    randomMedian = Math.floor((Math.random() * median)) + 4;
+
                 if(difference >= 5){
                     horizontalLine =
                         'M 0 0 L 0 8 ' +
+                        'M 0 5 L ' + (difference) + ' 5 ' +
                         'M 0 4 L ' + (difference) + ' 4 ' +
-                        'M ' + (difference) + ' 0 L ' + (difference) + ' 8';
+                        'M ' + (difference) + ' 0 L ' + (difference) + ' 8' +
+
+                        'M ' + (randomMedian - 4) + ' ' + '4 ' +
+                        // 'L ' + (randomMedian - 4) + ' ' + '15 ' +
+                        'L ' + (randomMedian + 4) + ' ' + '11 ' +
+                        'L ' + (randomMedian + 4) + ' ' + '4 ' +
+                        'Z ';
                     return horizontalLine;
                 }
                 return "m0,0" + triangle;                        
@@ -1859,10 +1895,10 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             })
             .attr("fill", function(d) {
                 // &+- will work if the track annotation is in a single position
-                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
-                if(difference >= 5){
-                    return null;
-                }
+                // var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                // if(difference >= 5){
+                //     return null;
+                // }
                 return d.color;
             })
             .attr("visibility", "show")
@@ -1997,11 +2033,14 @@ Ideogram.prototype.onBrushMove = function() {
     call(this.onBrushMoveCallback);
 };
 
-var arrayOfBrushes = [], totalBrushCount = this.numChromosomes, chromosomeLength, isBrushActive = [];
+var arrayOfBrushes = [],
+    totalBrushCount = this.numChromosomes,
+    chromosomeLength,
+    isBrushActive = [],
+    selectedRegion = [];
 
 Ideogram.prototype.createBrush = function(from, to) {
     var increment = 0, totalCounter = 0;
-    // this.selectedRegion = [];
 
     for(count = 0; count < this.numChromosomes; count++) {
         // add to-from-extent variables for each brushes
@@ -2048,7 +2087,7 @@ Ideogram.prototype.createBrush = function(from, to) {
         x0 = 0;
         x1 = 0;
 
-        ideo.selectedRegion[count] = {from: 0, to: 0, extent: 0};
+        selectedRegion[count] = {from: 0, to: 0, extent: 0};
 
         arrayOfBrushes[count] = d3.svg.brush()
             .y(y)
@@ -2103,7 +2142,7 @@ Ideogram.prototype.createBrush = function(from, to) {
             isBrushActive[totalCounter] = true;
         }
 
-        ideo.selectedRegion[totalCounter] = { "from": from, "to": to, "extent": (to - from) };
+        selectedRegion[totalCounter] = { "from": from, "to": to, "extent": (to - from) };
 
         if (ideo.onBrushMove) {
             ideo.onBrushMoveCallback();
@@ -2790,8 +2829,10 @@ Ideogram.prototype.init = function() {
                 /* Add clickable annotations and display in jBrowse [*] */
                 d3.selectAll(".annot")
                     .on("click", function(d, i) {
+                        console.log(ideo.config.selectedTrack);
                         toggleLinearScale("visible");
-                        var pathname = "http://oryzasnp.org/jbrowse-dev2/",
+                        // var pathname = "http://oryzasnp.org/jbrowse-dev2/",
+                        var pathname = "http://172.29.4.215:8080/jbrowse-dev2/",                     
                             locOnChr = d.start.toString() + ".." + (d.start + d.length).toString(),
                             track = "&tracks=DNA%2C" + ideo.config.selectedTrack + "&highlight=",
                             chrNum;
@@ -2804,6 +2845,12 @@ Ideogram.prototype.init = function() {
                             chrNum = "?loc=chr" + d.chr + "%3A"
                         }
                         $("#jbrowse").prop("src", pathname + chrNum + locOnChr + track);
+
+                        // &+- draggable jbrowse iframe!
+                        // $('#jbrowse').draggable();
+                        // $('#jbrowse').attr('height', '500px !important;');
+                        // $('#jbrowse').attr('width', '500px !important;');
+
                         $("#jbrowse").show();
                     });
             } else {
