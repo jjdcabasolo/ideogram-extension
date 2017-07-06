@@ -1,5 +1,5 @@
 // HTML DOM changes on brush-related elements
-var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know';
+var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [];
 
 function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
@@ -25,7 +25,7 @@ function dropdownMenuSetup(){
     $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
     // &+- add dropdown menu after using the brush
-    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#" onclick="showStatiscalTable()">Show statistics</a></li><li><a href="#" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
     
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
@@ -129,7 +129,6 @@ $(document).ready(function() {
 
 // &+- makes the JBrowse appear with the set coordinates
 function redirectToJBrowse(brush){
-
     var number = (parseInt(brush.replace(/[^0-9\.]/g, ''), 10) + 1),
         startBP = $('#startBPTextbox').val(),
         endBP = $('#endBPTextbox').val(),
@@ -144,9 +143,6 @@ function redirectToJBrowse(brush){
         chrLocation = '?loc=chr' + number + '%3A';
     }
 
-    // console.log('src', pathname + chrLocation + extent + footer);
-    // $('#wewwew').text('src' + pathname + chrLocation + extent + footer);
-
     $('#jbrowse').prop('src', pathname + chrLocation + extent + footer);
     $('#jbrowse').show();
 }
@@ -155,7 +151,6 @@ function redirectToJBrowse(brush){
 function deleteAllBrush(){
     $('.extent').attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    // $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');   
 
     // &+- makes the brush inactive in the back end
     for (var i = 0; i < ideogram.numChromosomes; i++) {
@@ -168,7 +163,6 @@ function deleteThisBrush(brush){
     var brushToChange = '#' + brush + ' > .extent';
     $(brushToChange).attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    // $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');  
 
     // &+- makes the brush inactive in the back end
     isBrushActive[parseInt(brush.replace(/[^0-9\.]/g, ''), 10)] = false;
@@ -181,6 +175,7 @@ function setTheBrush(brush){
         number = parseInt(brush.replace(/[^0-9\.]/g, ''), 10),
         limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
 
+    // &+- FORM CHECKING
     // &+- empty input fields
     if(start === '' && end === ''){
         $('#startBPTextbox').css('background-color', '#EF5350');
@@ -253,3 +248,91 @@ function setTheBrush(brush){
         }
     }
 } 
+
+function showStatiscalTable(table){
+    var myList = [
+      { "name": "abc", "age": 50 },
+      { "age": "25", "hobby": "swimming" },
+      { "name": "xyz", "hobby": "programming" }
+    ];
+
+    var pathname = "http://snp-seek.irri.org/ws/genomics/gene/osnippo/",                     
+        start = 'start=' + $('#startBPTextbox').val() + '&',
+        end = 'end=' + $('#endBPTextbox').val(),
+        chrNum, webService, extent, from, to, arrayCatch;
+
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            if (i < 10) {
+                chrNum = "chr0" + (i+1) + "?";
+            } else {
+                chrNum = "chr" + (i+1) + "?";
+            }
+
+            // &+- get the extent of the active brushes
+            extent = arrayOfBrushes[i].extent(),
+            from = Math.floor(extent[0]),
+            to = Math.ceil(extent[1]);
+
+            start = 'start=' + from + '&';
+            end = 'end=' + to;
+
+            // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
+            webService = pathname + chrNum + start + end;
+    
+                            $.ajax({
+                                dataType: "json",
+                                async: false,
+                                crossDomain: true,
+                                url: webService,
+                                data: arrayCatch,
+                                success: function(arrayCatch) {
+                                    // tempData.push.apply(tempData, lfData);
+                                    console.log(arrayCatch);
+                                }
+                            });
+        }
+
+    }
+
+
+    // Builds the HTML Table out of myList.
+    function buildHtmlTable(selector) {
+      var columns = addAllColumnHeaders(myList, selector);
+
+      for (var i = 0; i < myList.length; i++) {
+        var row$ = $('<tr/>');
+        for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+          var cellValue = myList[i][columns[colIndex]];
+          if (cellValue == null) cellValue = "";
+          row$.append($('<td/>').html(cellValue));
+        }
+        $(selector).append(row$);
+      }
+    }
+
+    // Adds a header row to the table and returns the set of columns.
+    // Need to do union of keys from all records as some records may not contain
+    // all records.
+    function addAllColumnHeaders(myList, selector) {
+      var columnSet = [];
+      var headerTr$ = $('<tr/>');
+
+      for (var i = 0; i < myList.length; i++) {
+        var rowHash = myList[i];
+        for (var key in rowHash) {
+          if ($.inArray(key, columnSet) == -1) {
+            columnSet.push(key);
+            headerTr$.append($('<th/>').html(key));
+          }
+        }
+      }
+      $(selector).append(headerTr$);
+
+      return columnSet;
+    }
+}
+
+function plotGeneAnnotation(){
+
+}
