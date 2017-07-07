@@ -2,6 +2,10 @@
 Developed by Eric Weitz (https://github.com/eweitz)
 */
 
+html {
+    height: 1400px;
+}
+
 body {
     font: 12px Arial;
     line-height: 19.6px;

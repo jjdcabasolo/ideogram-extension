@@ -1591,12 +1591,7 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             annot['stop'] = annot.start + annot.length;
 
-                // console.log(chr);
             chrModel = ideo.chromosomes["4530"][chr];
-            if(chrModel == undefined){
-                // chrModel = chromosomes["4530"][chr];
-            }
-            console.log(chrModel); 
 
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
@@ -1610,21 +1605,23 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             color = ideo.config.annotationsColor;
 
-            /* adjust format by chaning trackIndex [*] */
-            if (ideo.config.annotationTracks) {
-                var allTracks = ideo.config.allTracks,
-                    c;
+            if(keys.length != 3){
+                /* adjust format by chaning trackIndex [*] */
+                if (ideo.config.annotationTracks) {
+                    var allTracks = ideo.config.allTracks,
+                        c;
 
-                for (c = 0; c < allTracks.length; c++) {
-                    var t = allTracks[c];
-                    if (t["mapping"] === ra[3]) {
-                        annot["trackIndex"] = t["trackIndex"];
+                    for (c = 0; c < allTracks.length; c++) {
+                        var t = allTracks[c];
+                        if (t["mapping"] === ra[3]) {
+                            annot["trackIndex"] = t["trackIndex"];
+                        }
                     }
-                }
 
-                color = ideo.config.annotationTracks[ra[3] - 1].color;
-            } else {
-                annot['trackIndex'] = -1;
+                    color = ideo.config.annotationTracks[ra[3] - 1].color;
+                } else {
+                    annot['trackIndex'] = -1;
+                }
             }
 
             if ('color' in annot) {
@@ -1637,7 +1634,10 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
             annot['color'] = color;
 
             annots[i]["annots"].push(annot);
+        }
 
+        if(keys.length == 3){
+            break;
         }
     }
 

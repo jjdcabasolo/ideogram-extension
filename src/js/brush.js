@@ -251,7 +251,7 @@ function setTheBrush(brush){
 
 // &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
-
+    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
     $('#gene-table-content').empty();
 
     var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
@@ -378,14 +378,77 @@ function showStatiscalTable(table){
     }
 }
 
+var annotObject = {}, annotArray = [];
+
+function generateGeneAnnotURLs(geneAnnotArrayURL){
+    var chrNum,
+        pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
+        start = 'start=' + $('#startBPTextbox').val() + '&',
+        end = 'end=' + $('#endBPTextbox').val();
+
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            console.log("active brush " + (i+1));
+            if (i < 10) {
+                chrNum = "chr0" + (i+1) + "?";
+            } else {
+                chrNum = "chr" + (i+1) + "?";
+            }
+
+            var extent = arrayOfBrushes[i].extent(),
+                from = Math.floor(extent[0]),
+                to = Math.ceil(extent[1]),
+                start = 'start=' + from + '&',
+                end = 'end=' + to,
+                webService = pathname + chrNum + start + end;
+
+            geneAnnotArrayURL[i] = webService;
+        }
+        else{
+            geneAnnotArrayURL[i] = null;
+        }
+    }
+
+    return geneAnnotArrayURL;
+}
+
+function processCollectedAnnots(webService, func) {
+    d3.json(webService, function(error, data) {
+        if(error){
+            func(null);
+        }
+        else{
+            console.log("success");
+
+            var compiledAnnots = [];
+            data.forEach(function(d){
+                var annotContent = [
+                    (d.uniquename + ' | ' + d.description),
+                    d.fmin,
+                    d.fmax - d.fmin
+                ];
+                compiledAnnots.push(annotContent);
+                var number = (parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10) + 1);
+                console.log(number);
+                annotObject["chr"] = number;
+            });
+            annotObject["annots"] = compiledAnnots;
+            annotArray.push(annotObject);
+
+            var keys = ["name", "start", "length"];
+            var rawAnnots = { "keys": keys, "annots": annotArray };
+            var processedAnnots = ideogram.processAnnotData(rawAnnots);
+
+            console.log(processedAnnots);
+            
+            func(processedAnnots);
+        }
+    });
+}
+
 function plotGeneAnnotation(){
     // &+- transforming to a 
-    var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
-        start = 'start=' + $('#startBPTextbox').val() + '&',
-        end = 'end=' + $('#endBPTextbox').val(),
-        compiledAnnots = [],
-        annotObject = {},
-        annotArray = [],
+    var annotArray = [],
         spinnerConfig = {
             lines: 9,
             length: 9,
@@ -409,63 +472,72 @@ function plotGeneAnnotation(){
             position: 'absolute'
         },
         buffering = document.getElementById("chromosome-render"),
-        spinner = new Spinner(spinnerConfig).spin(buffering);
-        // count = 0;
+        spinner = new Spinner(spinnerConfig).spin(buffering),
+        geneAnnotArrayURL = [];
 
-    for (var i = 0; i < ideogram.numChromosomes; i++) {
-        if(isBrushActive[i]){
-            if (i < 10) {
-                chrNum = "chr0" + (i+1) + "?";
-                annotObject["chr"] = (i+1);
-            } else {
-                chrNum = "chr" + (i+1) + "?";
-                annotObject["chr"] = (i+1);
-            }
+    geneAnnotArrayURL = generateGeneAnnotURLs(geneAnnotArrayURL);
 
-            // &+- get the extent of the active brushes
-            extent = arrayOfBrushes[i].extent(),
-            from = Math.floor(extent[0]),
-            to = Math.ceil(extent[1]);
-
-            start = 'start=' + from + '&';
-            end = 'end=' + to;
-
-            // snp-seek.irri.org -> 172.29.4.215:8080/iric-portal
-            // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
-            webService = pathname + chrNum + start + end;
-
-            d3.json(webService, function (error, data) {
-                data.forEach(function (d) {
-                    var annotContent = [
-                        (d.uniquename + ' | ' + d.description),
-                        d.fmin,
-                        d.fmin - d.fmax
-                    ];
-                    compiledAnnots.push(annotContent);
-                });
-                annotObject["annots"] = compiledAnnots;
-                annotArray.push(annotObject);
-                console.log(annotArray);
-                var keys = ["name", "start", "length"];
-                var rawAnnots = { "keys": keys, "annots": annotArray };
-                var processedAnnots = ideogram.processAnnotData(rawAnnots);
-                console.log(processedAnnots);
-                toggleSpinner(spinner, false);
-            });
-    
-            // $.ajax({
-            //     dataType: "json",
-            //     crossDomain: true,
-            //     url: webService,
-            //     data: arrayCatch,
-            //     success: function(arrayCatch) {
-
-
-            //     }
-            // });
-
+    asyncLoop({
+        length: 13,
+        functionToLoop: function(loop, i) {
+            setTimeout(function() {
+                processCollectedAnnots(geneAnnotArrayURL[i - 1],
+                    function(processedAnnots) {
+                        // console.log(processedAnnots);
+                    }
+                );
+                loop();
+            }, 100);
+        },
+        callback: function() {
+            console.log("here at callback function");
+            toggleSpinner(spinner, false);
         }
-    }
+    });
+}
+    // for (var i = 0; i < ideogram.numChromosomes; i++) {
+    //     if(isBrushActive[i]){
+    //         console.log("active brush " + (i+1));
+    //         if (i < 10) {
+    //             chrNum = "chr0" + (i+1) + "?";
+    //             annotObject["chr"] = (i+1);
+    //         } else {
+    //             chrNum = "chr" + (i+1) + "?";
+    //             annotObject["chr"] = (i+1);
+    //         }
+
+    //         var extent = arrayOfBrushes[i].extent(),
+    //             from = Math.floor(extent[0]),
+    //             to = Math.ceil(extent[1]),
+    //             start = 'start=' + from + '&',
+    //             end = 'end=' + to,
+    //             webService = pathname + chrNum + start + end;
+
+    //         geneAnnotArrayURL[i] = webService;
+    
+    //         // d3.json(webService, function (error, data) {
+    //         //     data.forEach(function (d) {
+    //         //         var annotContent = [
+    //         //             (d.uniquename + ' | ' + d.description),
+    //         //             d.fmin,
+    //         //             d.fmax - d.fmin
+    //         //         ];
+    //         //         compiledAnnots.push(annotContent);
+    //         //     });
+    //         //     annotObject["annots"] = compiledAnnots;
+    //         //     annotArray.push(annotObject);
+    //         //     console.log(annotArray);
+    //         //     var keys = ["name", "start", "length"];
+    //         //     var rawAnnots = { "keys": keys, "annots": annotArray };
+    //         //     var processedAnnots = ideogram.processAnnotData(rawAnnots);
+    //         //     console.log(processedAnnots);
+    //         //     toggleSpinner(spinner, false);
+    //         // });
+    //     }
+    //     else{
+    //         geneAnnotArrayURL[i] = null;
+    //     }
+    // }
 
 
 
@@ -480,163 +552,3 @@ function plotGeneAnnotation(){
     // 1: 28983108
     // 2: 2595
     // 3: 1
-}
-
-// asyncLoop({
-//     length: 13,
-//     functionToLoop: function(loop, i) {
-//         setTimeout(function() {
-//             getJsonData(trackDataUrls[i - 1],
-//                 function(trackData, tdUrl) {
-//                     /* if featureCount is not 0 */
-//                     // console.log(trackData.featureCount);
-//                     if (trackData.featureCount) {
-//                         var data = trackData.intervals.nclist,
-//                             len = data.length,
-//                             obj = {};
-
-//                         /* perform async again */
-//                         if (data[0].length == 4) {
-//                             data = [];
-
-//                             /* get initial file path */
-//                             var newUrl = tdUrl.replace("/trackData.json", "");
-
-//                             /* get lf-<num> urls */
-//                             populateLfUrls(newUrl, len, i);
-
-//                         } else {
-//                             obj["chrNum"] = i;
-//                             obj["data"] = data;
-//                             traitData.push(obj);
-//                         }
-//                     }
-//                 }
-//             );
-//             loop();
-//         }, 100);
-//     },
-//     callback: function() {
-
-//         /* if other json files need to be accessed to retrieve data */
-//         if (lfUrls.length) {
-//             for (k = 0; k < 12; k++) {
-//                 var lfData, obj = {};
-//                 for (j = 0; j < lfUrls.length; j++) {
-//                     if (lfUrls[j][1] == k + 1) {
-//                         $.ajax({
-//                             dataType: "json",
-//                             async: false,
-//                             url: lfUrls[j][0],
-//                             data: lfData,
-//                             success: function(lfData) {
-//                                 tempData.push.apply(tempData, lfData);
-//                             }
-//                         });
-//                     }
-//                 }
-//                 obj["chrNum"] = k + 1;
-//                 obj["data"] = tempData;
-//                 traitData.push(obj);
-//                 tempData = [];
-//             }
-//         }
-
-//         lfUrls = [];
-
-//         config.rawAnnots = reformatTraitData(selectedTrack);
-//         config.selectedTrack = selectedTrack;
-//         config.allTracks = allTracks;
-//         toggleSpinner(spinner, false);
-
-//         ideogram = new Ideogram(config);
-//         // &+- providing a larger svg for the dropdown menu 
-//         $('#ideogram').attr('width', '1000');
-//         $('#ideogram').attr('height', '1200');
-
-//         // &+- change cursor
-//         $('.background').css('cursor', 'zoom-in');
-
-//         // &+- makes the dropdown be located somewhere outside the user's view
-//         $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
-
-//         // &+- add dropdown menu after using the brush
-//         $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#" onclick="showStatiscalTable()">Show statistics</a></li><li><a href="#" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
-        
-//         // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
-//         $(".extent").hover(
-//             function( event ) {
-//                 brushID = $(this).parent().attr('id');
-                
-//                 // &+- used in getting the details for start and end
-//                 if(previousBrush === 'some-id-i-used-to-know') $('#' + previousBrush).attr('id', ('some-id-' + brushID));
-//                 else $('#some-id-' + previousBrush).attr('id', ('some-id-' + brushID));
-//                 previousBrush = brushID;
-
-//                 // &+- makes the show in JBrowse unable to click
-//                 var countingTrue = 0;
-//                 for (var i = 0; i < ideogram.numChromosomes; i++) {
-//                     if(isBrushActive[i]) countingTrue++;
-//                 }
-//                 if(countingTrue > 1){
-//                     // &+- make it inactive
-//                     $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
-//                 }
-//                 else{
-//                     // &+- make it active again
-//                     $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
-//                 }
-
-//                 // &+- displays the current chromosome name in the bottom of the menu
-//                 var number = parseInt(brushID.replace(/[^0-9\.]/g, ''), 10),
-//                     limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
-//                 $('#chr-name').text('chr ' + (number + 1) + ' | ');
-//                 $('#chr-name-max').text(' ' + limit);
-
-//                 // &+- displays the current base pairs on focus
-//                 $('#startBPTextbox').val(selectedRegion[number].from);
-//                 $('#endBPTextbox').val(selectedRegion[number].to);
-
-//                 // &+- make the menu visible
-//                 $('.file_menu').css('display', 'visible');
-
-//                 // &+- for the foreignObjectobject tag inside the svg tag
-//                 $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-270) + ', ' + (event.pageY-50) + ')'); 
-//                 $('ul.file_menu').stop(true, true).slideDown('medium');
-
-//                 // &+- add the brush id to the anchor tag (used in brush deletion and submission of coordinates)
-//                 $('.identify-the-brush').attr('id', brushID); 
-//                 $('.submit-chr-details').attr('id', brushID);
-//                 $('.show-jbrowse').attr('id', brushID);  
-
-//                 // &+- makes the brush visible when the mouse is on the menu
-//                 $('#' + $(this).parent().attr('id')).css('visibility', 'visible');
-
-//                 isMenuOpen[number] = true;
-//             },
-//             function() {
-//             }
-//         );
-
-//         // &+- makes the brush re-appear again when the mouse is on the menu
-//         $('.dynamic-dropdown').hover(function(){ 
-//         }, function(){ 
-//             // &+- make the menu return to nowhere
-//             $('ul.file_menu').stop(true, true).slideUp('medium');        
-
-//             // &+- clear form contents
-//             $('#startBPTextbox').val('');
-//             $('#endBPTextbox').val('');
-//             $('#message-input-menu').text('');        
-
-//             // &+- reset colors
-//             $('#startBPTextbox').css('background-color', 'white');
-//             $('#startBPTextbox').css('color', 'black');
-
-//             $('#endBPTextbox').css('background-color', 'white');
-//             $('#endBPTextbox').css('color', 'black');
-//         });
-
-//         return ideogram;
-//     }
-// });

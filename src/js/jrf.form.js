@@ -568,7 +568,6 @@ var allTracks = [],
     allTracksCount = 0;
 
 function addTrack(track) {
-    // console.log(track+"asdfasdfasdf");
     // &+- 
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         category;
