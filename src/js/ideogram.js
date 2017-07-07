@@ -1564,7 +1564,7 @@ Ideogram.prototype.drawAnnots = function(friendlyAnnots) {
  * Also adds pixel offset information.
  */
 Ideogram.prototype.processAnnotData = function(rawAnnots) {
-
+    console.log(rawAnnots);
     var keys = rawAnnots.keys,
         rawAnnots = rawAnnots.annots,
         i, j, annot, annots, rawAnnot, annotsByChr,
@@ -1591,7 +1591,12 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             annot['stop'] = annot.start + annot.length;
 
+                // console.log(chr);
             chrModel = ideo.chromosomes["4530"][chr];
+            if(chrModel == undefined){
+                // chrModel = chromosomes["4530"][chr];
+            }
+            console.log(chrModel); 
 
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
@@ -1780,8 +1785,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
         annotHeight, triangle, circle, r, chrAnnot, horizontalLine,
         x1, x2, y1, y2,
         ideo = this;
-
-        console.log(annots);
 
     chrMargin = this.config.chrMargin;
     chrWidth = this.config.chrWidth;

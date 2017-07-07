@@ -371,7 +371,6 @@ function getTrackData(selectedTrack, trackDataUrls) {
                 getJsonData(trackDataUrls[i - 1],
                     function(trackData, tdUrl) {
                         /* if featureCount is not 0 */
-                        console.log(trackData.featureCount)
                         if (trackData.featureCount) {
                             var data = trackData.intervals.nclist,
                                 len = data.length,
@@ -379,7 +378,6 @@ function getTrackData(selectedTrack, trackDataUrls) {
 
                             /* perform async again */
                             if (data[0].length == 4) {
-                                // console.log("entering == 4");
                                 data = [];
 
                                 /* get initial file path */
