@@ -3,7 +3,7 @@ var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used
 
 function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
-    $('#ideogram').attr('width', '100%');
+    $('#ideogram').attr('width', '1000');
     $('#ideogram').attr('height', '1200');
 }
 
@@ -249,18 +249,39 @@ function setTheBrush(brush){
     }
 } 
 
+// &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
-    // var myList = [
-    //   { "name": "abc", "age": 50 },
-    //   { "age": "25", "hobby": "swimming" },
-    //   { "name": "xyz", "hobby": "programming" }
-    // ];
 
     $('#gene-table-content').empty();
 
     var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
         start = 'start=' + $('#startBPTextbox').val() + '&',
         end = 'end=' + $('#endBPTextbox').val(),
+        isHeaderPresent = false,
+        spinnerConfig = {
+            lines: 9,
+            length: 9,
+            width: 14,
+            radius: 20,
+            scale: 1,
+            corners: 1,
+            color: '#000',
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: 'gt-spinner',
+            top: '20%',
+            left: '50%',
+            shadow: true,
+            hwaccel: false,
+            position: 'absolute'
+        },
+        buffering = document.getElementById("gt-div"),
+        spinner = new Spinner(spinnerConfig).spin(buffering),
         chrNum, webService, extent, from, to, arrayCatch, myList;
 
     for (var i = 0; i < ideogram.numChromosomes; i++) {
@@ -285,58 +306,75 @@ function showStatiscalTable(table){
     
             $.ajax({
                 dataType: "json",
-                // async: false,
                 crossDomain: true,
                 url: webService,
                 data: arrayCatch,
                 success: function(arrayCatch) {
                     buildHtmlTable(arrayCatch, "#gene-table-content");    
+                    toggleSpinner(spinner, false);
+                    isHeaderPresent = true;
                 }
             });
-        }
 
+        }
     }
 
-    // &+- code snippet for converting JSON to HTML table coming from: https://stackoverflow.com/a/11480797
+    // &+- code snippet for converting JSON to HTML table. thank you https://stackoverflow.com/a/11480797
     // Builds the HTML Table out of myList.
     function buildHtmlTable(myList, selector) {
-        var columns = addAllColumnHeaders(myList, selector);
-        var tBodyProper = $('<tbody/>');
+        var columns = addAllColumnHeaders(myList, selector, isHeaderPresent),
+            tBodyProper = $('<tbody/>');
 
         for(var i = 0; i < myList.length; i++) {
             var row = $('<tr/>');
             for(var colIndex = 0; colIndex < columns.length; colIndex++) {
                 var cellValue = myList[i][columns[colIndex]];
-                if(cellValue == null) cellValue = "";
-                row.append($('<td/>').html(cellValue));
+                if(cellValue == null){
+                    row.append($('<td/>').html(""));
+                }
+                else{
+                    var stringValue = String(cellValue);
+                    stringValue = stringValue.replace(/,/g, '<br>');
+                    row.append($('<td/>').html(stringValue));
+                }
             }
-            $(tBodyProper).append(row);
+            if(!isHeaderPresent){
+                $(tBodyProper).append(row);
+            }
+            else{
+                $(selector + ' tBody').append(row);            
+            }
         }
-        $(selector).append(tBodyProper);
+
+        if(!isHeaderPresent){
+            $(selector).append(tBodyProper);
+        }
     }
 
     // Adds a header row to the table and returns the set of columns.
     // Need to do union of keys from all records as some records may not contain
     // all records.
-    function addAllColumnHeaders(myList, selector) {
-      var columnSet = [];
-      var headerTr = $('<tr/>');
-      var tHeadProper = $('<thead/>');
+    function addAllColumnHeaders(myList, selector, isHeaderPresent) {
+        var columnSet = [];
+        var headerTr = $('<tr/>');
+        var tHeadProper = $('<thead/>');
 
-      for (var i = 0; i < myList.length; i++) {
-        var rowHash = myList[i];
-        for (var key in rowHash) {
-          if ($.inArray(key, columnSet) == -1) {
-            columnSet.push(key);
-            console.log($('<th/>').html(key));
-            headerTr.append($('<th/>').html(key));
-          }
+        for (var i = 0; i < myList.length; i++) {
+            var rowHash = myList[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1) {
+                    columnSet.push(key);
+                    headerTr.append($('<th/>').html(key));
+                }
+            }
         }
-      }
-      $(tHeadProper).append(headerTr);
-      $(selector).append(tHeadProper);
 
-      return columnSet;
+        if(!isHeaderPresent){
+            $(tHeadProper).append(headerTr);
+            $(selector).append(tHeadProper);        
+        }
+
+        return columnSet;
     }
 }
 

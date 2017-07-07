@@ -1781,6 +1781,8 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
         x1, x2, y1, y2,
         ideo = this;
 
+        console.log(annots);
+
     chrMargin = this.config.chrMargin;
     chrWidth = this.config.chrWidth;
 

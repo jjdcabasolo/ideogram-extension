@@ -434,7 +434,7 @@ function getTrackData(selectedTrack, trackDataUrls) {
 
             ideogram = new Ideogram(config);
             // &+- providing a larger svg for the dropdown menu 
-            $('#ideogram').attr('width', '100%');
+            $('#ideogram').attr('width', '1000');
             $('#ideogram').attr('height', '1200');
 
             // &+- change cursor

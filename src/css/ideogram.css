@@ -241,6 +241,10 @@ ul {
     margin-top: 22%;
 }
 
+.gt-spinner {
+    margin-top: 65%;
+}
+
 #divider {
     border: 1px solid #757575;
 }
@@ -273,139 +277,139 @@ table{
     vertical-align: top;
     border: inherit;
 }
-
+.table thead{
+    background-color: #212121;
+}
 .table thead tr {
-    border-bottom: 1px solid #e1e1e1;
+    box-shadow: 0 4px 2px -2px #212121;
 }
-
-.table thead th {
-    font-weight: 400;
-    color: #3f3f3f;
-    vertical-align: bottom;
+.table tbody{
+    background-color: #303030;
 }
-
-.table caption + thead tr:first-child,
-.table colgroup + thead tr:first-child,
-.table thead:first-child tr:first-child {
-    border-top: 0;
+#gene-table-content {
+    position: absolute;
+    width: 100px;
 }
-
-.table caption + thead tbody + .table caption + thead tbody,
-.table colgroup + thead tbody + .table colgroup + thead tbody,
-.table thead:first-child tbody + .table thead:first-child tbody {
-    border-top: 1px solid #dedede;
-}
-
-.table caption {
-    opacity: 0.5;
-    font-size: 0.8em;
-    text-transform: uppercase;
-    font-style: italic;
+#gene-table-content th,
+#gene-table-content td {
     text-align: left;
-    line-height: 2;
-    margin: 1em 0;
+}
+#gene-table-content td:nth-child(1),
+#gene-table-content th:nth-child(1) {
+    min-width: 40px;
+}
+#gene-table-content td:nth-child(2),
+#gene-table-content th:nth-child(2) {
+    min-width: 60px;
+}
+#gene-table-content td:nth-child(3),
+#gene-table-content th:nth-child(3) {
+    min-width: 60px;
+}
+#gene-table-content td:nth-child(4),
+#gene-table-content th:nth-child(4) {
+    min-width: 110px;
+}
+#gene-table-content td:nth-child(5),
+#gene-table-content th:nth-child(5) {
+    min-width: 35px;
+}
+#gene-table-content td:nth-child(6),
+#gene-table-content th:nth-child(6) {
+    min-width: 110px;
+}
+#gene-table-content td:nth-child(7),
+#gene-table-content th:nth-child(7) {
+    min-width: 110px;
+}
+#gene-table-content td:nth-child(8),
+#gene-table-content th:nth-child(8) {
+    min-width: 110px;
+}
+#gene-table-content td:nth-child(9),
+#gene-table-content th:nth-child(9) {
+    min-width: 110px;
+}
+#gene-table-content td:nth-child(10),
+#gene-table-content th:nth-child(10) {
+    width: 110px;
+}
+#gene-table-content td:nth-child(11),
+#gene-table-content th:nth-child(11) {
+    min-width: 200px;
+}
+#gene-table-content thead {
+    font-weight: 900;
+    color: #EEEEEE;
+}
+#gene-table-content thead tr {
+    display: block;
+    position: relative;
+}
+#gene-table-content tbody {
+    display: block;
+    overflow-y: auto;
+    height: 400px;
+    overflow-x: hidden;
 }
 
-#gene-table-content {
-  /*width: 750px;*/
-  position: absolute;
-  table-layout: fixed;
-  border-collapse: collapse;
+/* &+- thank you https://codepen.io/devstreak/pen/dMYgeO for the scrollbar */
+#gene-table-content tbody::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #303030;
 }
-#gene-table-content th {
-  text-decoration: underline;
+
+#gene-table-content tbody::-webkit-scrollbar{
+    width: 15px;
+    background-color: #303030;
 }
-#gene-table-content th,
-#gene-table-content td {
-  padding: 5px;
-  text-align: left;
+
+#gene-table-content tbody::-webkit-scrollbar-thumb{
+    /*border-radius: 2px;*/
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #009688;
 }
-#gene-table-content td:nth-child(1),
-#gene-table-content th:nth-child(1) {
-  min-width: 50px;
+
+/* &+- thank you https://codepen.io/alanshortis/pen/eJLVXr for the loader */
+@-webkit-keyframes spin {
+    0% {
+    -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+    }
+    100% {
+    -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+    }
 }
-#gene-table-content td:nth-child(2),
-#gene-table-content th:nth-child(2) {
-  min-width: 200px;
+@keyframes spin {
+    0% {
+    -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+    }
+    100% {
+    -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+    }
 }
-#gene-table-content td:nth-child(3),
-#gene-table-content th:nth-child(3) {
-  width: 350px;
+@-webkit-keyframes pulse {
+    50% {
+    background: white;
+    }
 }
-#gene-table-content thead {
-  background-color: #333;
-  color: #FDFDFD;
+@keyframes pulse {
+    50% {
+    background: white;
+    }
 }
-#gene-table-content thead tr {
-  display: block;
-  position: relative;
-}
-#gene-table-content tbody {
-  display: block;
-  overflow: auto;
-  width: 100%;
-  height: 300px;
-}
-#gene-table-content tbody tr:nth-child(even) {
-  background-color: #DDD;
-}
-.old_ie_wrapper {
-  height: 300px;
-  width: 750px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-.old_ie_wrapper tbody {
-  height: auto;
-}
-#gene-table-content {
-  width: 750px;
-  table-layout: fixed;
-  border-collapse: collapse;
-}
-#gene-table-content th {
-  text-decoration: underline;
-}
-#gene-table-content th,
-#gene-table-content td {
-  padding: 5px;
-  text-align: left;
-}
-#gene-table-content td:nth-child(1),
-#gene-table-content th:nth-child(1) {
-  min-width: 200px;
-}
-#gene-table-content td:nth-child(2),
-#gene-table-content th:nth-child(2) {
-  min-width: 200px;
-}
-#gene-table-content td:nth-child(3),
-#gene-table-content th:nth-child(3) {
-  width: 350px;
-}
-#gene-table-content thead {
-  background-color: #333;
-  color: #FDFDFD;
-}
-#gene-table-content thead tr {
-  display: block;
-  position: relative;
-}
-#gene-table-content tbody {
-  display: block;
-  overflow: auto;
-  width: 100%;
-  height: 300px;
-}
-#gene-table-content tbody tr:nth-child(even) {
-  background-color: #DDD;
-}
-.old_ie_wrapper {
-  height: 300px;
-  width: 750px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-.old_ie_wrapper tbody {
-  height: auto;
+
+.loading {
+    position: absolute;
+    margin-right: 50%;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border: 10px solid rgba(255, 255, 255, 0.2);
+    border-top-color: blue;
+    -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
 }

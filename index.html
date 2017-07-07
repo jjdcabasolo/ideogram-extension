@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <span id="wewwew">12</span>
+    <!-- <span id="wewwew"></span> -->
 
     <div id="chromosome-render"></div>
     <br>
@@ -89,7 +89,8 @@
       <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
     </div>
 
-    <div class="gene-table">
+    <div class="gene-table" id="gt-div">
+      <!-- <div class="loading"></div> -->
       <table id="gene-table-content" border="1" class="table"></table>
       <!-- <div id="bottom_anchor"></div> -->
     </div>
@@ -419,7 +420,7 @@
     ideogram = new Ideogram(config);
     // &+- added brush settings
     // &+- providing a larger svg for the dropdown menu 
-            $('#ideogram').attr('width', '100%');
+            $('#ideogram').attr('width', '1000');
             $('#ideogram').attr('height', '1200');
 
             // &+- change cursor
