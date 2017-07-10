@@ -222,6 +222,16 @@ ul {
     margin-top: 250px;
 }
 
+#form-render-brush {
+    /*height: 200px;*/
+    /*width: 250px;*/
+    float: left;
+    overflow: auto;
+    overflow-x: hidden;
+    position: absolute;
+    margin-top: 440px;
+}
+
 #chromosome-render {
     position: absolute;
     margin-left: 250px;

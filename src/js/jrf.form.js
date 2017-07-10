@@ -64,6 +64,9 @@ var filterMap = {
             "qtaroqtl_source_activity": 27,
             "qtaroqtl_sterility": 28,
             "qtaroqtl_submergency_tolerance": 29
+        },
+        "brush": {
+
         }
     },
     allTraitData = {
@@ -129,7 +132,9 @@ var filterMap = {
         position: 'absolute'
     },
     traitData = [],
-    lfUrls = [];
+    lfUrls = [],
+    dropdownMenuForm = '<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a class="show-genes" onclick="showStatiscalTable()">Show statistics</a></li><li><a class="plot-genes" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>';
+
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
  *  JSON format based on format of jquery.dform and should be:
@@ -432,7 +437,7 @@ function getTrackData(selectedTrack, trackDataUrls) {
 
             ideogram = new Ideogram(config);
             // &+- providing a larger svg for the dropdown menu 
-            $('#ideogram').attr('width', '1000');
+            $('#ideogram').attr('width', '1200');
             $('#ideogram').attr('height', '1200');
 
             // &+- change cursor
@@ -442,7 +447,7 @@ function getTrackData(selectedTrack, trackDataUrls) {
             $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
             // &+- add dropdown menu after using the brush
-            $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#" onclick="showStatiscalTable()">Show statistics</a></li><li><a href="#" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+            $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
             
             // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
             $(".extent").hover(
@@ -523,17 +528,23 @@ function getTrackData(selectedTrack, trackDataUrls) {
     });
 }
 
+var brushTrackCount = 100;
+
 /*
  * remove data of selectedTrack in the allTraitData array
  */
 function removeSelectedTrack(selectedTrack) {
-    // console.log("etoh" + selectedTrack);
     // &+-
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
+        brushIdentifier = new RegExp("brush"),
         category;
     if(qtlIdentifier.test(selectedTrack)){
         category = "qtl";
-    } else {
+    }
+    else if(brushIdentifier.test(selectedTrack)){
+        category = "brush";    
+    }
+    else {
         category = "traitGenes";
     }
     var num = filterMap[category][selectedTrack],
@@ -568,19 +579,30 @@ var allTracks = [],
     allTracksCount = 0;
 
 function addTrack(track) {
-    // &+- 
+    // &+- determines whether the track to be added is a qtl or trait gene 
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
-        category;
+        brushIdentifier = new RegExp("brush"),
+        category, mapValue;
     if(qtlIdentifier.test(track)){
         category = "qtl";
-    } else {
+        mapValue = filterMap["qtl"][track];
+    } 
+    else if(brushIdentifier.test(track)){
+        // &+-
+        mapValue = brushTrackCount;
+        filterMap.brush = {};
+        filterMap["brush"][track] = brushTrackCount;
+        brushTrackCount = brushTrackCount + 1;
+    }    
+    else {
         category = "traitGenes";
+        mapValue = filterMap["traitGenes"][track];
     }
 
     allTracks.push({
         track: track,
         trackIndex: allTracksCount,
-        mapping: filterMap[category][track]
+        mapping: mapValue
     });
     allTracksCount++;
 }

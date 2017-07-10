@@ -1564,7 +1564,6 @@ Ideogram.prototype.drawAnnots = function(friendlyAnnots) {
  * Also adds pixel offset information.
  */
 Ideogram.prototype.processAnnotData = function(rawAnnots) {
-    console.log(rawAnnots);
     var keys = rawAnnots.keys,
         rawAnnots = rawAnnots.annots,
         i, j, annot, annots, rawAnnot, annotsByChr,
@@ -1605,7 +1604,7 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             color = ideo.config.annotationsColor;
 
-            if(keys.length != 3){
+            if(keys.length != 5){
                 /* adjust format by chaning trackIndex [*] */
                 if (ideo.config.annotationTracks) {
                     var allTracks = ideo.config.allTracks,
@@ -1629,14 +1628,20 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
             }
 
             annot['chr'] = chr;
-            annot['chrIndex'] = i;
+            if(keys.length == 5){
+                annot['chrIndex'] = parseInt(String(annot.chrName).replace(/[^0-9\.]/g, ''), 10) - 1;;
+                console.log(annot['chrIndex']);
+            }
+            else{
+                annot['chrIndex'] = i;
+            }
             annot['px'] = px;
             annot['color'] = color;
 
             annots[i]["annots"].push(annot);
         }
 
-        if(keys.length == 3){
+        if(keys.length == 5){
             break;
         }
     }
@@ -1803,32 +1808,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
     horizontalLine = 'm 0 0 l 0 ' + (2 * annotHeight);
     triangle = 'l -' + annotHeight + ' ' + (2 * annotHeight) + ' l ' + (2 * annotHeight) + ' 0 z';
     
-    // M 5,50 97.5,5 97.5,95 Z
-    // triangle = M 5,50 97.5,5 97.5,95 Z
-
-    // triangle = 
-    //         'M ' + '0 ' + '0 ' +
-    //         'L ' + '4 ' + '6 ' +
-    //         'L ' + '8 ' + '0 ' +
-    //         'Z ';
-
-    // triangle = 
-    //         'M ' + (d.px - 4) + '0 ' +
-    //         'L ' + (d.px) + '6 ' +
-    //         'L ' + (d.px + 4) + '0 ' +
-    //         'Z ';
-
-    // M 0 0
-    // L 4 4
-    // L 0 8
-    // Z
-
-    // triangle = 
-    //         'M ' + (d.px + 4) + (d.px - 2) +
-    //         'L ' + '0 ' + (d.px) +
-    //         'L ' + (d.px + 4) + (d.px + 2) +
-    //         'Z ';
-
     // From http://stackoverflow.com/a/10477334, with a minor change ("m -r, r")
     // Circles are supported natively via <circle>, but having it as a path
     // simplifies handling triangles, circles and other shapes in the same
@@ -1855,12 +1834,29 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             })
             .attr("class", "annot")
             .attr("transform", function(d) {
-                var y = (d.chrIndex + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                var offset = parseInt(String(d.chrName).replace(/[^0-9\.]/g, ''), 10) - 1,
+                    index = d.chrIndex, y;
+
+                // &=- brush generated track annotations
+                if(d.chrName !== undefined){
+                    y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                    // &=- appended on the first chromosome (<g>) but is adjusted according to chrName using offset variable
+                    // if(offset > 0) y = y - (76 * offset) - (chrMargin * index) - 8;
+                    // else
+                    y = y - (76 * offset) - (chrMargin * index);
+                }
+                else{   
+                    // &+- if the operation is on normal track annotation creation
+                    y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                }
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
-                var popo = Math.ceil(d.stopPx - d.startPx);
-                console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
+                
+                // &+- used in tracing // weekly progress presentation
+                // var popo = Math.ceil(d.stopPx - d.startPx);
+                // console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
+
                 if(difference >= 5){
                     return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
                 }
@@ -1881,7 +1877,7 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
                         'M ' + (difference) + ' 0 L ' + (difference) + ' 8' +
 
                         'M ' + (randomMedian - 4) + ' ' + '4 ' +
-                        // 'L ' + (randomMedian - 4) + ' ' + '15 ' +
+                        'L ' + (randomMedian - 4) + ' ' + '11 ' +
                         'L ' + (randomMedian + 4) + ' ' + '11 ' +
                         'L ' + (randomMedian + 4) + ' ' + '4 ' +
                         'Z ';
@@ -2121,23 +2117,23 @@ Ideogram.prototype.createBrush = function(from, to) {
         isBrushActive[i] = false;
     }
 
+    $('#brush0').mouseenter(function(){totalCounter = 0;});
+    $('#brush1').mouseenter(function(){totalCounter = 1;});
+    $('#brush2').mouseenter(function(){totalCounter = 2;});
+    $('#brush3').mouseenter(function(){totalCounter = 3;});
+    $('#brush4').mouseenter(function(){totalCounter = 4;});
+    $('#brush5').mouseenter(function(){totalCounter = 5;});
+    $('#brush6').mouseenter(function(){totalCounter = 6;});
+    $('#brush7').mouseenter(function(){totalCounter = 7;});
+    $('#brush8').mouseenter(function(){totalCounter = 8;});
+    $('#brush9').mouseenter(function(){totalCounter = 9;});
+    $('#brush10').mouseenter(function(){totalCounter = 10;});
+    $('#brush11').mouseenter(function(){totalCounter = 11;});
+
     function onBrushMove() {
         var extent = 0,
             from = 0,
             to = 0;
-
-        $('#brush0').mouseenter(function(){totalCounter = 0;});
-        $('#brush1').mouseenter(function(){totalCounter = 1;});
-        $('#brush2').mouseenter(function(){totalCounter = 2;});
-        $('#brush3').mouseenter(function(){totalCounter = 3;});
-        $('#brush4').mouseenter(function(){totalCounter = 4;});
-        $('#brush5').mouseenter(function(){totalCounter = 5;});
-        $('#brush6').mouseenter(function(){totalCounter = 6;});
-        $('#brush7').mouseenter(function(){totalCounter = 7;});
-        $('#brush8').mouseenter(function(){totalCounter = 8;});
-        $('#brush9').mouseenter(function(){totalCounter = 9;});
-        $('#brush10').mouseenter(function(){totalCounter = 10;});
-        $('#brush11').mouseenter(function(){totalCounter = 11;});
     
         extent = arrayOfBrushes[totalCounter].extent(),
         from = Math.floor(extent[0]),
@@ -2198,103 +2194,6 @@ Ideogram.prototype.drawBrushes = function(from, to, brushIndex) {
     .remove();
 }
 
-function createAnotherBrush(from, to, brushIndex) {
-    // var increment = 0, totalCounter = 0;
-    // this.selectedRegion = [];
-    var increment = (76 * (brushIndex - 1));
-    totalBrushCount = totalBrushCount + 1;
-    console.log(this)
-    // add to-from-extent variables for each brushes
-    // var fromName = "from",
-    //     from = "0",
-    //     toName = "to",
-    //     to = "0",
-    //     extentName = "extent";
-
-    // this.chromosomesArray[count][fromName] = from;
-    // this.chromosomesArray[count][toName] = to;
-    // this.chromosomesArray[count][extentName] = null;
-
-    var ideo = this,
-        length = ideo.config.chrWidth + 6.5,
-        width = ideo.config.chrHeight,
-        chr = ideo.chromosomesArray[brushIndex],
-        chrLengthBp = chr.bands[chr.bands.length - 1].bp.stop,
-        y, x0, x1,
-        translationVariable,
-        domain = [0],
-        range = [0],
-        band,
-        yOffset = 29,
-        xOffset = 52.5;
-
-    for (var i = 0; i < chr.bands.length; i++) {
-        band = chr.bands[i];
-        domain.push(band.bp.stop);
-        range.push(band.px.stop);
-    }
-
-    y = d3.scale.linear().domain(domain).range(range);
-    translationVariable = d3.select(".band")[0][0].getBBox().y - 3.25;
-
-    if (typeof left === "undefined") {
-        from = Math.floor(chrLengthBp / 10);
-    }
-
-    if (typeof right === "undefined") {
-        to = Math.ceil(from * 2);
-    }
-
-    x0 = 0;
-    x1 = 0;
-
-    ideo.selectedRegion[totalBrushCount] = {from: 0, to: 0, extent: 0};
-
-    arrayOfBrushes[totalBrushCount] = d3.svg.brush()
-        .y(y)
-        .extent([x0, x1])
-        .on("brush", onBrushMove);
-
-    var brushg = d3.select("#ideogram").append("g")
-        .attr("class", "brush")
-        .attr("id", "brush" + totalBrushCount)
-        .attr("transform", "translate(" + (xOffset+increment) + ", " + yOffset + ")")
-        .call(arrayOfBrushes[totalBrushCount]);
-
-    brushg.selectAll("rect")
-        .attr("width", length);
-
-    function onBrushMove() {
-        var extent = 0,
-            from = 0,
-            to = 0;
-
-        // $('#brush0').mouseenter(function(){totalCounter = 0; isBrushActive[totalCounter] = true;});
-        // $('#brush1').mouseenter(function(){totalCounter = 1; isBrushActive[totalCounter] = true;});
-        // $('#brush2').mouseenter(function(){totalCounter = 2; isBrushActive[totalCounter] = true;});
-        // $('#brush3').mouseenter(function(){totalCounter = 3; isBrushActive[totalCounter] = true;});
-        // $('#brush4').mouseenter(function(){totalCounter = 4; isBrushActive[totalCounter] = true;});
-        // $('#brush5').mouseenter(function(){totalCounter = 5; isBrushActive[totalCounter] = true;});
-        // $('#brush6').mouseenter(function(){totalCounter = 6; isBrushActive[totalCounter] = true;});
-        // $('#brush7').mouseenter(function(){totalCounter = 7; isBrushActive[totalCounter] = true;});
-        // $('#brush8').mouseenter(function(){totalCounter = 8; isBrushActive[totalCounter] = true;});
-        // $('#brush9').mouseenter(function(){totalCounter = 9; isBrushActive[totalCounter] = true;});
-        // $('#brush10').mouseenter(function(){totalCounter = 10; isBrushActive[totalCounter] = true;});
-        // $('#brush11').mouseenter(function(){totalCounter = 11; isBrushActive[totalCounter] = true;});
-    
-        // extent = arrayOfBrushes[totalCounter].extent(),
-        // from = Math.floor(extent[0]),
-        // to = Math.ceil(extent[1]);
-
-        totalCounter = 100;
-
-        ideo.selectedRegion[totalCounter] = { "from": from, "to": to, "extent": (to - from) };
-
-        if (ideo.onBrushMove) {
-            ideo.onBrushMoveCallback();
-        }
-    }
-};
 
 /**
  * Called when Ideogram has finished initializing.

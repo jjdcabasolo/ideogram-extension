@@ -1,20 +1,20 @@
 // HTML DOM changes on brush-related elements
-var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [];
+var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [], arrayOfColorsBrushes = [];
 
 function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
-    $('#ideogram').attr('width', '1000');
+    $('#ideogram').attr('width', '1200');
     $('#ideogram').attr('height', '1200');
 }
 
 function widenBrush(){
     // &+- providing wider space for the overlay of each chromosome
-    var count = 0, numChromosomes = 12;
-    for(count = 0; count < numChromosomes; count++) {
-        isMenuOpen[count] = false;
-        $('#brush' + count + ' .background').attr('x', '-26');        
-        $('#brush' + count + ' .background').attr('width', '78.5');        
-    }
+    // var count = 0, numChromosomes = 12;
+    // for(count = 0; count < numChromosomes; count++) {
+    //     isMenuOpen[count] = false;
+    //     $('#brush' + count + ' .background').attr('x', '-26');        
+    //     $('#brush' + count + ' .background').attr('width', '78.5');        
+    // }
 
     // &+- change cursor
     $('.background').css('cursor', 'zoom-in');
@@ -25,7 +25,7 @@ function dropdownMenuSetup(){
     $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
     // &+- add dropdown menu after using the brush
-    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#" onclick="showStatiscalTable()">Show statistics</a></li><li><a href="#" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+    $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
     
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
@@ -251,7 +251,8 @@ function setTheBrush(brush){
 
 // &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
-    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+    $('.show-genes').attr('class', 'inactive-link show-genes'); 
+    $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
     $('#gene-table-content').empty();
 
     var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
@@ -286,7 +287,7 @@ function showStatiscalTable(table){
 
     for (var i = 0; i < ideogram.numChromosomes; i++) {
         if(isBrushActive[i]){
-            if (i < 10) {
+            if (i < 9) {
                 chrNum = "chr0" + (i+1) + "?";
             } else {
                 chrNum = "chr" + (i+1) + "?";
@@ -303,14 +304,15 @@ function showStatiscalTable(table){
             // snp-seek.irri.org -> 172.29.4.215:8080/iric-portal
             // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
             webService = pathname + chrNum + start + end;
-    
+            console.log(webService);
             $.ajax({
                 dataType: "json",
                 crossDomain: true,
                 url: webService,
                 data: arrayCatch,
                 success: function(arrayCatch) {
-                    buildHtmlTable(arrayCatch, "#gene-table-content");    
+                    buildHtmlTable(arrayCatch, "#gene-table-content");  
+                    $('.show-genes').attr('class', 'active-link show-genes');                   
                     toggleSpinner(spinner, false);
                     isHeaderPresent = true;
                 }
@@ -378,7 +380,7 @@ function showStatiscalTable(table){
     }
 }
 
-var annotObject = {}, annotArray = [];
+var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
 
 function generateGeneAnnotURLs(geneAnnotArrayURL){
     var chrNum,
@@ -388,8 +390,9 @@ function generateGeneAnnotURLs(geneAnnotArrayURL){
 
     for (var i = 0; i < ideogram.numChromosomes; i++) {
         if(isBrushActive[i]){
+            activeURLs = activeURLs + 1;
             console.log("active brush " + (i+1));
-            if (i < 10) {
+            if (i < 9) {
                 chrNum = "chr0" + (i+1) + "?";
             } else {
                 chrNum = "chr" + (i+1) + "?";
@@ -418,35 +421,77 @@ function processCollectedAnnots(webService, func) {
             func(null);
         }
         else{
-            console.log("success");
-
-            var compiledAnnots = [];
+            var compiledAnnots = [], getNumber = true;
             data.forEach(function(d){
                 var annotContent = [
                     (d.uniquename + ' | ' + d.description),
                     d.fmin,
-                    d.fmax - d.fmin
+                    d.fmax - d.fmin,
+                    allTracksCount,
+                    d.contig
                 ];
                 compiledAnnots.push(annotContent);
-                var number = (parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10) + 1);
-                console.log(number);
-                annotObject["chr"] = number;
+                if(getNumber){
+                    var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
+                    annotObject["chr"] = number;
+                    getNumber = !getNumber;
+                }
             });
             annotObject["annots"] = compiledAnnots;
             annotArray.push(annotObject);
 
-            var keys = ["name", "start", "length"];
+            var keys = ["name", "start", "length", "trackIndex", "chrName"];
             var rawAnnots = { "keys": keys, "annots": annotArray };
             var processedAnnots = ideogram.processAnnotData(rawAnnots);
 
-            console.log(processedAnnots);
-            
             func(processedAnnots);
         }
     });
 }
 
+function appendCheckbox(){
+    // &=- insertion to the brush selection checkbox element
+    var open_tag = "<li>",
+        close_tag = "</li>",
+        attr = '<input type="checkbox" onclick="toggleFilter(this)"',
+        label = "",
+        id = "",
+        colorBlock = '<div class="color-block" id="color-block-' + (brushSelectionAnnot) + '"></div>';
+
+    var item,
+        id = 'brush-selection-' + brushSelectionAnnot;
+        label = "<label for='" + id + "'>" + colorBlock + id + "</label>";
+
+    attr = attr + 'id="' + id + '" tracks="' + id + '"></input>';
+    item = open_tag + attr + label + close_tag;
+
+    $(item).appendTo("#brush-slct");
+    $('#color-block' + (brushSelectionAnnot+100)).css({"outline-color": arrayOfColorsBrushes[brushSelectionAnnot], "background-color": arrayOfColorsBrushes[brushSelectionAnnot]});    
+    brushSelectionAnnot = brushSelectionAnnot + 1;
+    $('#' + id).prop('checked', true);
+}
+
+function brushSelectionCheckbox(){
+    $.getJSON('/ideogram-extension/data/filter/brushSelection.json', function(data) {
+        var list_items = [],
+            html_wrapper = "<" + data['html']['type'] + "/>",
+            html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
+
+        list_items.push(html_label);
+        
+        $(html_wrapper, {
+            "id": data['html']['id'],
+            html: list_items.join("")
+        }).appendTo("#form-render-brush");
+    })
+    .done(function() {
+        isCheckboxPresent = !isCheckboxPresent;
+        appendCheckbox();
+    })
+}
+
 function plotGeneAnnotation(){
+    $('.plot-genes').attr('class', 'inactive-link plot-genes'); 
     // &+- transforming to a 
     var annotArray = [],
         spinnerConfig = {
@@ -477,24 +522,73 @@ function plotGeneAnnotation(){
 
     geneAnnotArrayURL = generateGeneAnnotURLs(geneAnnotArrayURL);
 
+    var temp = ideogram.config.annotationsColor;
+    ideogram.config.annotationsColor = getRandomColor();
+    arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
+
     asyncLoop({
         length: 13,
         functionToLoop: function(loop, i) {
             setTimeout(function() {
                 processCollectedAnnots(geneAnnotArrayURL[i - 1],
                     function(processedAnnots) {
-                        // console.log(processedAnnots);
+                        // &+- change setTimeout time to cover all/longer processes
+                        if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                        ideogram.drawProcessedAnnots(processedAnnots);
+                        ideogram.config.annotationsLayout = 'tracks';
+                        counterURLs = counterURLs + 1;
+                        if(counterURLs == activeURLs){
+                            ideogram.config.annotationsColor = temp;
+                            toggleSpinner(spinner, false);
+                            $('.plot-genes').attr('class', 'active-link plot-genes');                 
+
+                            // &+- make the checkbox element for brush selection appear
+                            $('#instructions').animate({ marginTop: 500 });
+                            $('#form-render-brush').css('margin-top', '495');
+                            $('#form-render-brush').css('height', '70');
+                            $('#form-render-brush').css('width', '250');
+
+                            addTrack('brush-selection-' + brushSelectionAnnot);
+                            if(isCheckboxPresent === false){
+                                brushSelectionCheckbox();
+                            }
+                            else{
+                                appendCheckbox();
+                            }
+
+                        }
                     }
                 );
                 loop();
-            }, 100);
+            }, 1000);
         },
         callback: function() {
-            console.log("here at callback function");
-            toggleSpinner(spinner, false);
+            // console.log("here at callback function");
+
+            // // &+- make the checkbox element for brush selection appear
+            // $('#instructions').animate({ marginTop: 500 });
+            // $('#form-render-brush').css('margin-top', '495');
+            // $('#form-render-brush').css('height', '70');
+            // $('#form-render-brush').css('width', '250');
+
+            // brushSelectionCheckbox();
+            // addTrack('brush-selection' + brushSelectionAnnot);
+
+            // brushSelectionAnnot = brushSelectionAnnot + 1;
         }
     });
 }
+
+// thank you https://stackoverflow.com/a/1484514 for this lighting/dimming color shade
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
     // for (var i = 0; i < ideogram.numChromosomes; i++) {
     //     if(isBrushActive[i]){
     //         console.log("active brush " + (i+1));
