@@ -182,9 +182,7 @@ ul {
     stroke: #000;
 }
 
-
 /* for divs */
-
 #jbrowse {
     width: 100%;
     height: 500px;
@@ -199,6 +197,13 @@ ul {
     float: left;
     position: absolute;
     margin-top: 70px;
+}
+
+#searchbox-keyword-message {
+    margin-top: -1px;
+    float: right;
+    font-weight: 900;
+    color: red;
 }
 
 #view-type {

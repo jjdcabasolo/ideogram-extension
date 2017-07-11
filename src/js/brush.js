@@ -5,17 +5,7 @@ function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
     $('#ideogram').attr('width', '1200');
     $('#ideogram').attr('height', '1200');
-}
-
-function widenBrush(){
-    // &+- providing wider space for the overlay of each chromosome
-    // var count = 0, numChromosomes = 12;
-    // for(count = 0; count < numChromosomes; count++) {
-    //     isMenuOpen[count] = false;
-    //     $('#brush' + count + ' .background').attr('x', '-26');        
-    //     $('#brush' + count + ' .background').attr('width', '78.5');        
-    // }
-
+    
     // &+- change cursor
     $('.background').css('cursor', 'zoom-in');
 }
@@ -106,25 +96,18 @@ $(document).ready(function() {
     // SVG MENU SETTINGS
     adjustIdeogramSVG();
 
-    // BRUSH SETTINGS
-    widenBrush();
-
     // DROPDOWN MENU
     dropdownMenuSetup();
 
-    // &+- TODO: multiple brushes
-    // $('#brush0').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 0)});
-    // $('#brush1').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 1)});
-    // $('#brush2').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 2)});
-    // $('#brush3').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 3)});
-    // $('#brush4').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 4)});
-    // $('#brush5').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 5)});
-    // $('#brush6').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 6)});
-    // $('#brush7').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 7)});
-    // $('#brush8').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 8)});
-    // $('#brush9').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 9)});
-    // $('#brush10').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 10)});
-    // $('#brush11').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 11)});
+    // thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
+    $('#search-keyword').bind("keypress", {}, keypressInBox);
+    function keypressInBox(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) { //Enter keycode                        
+            e.preventDefault();
+            triggerSearchBox();
+        }
+    };
 });  
 
 // &+- makes the JBrowse appear with the set coordinates
@@ -572,12 +555,11 @@ function plotGeneAnnotation(){
             }, 1000);
         },
         callback: function() {
-            // console.log("here at callback function");
         }
     });
 }
 
-// thank you https://stackoverflow.com/a/1484514 for this color randomizer
+// &+- thank you https://stackoverflow.com/a/1484514 for this color randomizer
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -587,18 +569,62 @@ function getRandomColor() {
     return color;
 }
 
+// &+- plot the position of the genes with the description that matches the input in the searchbox
 function triggerSearchBox(){
+    $('#searchbox-keyword-message').text('');
+    disabled="disabled"
+    var spinnerConfig = {
+            lines: 9,
+            length: 9,
+            width: 14,
+            radius: 20,
+            scale: 1,
+            corners: 1,
+            color: '#000',
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: 'spinner',
+            top: '20%',
+            left: '25%',
+            shadow: true,
+            hwaccel: false,
+            position: 'absolute'
+        },
+        buffering = document.getElementById("chromosome-render"),
+        spinner = new Spinner(spinnerConfig).spin(buffering);
+
     var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/search/word/',
         keyword = $("#search-keyword").val(),
-        webService = pathname + keyword;
-        console.log(webService);
+        webService = pathname + keyword,
+        temp = ideogram.config.annotationsColor,
+        colors = ideogram.config.annotationsColor = getRandomColor();
+
     asyncLoop({
-        length: 2,
+        length: 1,
         functionToLoop: function(loop, i) {
             setTimeout(function() {
                 processCollectedAnnots(webService,
                     function(processedAnnots) {
-                        console.log(processedAnnots);
+                        if(processedAnnots === null){
+                            $('#searchbox-keyword-message').text('No results found.');
+                        }
+                        else{
+                            if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                            ideogram.drawProcessedAnnots(processedAnnots);
+                            ideogram.config.annotationsLayout = 'tracks';
+                            // $('#searchbox-color').val('color');
+                            $("#searchbox-color").html('testing <b>1 2 3</b>');
+                            $('#searchbox-color').css('color', colors);
+                            $('#searchbox-keyword-message').text('Results are in this');
+                            $('#searchbox-keyword-message').css('font-weight', 'normal');
+                            $('#searchbox-keyword-message').css('color', 'black');
+                        }
+                        toggleSpinner(spinner, false);                            
                     }
                 );
                 loop();
