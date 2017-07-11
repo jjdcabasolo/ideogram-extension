@@ -382,6 +382,7 @@ function showStatiscalTable(table){
 
 var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
 
+// &+- generate the links for each chromosome using the brush extent as the start and end values
 function generateGeneAnnotURLs(geneAnnotArrayURL){
     var chrNum,
         pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
@@ -415,42 +416,48 @@ function generateGeneAnnotURLs(geneAnnotArrayURL){
     return geneAnnotArrayURL;
 }
 
+// &+- process the annotations and put it in an object that can be processed by ideogram.js
 function processCollectedAnnots(webService, func) {
     d3.json(webService, function(error, data) {
         if(error){
             func(null);
         }
         else{
-            var compiledAnnots = [], getNumber = true;
-            data.forEach(function(d){
-                var annotContent = [
-                    (d.uniquename + ' | ' + d.description),
-                    d.fmin,
-                    d.fmax - d.fmin,
-                    allTracksCount,
-                    d.contig
-                ];
-                compiledAnnots.push(annotContent);
-                if(getNumber){
-                    var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
-                    annotObject["chr"] = number;
-                    getNumber = !getNumber;
-                }
-            });
-            annotObject["annots"] = compiledAnnots;
-            annotArray.push(annotObject);
+            if(data.length <= 0){
+                func(null);
+            }
+            else{
+                var compiledAnnots = [], getNumber = true;
+                data.forEach(function(d){
+                    var annotContent = [
+                        (d.uniquename + '\n' + d.description),
+                        d.fmin,
+                        d.fmax - d.fmin,
+                        allTracksCount,
+                        d.contig
+                    ];
+                    compiledAnnots.push(annotContent);
+                    if(getNumber){
+                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
+                        annotObject["chr"] = number;
+                        getNumber = !getNumber;
+                    }
+                });
+                annotObject["annots"] = compiledAnnots;
+                annotArray.push(annotObject);
 
-            var keys = ["name", "start", "length", "trackIndex", "chrName"];
-            var rawAnnots = { "keys": keys, "annots": annotArray };
-            var processedAnnots = ideogram.processAnnotData(rawAnnots);
+                var keys = ["name", "start", "length", "trackIndex", "chrName"];
+                var rawAnnots = { "keys": keys, "annots": annotArray };
+                var processedAnnots = ideogram.processAnnotData(rawAnnots);
 
-            func(processedAnnots);
+                func(processedAnnots);
+            }
         }
     });
 }
 
+// &=- insertion to the brush selection checkbox element
 function appendCheckbox(){
-    // &=- insertion to the brush selection checkbox element
     var open_tag = "<li>",
         close_tag = "</li>",
         attr = '<input type="checkbox" onclick="toggleFilter(this)"',
@@ -471,6 +478,7 @@ function appendCheckbox(){
     $('#' + id).prop('checked', true);
 }
 
+// &+- creation of the checkbox element (created when a user clicks "Plot all genes option")
 function brushSelectionCheckbox(){
     $.getJSON('/ideogram-extension/data/filter/brushSelection.json', function(data) {
         var list_items = [],
@@ -490,9 +498,10 @@ function brushSelectionCheckbox(){
     })
 }
 
+// &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
 function plotGeneAnnotation(){
+    // &+- make this option inactive while it is ongoing
     $('.plot-genes').attr('class', 'inactive-link plot-genes'); 
-    // &+- transforming to a 
     var annotArray = [],
         spinnerConfig = {
             lines: 9,
@@ -543,7 +552,7 @@ function plotGeneAnnotation(){
                             $('.plot-genes').attr('class', 'active-link plot-genes');                 
 
                             // &+- make the checkbox element for brush selection appear
-                            $('#instructions').animate({ marginTop: 500 });
+                            $('#instructions').animate({ marginTop: 540 });
                             $('#form-render-brush').css('margin-top', '495');
                             $('#form-render-brush').css('height', '70');
                             $('#form-render-brush').css('width', '250');
@@ -564,22 +573,11 @@ function plotGeneAnnotation(){
         },
         callback: function() {
             // console.log("here at callback function");
-
-            // // &+- make the checkbox element for brush selection appear
-            // $('#instructions').animate({ marginTop: 500 });
-            // $('#form-render-brush').css('margin-top', '495');
-            // $('#form-render-brush').css('height', '70');
-            // $('#form-render-brush').css('width', '250');
-
-            // brushSelectionCheckbox();
-            // addTrack('brush-selection' + brushSelectionAnnot);
-
-            // brushSelectionAnnot = brushSelectionAnnot + 1;
         }
     });
 }
 
-// thank you https://stackoverflow.com/a/1484514 for this lighting/dimming color shade
+// thank you https://stackoverflow.com/a/1484514 for this color randomizer
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -589,60 +587,25 @@ function getRandomColor() {
     return color;
 }
 
-    // for (var i = 0; i < ideogram.numChromosomes; i++) {
-    //     if(isBrushActive[i]){
-    //         console.log("active brush " + (i+1));
-    //         if (i < 10) {
-    //             chrNum = "chr0" + (i+1) + "?";
-    //             annotObject["chr"] = (i+1);
-    //         } else {
-    //             chrNum = "chr" + (i+1) + "?";
-    //             annotObject["chr"] = (i+1);
-    //         }
-
-    //         var extent = arrayOfBrushes[i].extent(),
-    //             from = Math.floor(extent[0]),
-    //             to = Math.ceil(extent[1]),
-    //             start = 'start=' + from + '&',
-    //             end = 'end=' + to,
-    //             webService = pathname + chrNum + start + end;
-
-    //         geneAnnotArrayURL[i] = webService;
-    
-    //         // d3.json(webService, function (error, data) {
-    //         //     data.forEach(function (d) {
-    //         //         var annotContent = [
-    //         //             (d.uniquename + ' | ' + d.description),
-    //         //             d.fmin,
-    //         //             d.fmax - d.fmin
-    //         //         ];
-    //         //         compiledAnnots.push(annotContent);
-    //         //     });
-    //         //     annotObject["annots"] = compiledAnnots;
-    //         //     annotArray.push(annotObject);
-    //         //     console.log(annotArray);
-    //         //     var keys = ["name", "start", "length"];
-    //         //     var rawAnnots = { "keys": keys, "annots": annotArray };
-    //         //     var processedAnnots = ideogram.processAnnotData(rawAnnots);
-    //         //     console.log(processedAnnots);
-    //         //     toggleSpinner(spinner, false);
-    //         // });
-    //     }
-    //     else{
-    //         geneAnnotArrayURL[i] = null;
-    //     }
-    // }
-
-
-
-        // for (j = 0; j < compiledAnnots.length; j++) {
-        // }
-
-    // annotObject = "{ chr: '" + chrNum + "', " + "annots: " + annotContent + " }";
-    // var json = JSON.stringify(eval("(" + annotObject + ")"));
-
-
-    // 0: "chr11"
-    // 1: 28983108
-    // 2: 2595
-    // 3: 1
+function triggerSearchBox(){
+    var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/search/word/',
+        keyword = $("#search-keyword").val(),
+        webService = pathname + keyword;
+        console.log(webService);
+    asyncLoop({
+        length: 2,
+        functionToLoop: function(loop, i) {
+            setTimeout(function() {
+                processCollectedAnnots(webService,
+                    function(processedAnnots) {
+                        console.log(processedAnnots);
+                    }
+                );
+                loop();
+            }, 1000);
+        },
+        callback: function() {
+            // console.log("here at callback function");
+        }
+    });
+}

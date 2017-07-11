@@ -1315,19 +1315,19 @@ Ideogram.prototype.convertBpToPx = function(chr, bp) {
             iscn = band.iscn.start + (bp - band.bp.start) * bpToIscnScale;
 
             px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
+            console.log("eweitz");
             return px;
         }
         lastbandstop= band.bp.stop;
     }
 
-    // added my lmansueto for case gene miR172a where position in chr09 is > chr09 length.. just set to end
-        bpToIscnScale = (band.iscn.stop - band.iscn.start) / (band.bp.stop - band.bp.start);
-        iscn = band.iscn.start + (lastbandstop - band.bp.start) * bpToIscnScale;
+    // added by lmansueto for case gene miR172a where position in chr09 is > chr09 length.. just set to end
+    bpToIscnScale = (band.iscn.stop - band.iscn.start) / (band.bp.stop - band.bp.start);
+    iscn = band.iscn.start + (lastbandstop - band.bp.start) * bpToIscnScale;
 
-        px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
-        return px;
-
-
+    px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
+    console.log("mansueto");
+    return px;
 };
 
 /**
@@ -1590,7 +1590,15 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             annot['stop'] = annot.start + annot.length;
 
-            chrModel = ideo.chromosomes["4530"][chr];
+            // if(keys.length == 5){
+            //     if(chr == 2){
+            //         chrModel = ideo.chromosomes["4530"][chr];
+            //     }
+            // }
+            // else{
+                chrModel = ideo.chromosomes["4530"][chr];
+                console.log(chrModel);
+            // }
 
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
@@ -1822,6 +1830,7 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
         .data(annots)
         .selectAll("path.annot")
         .data(function(d) {
+            console.log(d);
             return d["annots"];
         })
         .enter();
@@ -1841,8 +1850,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
                 if(d.chrName !== undefined){
                     y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
                     // &=- appended on the first chromosome (<g>) but is adjusted according to chrName using offset variable
-                    // if(offset > 0) y = y - (76 * offset) - (chrMargin * index) - 8;
-                    // else
                     y = y - (76 * offset) - (chrMargin * index);
                 }
                 else{   
@@ -1854,9 +1861,15 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
                 
                 // &+- used in tracing // weekly progress presentation
-                // var popo = Math.ceil(d.stopPx - d.startPx);
-                // console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
+                var popo = Math.ceil(d.stopPx - d.startPx);
+                // var starttopx = convertBpToPx(d.start);
+                // var stoptopx = convertBpToPx(d.stop);
 
+                // console.log(d.start+"|"+d.stop);
+                // console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
+                // console.log()
+                // console.log(Math.round((d.startPx + d.stopPx) / 2) - 28);
+                // px = Math.round((startPx + stopPx) / 2) - 28;
                 if(difference >= 5){
                     return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
                 }

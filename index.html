@@ -72,11 +72,16 @@
             <br>feature in JBrowse</li>
         </ul>
 
-        <div id="box"></div>
       </div>
     </div>
 
-
+    <div id="searchbox">
+      <b>Search gene position by keyword</b>
+      <form class="form-wrapper cf">
+        <input id="search-keyword" type="text" placeholder="Search keyword here..." required>
+        <button type="button" onclick="triggerSearchBox()">Search</button>
+      </form>
+    </div>
     <!-- <span id="wewwew"></span> -->
 
     <div id="chromosome-render"></div>
@@ -87,9 +92,7 @@
     </div>
 
     <div class="gene-table" id="gt-div">
-      <!-- <div class="loading"></div> -->
       <table id="gene-table-content" border="1" class="table"></table>
-      <!-- <div id="bottom_anchor"></div> -->
     </div>
   </div>
 
