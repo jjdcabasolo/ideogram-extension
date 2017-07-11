@@ -12,7 +12,7 @@ function adjustIdeogramSVG(){
 
 function dropdownMenuSetup(){
     // &+- makes the dropdown be located somewhere outside the user's view
-    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
+    $('.dynamic-dropdown').attr('transform', 'translate(300, 300)');
 
     // &+- add dropdown menu after using the brush
     $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
@@ -617,7 +617,6 @@ function triggerSearchBox(){
                             if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
                             ideogram.drawProcessedAnnots(processedAnnots);
                             ideogram.config.annotationsLayout = 'tracks';
-                            // $('#searchbox-color').val('color');
                             $("#searchbox-color").html('testing <b>1 2 3</b>');
                             $('#searchbox-color').css('color', colors);
                             $('#searchbox-keyword-message').text('Results are in this');
@@ -634,4 +633,196 @@ function triggerSearchBox(){
             // console.log("here at callback function");
         }
     });
+}
+
+var isNightMode = true;
+function turnNightMode(){
+    $('style').detach();
+    if(isNightMode){
+        var cssConfig = "<style>"                   +
+            "html"                                  +
+                "{"                                 +
+                    "background-color: #212121;"    +
+                    "color: #EEEEEE;"               +
+                "}\n"                               +
+            ".color-block"                          +
+                "{"                                 +
+                    "outline-color: #212121;"       +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            "#search-keyword"                       +
+                "{"                                 +
+                    "color: #EEEEEE;"               +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            ".domain"                               +
+                "{"                                 +
+                    "stroke: #EEEEEE !important;"   +
+                "}\n"                               +
+            ".tick text"                            +
+                "{"                                 +
+                    "fill: #EEEEEE;"                +
+                "}\n"                               +
+            ".tick line"                            +
+                "{"                                 +
+                    "stroke: #EEEEEE !important;"   +
+                "}\n"                               +
+            ".nightmodebutton button"               +
+                "{"                                 +
+                    "background-color: #FAFAFA;"    +
+                    "color: black;"                 +
+                "}\n"                               +                        
+            ".acen"                                 +
+                "{"                                 +
+                    "fill: #80CBC4 !important;"     +
+                "}\n"                               +
+            ".chromosome text"                      +
+                "{"                                 +
+                    "fill: #EEEEEE;"                +
+                "}\n"                               +
+            ".file_menu"                            +
+                "{"                                 +
+                    "background-color: #BDBDBD;"    +
+                "}\n"                               +
+            ".white-text"                           +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +
+            ".white-text-default"                   +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +                
+            ".white-text-smaller"                   +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +
+            ".submit-chr-details"                   +
+                "{"                                 +
+                    "color: #212121;"               +
+                    "background-color: #EEEEEE;"    +
+                "}\n"                               + 
+            ".file_menu li a "                      +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +
+            "#form-render::-webkit-scrollbar-track,"      +
+            "#form-render-qtl::-webkit-scrollbar-track,"  +
+            "#form-render-brush::-webkit-scrollbar-track" +
+                "{"                                 +
+                    "background-color: #303030;"    +
+                "}\n"                               +
+            "#gene-table-content tbody::-webkit-scrollbar-thumb," +
+            "#form-render::-webkit-scrollbar-thumb," +
+            "#form-render-qtl::-webkit-scrollbar-thumb," +
+            "#form-render-brush::-webkit-scrollbar-thumb" + 
+                "{"                                 +
+                    "background-color: #80CBC4;"    +
+                "}\n"                               +
+            ".table thead"                          +
+                "{"                                 +
+                    "background-color: #424242;"    +
+                "}\n"                               +
+            ".table tbody"                          +
+                "{"                                 +
+                    "background-color: #616161;"    +
+                "}\n"                               +
+            "</style>";
+        $('.nightmodebutton button').text('Day mode');
+        $(document.head).append(cssConfig);
+        ideogram.config.annotationsColor = 'white';
+    }
+    else{
+        var cssConfig = "<style>"                   +
+            "html"                                  +
+                "{"                                 +
+                    "background-color: white;"      +
+                    "color: black;"                 +
+                "}\n"                               +
+            ".color-block"                          +
+                "{"                                 +
+                    "outline-color: white;"         +
+                    "background-color: white;"      +
+                "}\n"                               +
+            "#search-keyword"                       +
+                "{"                                 +
+                    "color: black;"                 +
+                    "background-color: white;"      +
+                "}\n"                               +
+            ".domain"                               +
+                "{"                                 +
+                    "stroke: #000 !important;"      +
+                "}\n"                               +
+            ".tick text"                            +
+                "{"                                 +
+                    "fill: #000;"                   +
+                "}\n"                               +
+            ".tick line"                            +
+                "{"                                 +
+                    "stroke: #000 !important;"      +
+                "}\n"                               +
+            ".nightmodebutton button"               +
+                "{"                                 +
+                    "background-color: #757575;"    +
+                    "color: white;"                 +
+                "}\n"                               +                        
+            ".acen"                                 +
+                "{"                                 +
+                    "fill: #FDD !important;"        +
+                "}\n"                               +
+            ".chromosome text"                      +
+                "{"                                 +
+                    "fill: #000;"                   +
+                "}\n"                               +
+            ".file_menu"                            +
+                "{"                                 +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            ".white-text"                           +
+                "{"                                 +
+                    "color: #E0E0E0;"               +
+                "}\n"                               +
+            ".white-text-default"                   +
+                "{"                                 +
+                    "color: #E0E0E0;"               +
+                "}\n"                               +
+            ".white-text-smaller"                   +
+                "{"                                 +
+                    "color: #E0E0E0;"               +
+                "}\n"                               +
+            ".submit-chr-details"                   +
+                "{"                                 +
+                    "color: #EEEEEE;"               +
+                    "background-color: #424242;"    +
+                "}\n"                               + 
+            ".file_menu li a "                      +
+                "{"                                 +
+                    "color: #FFFFFF;"               +
+                "}\n"                               +
+            "#form-render::-webkit-scrollbar,"      +
+            "#form-render-qtl::-webkit-scrollbar,"  +
+            "#form-render-brush::-webkit-scrollbar" +
+                "{"                                 +
+                    "background-color: white;"      +
+                "}\n"                               +
+            "#gene-table-content tbody::-webkit-scrollbar-thumb," +
+            "#form-render::-webkit-scrollbar-thumb," +
+            "#form-render-qtl::-webkit-scrollbar-thumb," +
+            "#form-render-brush::-webkit-scrollbar-thumb" + 
+                "{"                                 +
+                    "background-color: #FDD;"       +
+                "}\n"                               +
+            ".table thead"                          +
+                "{"                                 +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            ".table tbody"                          +
+                "{"                                 +
+                    "background-color: #303030;"    +
+                "}\n"                               +                
+            "</style>";
+        $('.nightmodebutton button').text('Night mode');
+        $(document.head).append(cssConfig);
+        ideogram.config.annotationsColor = 'black';        
+    }
+    isNightMode = !isNightMode;
 }

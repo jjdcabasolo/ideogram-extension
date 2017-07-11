@@ -76,14 +76,9 @@ li {
 .submit-chr-details {
     margin-right: 7px;
     float: right;   
-    background-color: #212121;
+    background-color: #424242;
     border: 0;
     color: #EEEEEE;
-}
-
-.submit-chr-details:hover {
-    background-color: #EEEEEE;
-    color: #212121;
 }
 
 .red-text {

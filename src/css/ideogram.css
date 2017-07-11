@@ -199,6 +199,12 @@ ul {
     margin-top: 70px;
 }
 
+#search-keyword {
+    border: 0;
+    height: 20px;
+    width: 195px;
+}
+
 #searchbox-keyword-message {
     margin-top: -1px;
     float: right;
@@ -250,6 +256,17 @@ ul {
     position: absolute;
     margin-left: 250px;
     width: 2000px;    
+}
+
+.nightmodebutton button {
+    position: absolute;
+    margin-left: 45px;
+    margin-top: 25px;
+    background-color: #757575;
+    border: 0;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
 }
 
 .color-block{
@@ -382,17 +399,38 @@ table{
 }
 
 /* &+- thank you https://codepen.io/devstreak/pen/dMYgeO for the scrollbar */
-#gene-table-content tbody::-webkit-scrollbar-track{
+#gene-table-content tbody::-webkit-scrollbar-track,
+#form-render::-webkit-scrollbar-track,
+#form-render-qtl::-webkit-scrollbar-track,
+#form-render-brush::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: #303030;
 }
 
-#gene-table-content tbody::-webkit-scrollbar{
+#gene-table-content tbody::-webkit-scrollbar,
+#form-render::-webkit-scrollbar,
+#form-render-qtl::-webkit-scrollbar,
+#form-render-brush::-webkit-scrollbar {
     width: 15px;
     background-color: #303030;
 }
 
-#gene-table-content tbody::-webkit-scrollbar-thumb{
+#form-render::-webkit-scrollbar-track,
+#form-render-qtl::-webkit-scrollbar-track,
+#form-render-brush::-webkit-scrollbar-track {
+    background-color: white;
+}
+
+#form-render::-webkit-scrollbar,
+#form-render-qtl::-webkit-scrollbar,
+#form-render-brush::-webkit-scrollbar {
+    background-color: white;
+}
+
+#gene-table-content tbody::-webkit-scrollbar-thumb,
+#form-render::-webkit-scrollbar-thumb,
+#form-render-qtl::-webkit-scrollbar-thumb,
+#form-render-brush::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #009688;
+    background-color: #FDD;
 }
