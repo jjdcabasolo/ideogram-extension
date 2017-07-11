@@ -12,7 +12,7 @@ function adjustIdeogramSVG(){
 
 function dropdownMenuSetup(){
     // &+- makes the dropdown be located somewhere outside the user's view
-    $('.dynamic-dropdown').attr('transform', 'translate(300, 300)');
+    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
     // &+- add dropdown menu after using the brush
     $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
@@ -34,10 +34,12 @@ function dropdownMenuSetup(){
             }
             if(countingTrue > 1){
                 // &+- make it inactive
+                $('#defaultOpen').attr('class', 'inactive-link tablinks'); 
                 $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
             }
             else{
                 // &+- make it active again
+                $('#defaultOpen').attr('class', 'active-link tablinks'); 
                 $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
             }
 
@@ -112,6 +114,13 @@ $(document).ready(function() {
 
 // &+- makes the JBrowse appear with the set coordinates
 function redirectToJBrowse(brush){
+    // &+- automatically open the jbrowse tab
+    $("html, body").animate({ scrollTop: $(document).height(), scrolllLft: 0 }, "slow");
+    document.getElementById("defaultOpen").click();
+    $('#no-content-jb').remove();
+    $('#goToTable').attr('class', 'inactive-link tablinks'); 
+    $('#JBrowseView').css('height', '460');
+
     var number = (parseInt(brush.replace(/[^0-9\.]/g, ''), 10) + 1),
         startBP = $('#startBPTextbox').val(),
         endBP = $('#endBPTextbox').val(),
@@ -128,6 +137,7 @@ function redirectToJBrowse(brush){
 
     $('#jbrowse').prop('src', pathname + chrLocation + extent + footer);
     $('#jbrowse').show();
+    $('#goToTable').attr('class', 'active-link tablinks'); 
 }
 
 // &+- this just resets the brush and makes the menu disappear [all brushes]
@@ -234,6 +244,13 @@ function setTheBrush(brush){
 
 // &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
+    // &+- automatically open the genetable tab
+    $('#defaultOpen').attr('class', 'inactive-link tablinks'); 
+    document.getElementById("goToTable").click();
+    $('#no-content-gt').remove();
+    $('#GeneTable').css('height', '440');
+
+    // &+- make the link inactive, automatically scroll the page to the lowermost left page
     $('.show-genes').attr('class', 'inactive-link show-genes'); 
     $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
     $('#gene-table-content').empty();
@@ -258,8 +275,8 @@ function showStatiscalTable(table){
             fps: 20,
             zIndex: 2e9,
             className: 'gt-spinner',
-            top: '20%',
-            left: '50%',
+            top: '16%',
+            left: '44%',
             shadow: true,
             hwaccel: false,
             position: 'absolute'
@@ -295,6 +312,7 @@ function showStatiscalTable(table){
                 data: arrayCatch,
                 success: function(arrayCatch) {
                     buildHtmlTable(arrayCatch, "#gene-table-content");  
+                    $('#defaultOpen').attr('class', 'active-link tablinks'); 
                     $('.show-genes').attr('class', 'active-link show-genes');                   
                     toggleSpinner(spinner, false);
                     isHeaderPresent = true;
@@ -525,9 +543,9 @@ function plotGeneAnnotation(){
                 processCollectedAnnots(geneAnnotArrayURL[i - 1],
                     function(processedAnnots) {
                         // &+- change setTimeout time to cover all/longer processes
-                        if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                        // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
                         ideogram.drawProcessedAnnots(processedAnnots);
-                        ideogram.config.annotationsLayout = 'tracks';
+                        // ideogram.config.annotationsLayout = 'tracks';
                         counterURLs = counterURLs + 1;
                         if(counterURLs == activeURLs){
                             ideogram.config.annotationsColor = temp;
@@ -572,7 +590,6 @@ function getRandomColor() {
 // &+- plot the position of the genes with the description that matches the input in the searchbox
 function triggerSearchBox(){
     $('#searchbox-keyword-message').text('');
-    disabled="disabled"
     var spinnerConfig = {
             lines: 9,
             length: 9,
@@ -614,11 +631,11 @@ function triggerSearchBox(){
                             $('#searchbox-keyword-message').text('No results found.');
                         }
                         else{
-                            if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                            // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
                             ideogram.drawProcessedAnnots(processedAnnots);
-                            ideogram.config.annotationsLayout = 'tracks';
-                            $("#searchbox-color").html('testing <b>1 2 3</b>');
-                            $('#searchbox-color').css('color', colors);
+                            // ideogram.config.annotationsLayout = 'tracks';
+                            // $("#searchbox-color").html('testing <b>1 2 3</b>');
+                            // $('#searchbox-color').css('color', colors);
                             $('#searchbox-keyword-message').text('Results are in this');
                             $('#searchbox-keyword-message').css('font-weight', 'normal');
                             $('#searchbox-keyword-message').css('color', 'black');
@@ -640,7 +657,7 @@ function turnNightMode(){
     $('style').detach();
     if(isNightMode){
         var cssConfig = "<style>"                   +
-            "html"                                  +
+            "body"                                  +
                 "{"                                 +
                     "background-color: #212121;"    +
                     "color: #EEEEEE;"               +
@@ -705,8 +722,8 @@ function turnNightMode(){
                 "{"                                 +
                     "color: #212121;"               +
                 "}\n"                               +
-            "#form-render::-webkit-scrollbar-track,"      +
-            "#form-render-qtl::-webkit-scrollbar-track,"  +
+            "#form-render::-webkit-scrollbar-track,"+
+            "#form-render-qtl::-webkit-scrollbar-track," +
             "#form-render-brush::-webkit-scrollbar-track" +
                 "{"                                 +
                     "background-color: #303030;"    +
@@ -733,7 +750,7 @@ function turnNightMode(){
     }
     else{
         var cssConfig = "<style>"                   +
-            "html"                                  +
+            "body"                                  +
                 "{"                                 +
                     "background-color: white;"      +
                     "color: black;"                 +
@@ -805,7 +822,7 @@ function turnNightMode(){
                     "background-color: white;"      +
                 "}\n"                               +
             "#gene-table-content tbody::-webkit-scrollbar-thumb," +
-            "#form-render::-webkit-scrollbar-thumb," +
+            "#form-render::-webkit-scrollbar-thumb,"+
             "#form-render-qtl::-webkit-scrollbar-thumb," +
             "#form-render-brush::-webkit-scrollbar-thumb" + 
                 "{"                                 +
@@ -825,4 +842,47 @@ function turnNightMode(){
         ideogram.config.annotationsColor = 'black';        
     }
     isNightMode = !isNightMode;
+}
+
+var emptyJB = true, emptyGT = true;
+// &+- tabs:: thank you https://www.w3schools.com/howto/howto_js_tabs.asp for this awesome tab html structure and css
+function toggleResult(evt, category) {
+    if($('#jbrowse').is(":empty") && emptyJB){
+        $('#JBrowseView').css('height', '140');
+        $('#JBrowseView').append('<div id="no-content-jb"><h3>JBrowse is not active yet.</h3><p>To make it appear, you can do either perform one of the following:</p><p class="li-content">- Click on an annotation.</p><p class="li-content">- Create a brush, then click "Show in JBrowse."</p></div>');
+        emptyJB = !emptyJB;
+    }
+    else if(!($('#jbrowse').is(":empty"))){
+        $('#no-content-jb').remove();
+        $('#JBrowseView').css('height', '460');
+    }
+
+    if($('#gene-table-content').is(":empty") && emptyGT){
+        $('#GeneTable').css('height', '140');
+        $('#GeneTable').append('<div id="no-content-gt"><h3>Gene table has no results yet.</h3><p>You can get to view genomic data by performing one of the following:</p><p class="li-content">- Searching a keyword</p><p class="li-content">- Create a brush, then click "Plot all genes" to view the results.</p></div>');
+        emptyGT = !emptyGT;
+    }
+    else if(!($('#gene-table-content').is(":empty"))){
+        $('#no-content-gt').remove();
+        $('#GeneTable').css('height', '440');
+    }
+
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(category).style.display = "block";
+    evt.currentTarget.className += " active";
 }
