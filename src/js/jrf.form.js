@@ -211,6 +211,67 @@ var renderForm = function(filepath, category) {
         });
 }
 
+var renderCollapsible = function(filepath) {
+    $.getJSON(filepath, function(data) {
+        console.log(data);
+        for (var prop in data) {
+            console.log(prop);
+            // var list_items = [],
+            //     html_wrapper = "<" + data['html']['type'] + "/>",
+            //     html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
+
+            // list_items.push(html_label);
+
+            // for (var i = 1; i < data['html']['html'].length; i++) {
+            //     var open_tag = "<" + data['html']['html'][i]['type'] + ">",
+            //         close_tag = "</" + data['html']['html'][i]['type'] + ">",
+            //         attr = "<input",
+            //         label = "",
+            //         id = "",
+            //         colorBlock;
+
+            //     // &+- inserts the div tag of the color block
+            //     if(data['html']['id'] === 'traitGenes'){
+            //         colorBlock = '<div class="color-block" id="color-block-' + (i-1) + '"></div>';
+            //     }
+            //     else if(data['html']['id'] === 'qtl'){
+            //         colorBlock = '<div class="color-block" id="color-block-' + (i-1+30) + '"></div>';                    
+            //     }
+
+            //     $.each(data['html']['html'][i]['html'], function(key, val) {
+            //         var item;
+            //         if (key == 'id') id = val;
+            //         if (key == 'caption') {
+            //             // &+- added color block for color coding before the label
+            //             label = "<label for='" + id + "'>" + colorBlock + val + "</label>";
+            //         } else {
+            //             var new_attr = " " + key + "='" + val + "'";
+            //             attr = attr + new_attr;
+            //         }
+            //     });
+
+            //     attr = attr + "></input>";
+            //     item = open_tag + attr + label + close_tag;
+            //     list_items.push(item);
+            // }
+            // // console.log(list_items);
+            
+            // if(data['html']['id'] === 'traitGenes'){
+            //     $(html_wrapper, {
+            //         "id": data['html']['id'],
+            //         html: list_items.join("")
+            //     }).appendTo("#form-render");
+            // }
+            // else if(data['html']['id'] === 'qtl'){
+            //     $(html_wrapper, {
+            //         "id": data['html']['id'],
+            //         html: list_items.join("")
+            //     }).appendTo("#form-render-qtl");
+            // }
+        }
+    });
+}
+
 /*
  * toggles the spinner to show or hide
  */
