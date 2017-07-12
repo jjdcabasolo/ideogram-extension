@@ -215,7 +215,7 @@ var renderCollapsible = function(filepath) {
     $.getJSON(filepath, function(data) {
         console.log(data);
         for (var prop in data) {
-            console.log(prop);
+            console.log(prop); 
             // var list_items = [],
             //     html_wrapper = "<" + data['html']['type'] + "/>",
             //     html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";

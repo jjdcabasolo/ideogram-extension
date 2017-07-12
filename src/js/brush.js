@@ -110,6 +110,94 @@ $(document).ready(function() {
             triggerSearchBox();
         }
     };
+
+    // thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
+    var panelspeed = 500; //panel animate speed in milliseconds
+    var totalpanels = 3; //total number of collapsible panels   
+    var defaultopenpanel = 0; //leave 0 for no panel open   
+    var accordian = false; //set panels to behave like an accordian, with one panel only ever open at once      
+
+    var panelheight = new Array();
+    var currentpanel = defaultopenpanel;
+    var iconheight = parseInt($('.icon-close-open').css('height'));
+
+    //Initialise collapsible panels
+    function panelinit() {
+        for (var i = 1; i <= totalpanels; i++) {
+            panelheight[i] = parseInt($('#cp-' + i).find('.expandable-panel-content').css('height'));
+            $('#cp-' + i).find('.expandable-panel-content').css('margin-top', -panelheight[i]);
+            if (defaultopenpanel == i) {
+                $('#cp-' + i).find('.icon-close-open').css('background-position', '0px -' + iconheight + 'px');
+                $('#cp-' + i).find('.expandable-panel-content').css('margin-top', 0);
+            }
+        }
+    }
+
+    $('.expandable-panel-heading').click(function () {
+        var obj = $(this).next();
+        var objid = parseInt($(this).parent().attr('ID').substr(3, 2));
+        currentpanel = objid;
+        if (accordian == true) {
+            resetpanels();
+        }
+
+        if (parseInt(obj.css('margin-top')) <= (panelheight[objid] * -1)) {
+            obj.clearQueue();
+            obj.stop();
+            obj.prev().find('.icon-close-open').css('background-position', '0px -' + iconheight + 'px');
+            obj.animate({
+                'margin-top': 0
+            }, panelspeed);
+        } else {
+            obj.clearQueue();
+            obj.stop();
+            obj.prev().find('.icon-close-open').css('background-position', '0px 0px');
+            obj.animate({
+                'margin-top': (panelheight[objid] * -1)
+            }, panelspeed);
+        }
+    });
+
+    function resetpanels() {
+        for (var i = 1; i <= totalpanels; i++) {
+            if (currentpanel != i) {
+                $('#cp-' + i).find('.icon-close-open').css('background-position', '0px 0px');
+                $('#cp-' + i).find('.expandable-panel-content').animate({
+                    'margin-top': -panelheight[i]
+                }, panelspeed);
+            }
+        }
+    }
+    
+    panelinit();
+
+    // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
+    // &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
+    var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
+    jQuery.fn.rotate = function(degrees) {
+        $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
+                     '-moz-transform' : 'rotate('+ degrees +'deg)',
+                     '-ms-transform' : 'rotate('+ degrees +'deg)',
+                     'transform' : 'rotate('+ degrees +'deg)'});
+    };
+
+    $('#collapsible-tg').click(function() {
+        if(arrowTGOn) $('#arrow-tg').rotate(0);
+        else $('#arrow-tg').rotate(-90);
+        arrowTGOn = !arrowTGOn;
+    });
+    
+    $('#collapsible-qtl').click(function() {
+        if(arrowQTLOn) $('#arrow-qtl').rotate(0);
+        else $('#arrow-qtl').rotate(-90);
+        arrowQTLOn = !arrowQTLOn;
+    });
+    
+    $('#collapsible-gq').click(function() {
+        if(arrowGQOn) $('#arrow-gq').rotate(0);
+        else $('#arrow-gq').rotate(-90);
+        arrowGQOn = !arrowGQOn;
+    });
 });  
 
 // &+- makes the JBrowse appear with the set coordinates
@@ -886,3 +974,4 @@ function toggleResult(evt, category) {
     document.getElementById(category).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
