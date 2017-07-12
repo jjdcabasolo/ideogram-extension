@@ -1,21 +1,11 @@
 // HTML DOM changes on brush-related elements
-var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know';
+var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [], arrayOfColorsBrushes = [];
 
 function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
-    $('#ideogram').attr('width', '100%');
+    $('#ideogram').attr('width', '1200');
     $('#ideogram').attr('height', '1200');
-}
-
-function widenBrush(){
-    // &+- providing wider space for the overlay of each chromosome
-    var count = 0, numChromosomes = 12;
-    for(count = 0; count < numChromosomes; count++) {
-        isMenuOpen[count] = false;
-        $('#brush' + count + ' .background').attr('x', '-26');        
-        $('#brush' + count + ' .background').attr('width', '78.5');        
-    }
-
+    
     // &+- change cursor
     $('.background').css('cursor', 'zoom-in');
 }
@@ -25,7 +15,7 @@ function dropdownMenuSetup(){
     $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
     // &+- add dropdown menu after using the brush
-    $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+    $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
     
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
@@ -44,10 +34,12 @@ function dropdownMenuSetup(){
             }
             if(countingTrue > 1){
                 // &+- make it inactive
+                $('#defaultOpen').attr('class', 'inactive-link tablinks'); 
                 $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
             }
             else{
                 // &+- make it active again
+                $('#defaultOpen').attr('class', 'active-link tablinks'); 
                 $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
             }
 
@@ -106,29 +98,116 @@ $(document).ready(function() {
     // SVG MENU SETTINGS
     adjustIdeogramSVG();
 
-    // BRUSH SETTINGS
-    widenBrush();
-
     // DROPDOWN MENU
     dropdownMenuSetup();
 
-    // &+- TODO: multiple brushes
-    // $('#brush0').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 0)});
-    // $('#brush1').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 1)});
-    // $('#brush2').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 2)});
-    // $('#brush3').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 3)});
-    // $('#brush4').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 4)});
-    // $('#brush5').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 5)});
-    // $('#brush6').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 6)});
-    // $('#brush7').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 7)});
-    // $('#brush8').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 8)});
-    // $('#brush9').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 9)});
-    // $('#brush10').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 10)});
-    // $('#brush11').mouseenter(function(){console.log("creating another"); createAnotherBrush(0, 0, 11)});
+    // thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
+    $('#search-keyword').bind("keypress", {}, keypressInBox);
+    function keypressInBox(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) { //Enter keycode                        
+            e.preventDefault();
+            triggerSearchBox();
+        }
+    };
+
+    // thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
+    var panelspeed = 500; //panel animate speed in milliseconds
+    var totalpanels = 3; //total number of collapsible panels   
+    var defaultopenpanel = 0; //leave 0 for no panel open   
+    var accordian = false; //set panels to behave like an accordian, with one panel only ever open at once      
+
+    var panelheight = new Array();
+    var currentpanel = defaultopenpanel;
+    var iconheight = parseInt($('.icon-close-open').css('height'));
+
+    //Initialise collapsible panels
+    function panelinit() {
+        for (var i = 1; i <= totalpanels; i++) {
+            panelheight[i] = parseInt($('#cp-' + i).find('.expandable-panel-content').css('height'));
+            $('#cp-' + i).find('.expandable-panel-content').css('margin-top', -panelheight[i]);
+            if (defaultopenpanel == i) {
+                $('#cp-' + i).find('.icon-close-open').css('background-position', '0px -' + iconheight + 'px');
+                $('#cp-' + i).find('.expandable-panel-content').css('margin-top', 0);
+            }
+        }
+    }
+
+    $('.expandable-panel-heading').click(function () {
+        var obj = $(this).next();
+        var objid = parseInt($(this).parent().attr('ID').substr(3, 2));
+        currentpanel = objid;
+        if (accordian == true) {
+            resetpanels();
+        }
+
+        if (parseInt(obj.css('margin-top')) <= (panelheight[objid] * -1)) {
+            obj.clearQueue();
+            obj.stop();
+            obj.prev().find('.icon-close-open').css('background-position', '0px -' + iconheight + 'px');
+            obj.animate({
+                'margin-top': 0
+            }, panelspeed);
+        } else {
+            obj.clearQueue();
+            obj.stop();
+            obj.prev().find('.icon-close-open').css('background-position', '0px 0px');
+            obj.animate({
+                'margin-top': (panelheight[objid] * -1)
+            }, panelspeed);
+        }
+    });
+
+    function resetpanels() {
+        for (var i = 1; i <= totalpanels; i++) {
+            if (currentpanel != i) {
+                $('#cp-' + i).find('.icon-close-open').css('background-position', '0px 0px');
+                $('#cp-' + i).find('.expandable-panel-content').animate({
+                    'margin-top': -panelheight[i]
+                }, panelspeed);
+            }
+        }
+    }
+    
+    panelinit();
+
+    // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
+    // &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
+    var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
+    jQuery.fn.rotate = function(degrees) {
+        $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
+                     '-moz-transform' : 'rotate('+ degrees +'deg)',
+                     '-ms-transform' : 'rotate('+ degrees +'deg)',
+                     'transform' : 'rotate('+ degrees +'deg)'});
+    };
+
+    $('#collapsible-tg').click(function() {
+        if(arrowTGOn) $('#arrow-tg').rotate(0);
+        else $('#arrow-tg').rotate(-90);
+        arrowTGOn = !arrowTGOn;
+    });
+    
+    $('#collapsible-qtl').click(function() {
+        if(arrowQTLOn) $('#arrow-qtl').rotate(0);
+        else $('#arrow-qtl').rotate(-90);
+        arrowQTLOn = !arrowQTLOn;
+    });
+    
+    $('#collapsible-gq').click(function() {
+        if(arrowGQOn) $('#arrow-gq').rotate(0);
+        else $('#arrow-gq').rotate(-90);
+        arrowGQOn = !arrowGQOn;
+    });
 });  
 
 // &+- makes the JBrowse appear with the set coordinates
 function redirectToJBrowse(brush){
+    // &+- automatically open the jbrowse tab
+    $("html, body").animate({ scrollTop: $(document).height(), scrolllLft: 0 }, "slow");
+    document.getElementById("defaultOpen").click();
+    $('#no-content-jb').remove();
+    $('#goToTable').attr('class', 'inactive-link tablinks'); 
+    $('#JBrowseView').css('height', '460');
 
     var number = (parseInt(brush.replace(/[^0-9\.]/g, ''), 10) + 1),
         startBP = $('#startBPTextbox').val(),
@@ -144,18 +223,15 @@ function redirectToJBrowse(brush){
         chrLocation = '?loc=chr' + number + '%3A';
     }
 
-    // console.log('src', pathname + chrLocation + extent + footer);
-    // $('#wewwew').text('src' + pathname + chrLocation + extent + footer);
-
     $('#jbrowse').prop('src', pathname + chrLocation + extent + footer);
     $('#jbrowse').show();
+    $('#goToTable').attr('class', 'active-link tablinks'); 
 }
 
 // &+- this just resets the brush and makes the menu disappear [all brushes]
 function deleteAllBrush(){
     $('.extent').attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    // $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');   
 
     // &+- makes the brush inactive in the back end
     for (var i = 0; i < ideogram.numChromosomes; i++) {
@@ -168,7 +244,6 @@ function deleteThisBrush(brush){
     var brushToChange = '#' + brush + ' > .extent';
     $(brushToChange).attr('height', '0');
     $('ul.file_menu').stop(true, true).slideUp('medium');        
-    // $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');  
 
     // &+- makes the brush inactive in the back end
     isBrushActive[parseInt(brush.replace(/[^0-9\.]/g, ''), 10)] = false;
@@ -181,6 +256,7 @@ function setTheBrush(brush){
         number = parseInt(brush.replace(/[^0-9\.]/g, ''), 10),
         limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
 
+    // &+- FORM CHECKING
     // &+- empty input fields
     if(start === '' && end === ''){
         $('#startBPTextbox').css('background-color', '#EF5350');
@@ -253,3 +329,649 @@ function setTheBrush(brush){
         }
     }
 } 
+
+// &+- make the table that will contain the data (the whole gene)
+function showStatiscalTable(table){
+    // &+- automatically open the genetable tab
+    $('#defaultOpen').attr('class', 'inactive-link tablinks'); 
+    document.getElementById("goToTable").click();
+    $('#no-content-gt').remove();
+    $('#GeneTable').css('height', '440');
+
+    // &+- make the link inactive, automatically scroll the page to the lowermost left page
+    $('.show-genes').attr('class', 'inactive-link show-genes'); 
+    $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
+    $('#gene-table-content').empty();
+
+    var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
+        start = 'start=' + $('#startBPTextbox').val() + '&',
+        end = 'end=' + $('#endBPTextbox').val(),
+        isHeaderPresent = false,
+        spinnerConfig = {
+            lines: 9,
+            length: 9,
+            width: 14,
+            radius: 20,
+            scale: 1,
+            corners: 1,
+            color: '#000',
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: 'gt-spinner',
+            top: '16%',
+            left: '44%',
+            shadow: true,
+            hwaccel: false,
+            position: 'absolute'
+        },
+        buffering = document.getElementById("gt-div"),
+        spinner = new Spinner(spinnerConfig).spin(buffering),
+        chrNum, webService, extent, from, to, arrayCatch, myList;
+
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            if (i < 9) {
+                chrNum = "chr0" + (i+1) + "?";
+            } else {
+                chrNum = "chr" + (i+1) + "?";
+            }
+
+            // &+- get the extent of the active brushes
+            extent = arrayOfBrushes[i].extent(),
+            from = Math.floor(extent[0]),
+            to = Math.ceil(extent[1]);
+
+            start = 'start=' + from + '&';
+            end = 'end=' + to;
+
+            // snp-seek.irri.org -> 172.29.4.215:8080/iric-portal
+            // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
+            webService = pathname + chrNum + start + end;
+            console.log(webService);
+            $.ajax({
+                dataType: "json",
+                crossDomain: true,
+                url: webService,
+                data: arrayCatch,
+                success: function(arrayCatch) {
+                    buildHtmlTable(arrayCatch, "#gene-table-content");  
+                    $('#defaultOpen').attr('class', 'active-link tablinks'); 
+                    $('.show-genes').attr('class', 'active-link show-genes');                   
+                    toggleSpinner(spinner, false);
+                    isHeaderPresent = true;
+                }
+            });
+
+        }
+    }
+
+    // &+- code snippet for converting JSON to HTML table. thank you https://stackoverflow.com/a/11480797
+    // Builds the HTML Table out of myList.
+    function buildHtmlTable(myList, selector) {
+        var columns = addAllColumnHeaders(myList, selector, isHeaderPresent),
+            tBodyProper = $('<tbody/>');
+
+        for(var i = 0; i < myList.length; i++) {
+            var row = $('<tr/>');
+            for(var colIndex = 0; colIndex < columns.length; colIndex++) {
+                var cellValue = myList[i][columns[colIndex]];
+                if(cellValue == null){
+                    row.append($('<td/>').html(""));
+                }
+                else{
+                    var stringValue = String(cellValue);
+                    stringValue = stringValue.replace(/,/g, '<br>');
+                    row.append($('<td/>').html(stringValue));
+                }
+            }
+            if(!isHeaderPresent){
+                $(tBodyProper).append(row);
+            }
+            else{
+                $(selector + ' tBody').append(row);            
+            }
+        }
+
+        if(!isHeaderPresent){
+            $(selector).append(tBodyProper);
+        }
+    }
+
+    // Adds a header row to the table and returns the set of columns.
+    // Need to do union of keys from all records as some records may not contain
+    // all records.
+    function addAllColumnHeaders(myList, selector, isHeaderPresent) {
+        var columnSet = [];
+        var headerTr = $('<tr/>');
+        var tHeadProper = $('<thead/>');
+
+        for (var i = 0; i < myList.length; i++) {
+            var rowHash = myList[i];
+            for (var key in rowHash) {
+                if ($.inArray(key, columnSet) == -1) {
+                    columnSet.push(key);
+                    headerTr.append($('<th/>').html(key));
+                }
+            }
+        }
+
+        if(!isHeaderPresent){
+            $(tHeadProper).append(headerTr);
+            $(selector).append(tHeadProper);        
+        }
+
+        return columnSet;
+    }
+}
+
+var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
+
+// &+- generate the links for each chromosome using the brush extent as the start and end values
+function generateGeneAnnotURLs(geneAnnotArrayURL){
+    var chrNum,
+        pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
+        start = 'start=' + $('#startBPTextbox').val() + '&',
+        end = 'end=' + $('#endBPTextbox').val();
+
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            activeURLs = activeURLs + 1;
+            console.log("active brush " + (i+1));
+            if (i < 9) {
+                chrNum = "chr0" + (i+1) + "?";
+            } else {
+                chrNum = "chr" + (i+1) + "?";
+            }
+
+            var extent = arrayOfBrushes[i].extent(),
+                from = Math.floor(extent[0]),
+                to = Math.ceil(extent[1]),
+                start = 'start=' + from + '&',
+                end = 'end=' + to,
+                webService = pathname + chrNum + start + end;
+
+            geneAnnotArrayURL[i] = webService;
+        }
+        else{
+            geneAnnotArrayURL[i] = null;
+        }
+    }
+
+    return geneAnnotArrayURL;
+}
+
+// &+- process the annotations and put it in an object that can be processed by ideogram.js
+function processCollectedAnnots(webService, func) {
+    d3.json(webService, function(error, data) {
+        if(error){
+            func(null);
+        }
+        else{
+            if(data.length <= 0){
+                func(null);
+            }
+            else{
+                var compiledAnnots = [], getNumber = true;
+                data.forEach(function(d){
+                    var annotContent = [
+                        (d.uniquename + '\n' + d.description),
+                        d.fmin,
+                        d.fmax - d.fmin,
+                        allTracksCount,
+                        d.contig
+                    ];
+                    compiledAnnots.push(annotContent);
+                    if(getNumber){
+                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
+                        annotObject["chr"] = number;
+                        getNumber = !getNumber;
+                    }
+                });
+                annotObject["annots"] = compiledAnnots;
+                annotArray.push(annotObject);
+
+                var keys = ["name", "start", "length", "trackIndex", "chrName"];
+                var rawAnnots = { "keys": keys, "annots": annotArray };
+                var processedAnnots = ideogram.processAnnotData(rawAnnots);
+
+                func(processedAnnots);
+            }
+        }
+    });
+}
+
+// &=- insertion to the brush selection checkbox element
+function appendCheckbox(){
+    var open_tag = "<li>",
+        close_tag = "</li>",
+        attr = '<input type="checkbox" onclick="toggleFilter(this)"',
+        label = "",
+        id = "",
+        colorBlock = '<div class="color-block" id="color-block-' + (brushSelectionAnnot) + '"></div>';
+
+    var item,
+        id = 'brush-selection-' + brushSelectionAnnot;
+        label = "<label for='" + id + "'>" + colorBlock + id + "</label>";
+
+    attr = attr + 'id="' + id + '" tracks="' + id + '"></input>';
+    item = open_tag + attr + label + close_tag;
+
+    $(item).appendTo("#brush-slct");
+    $('#color-block' + (brushSelectionAnnot+100)).css({"outline-color": arrayOfColorsBrushes[brushSelectionAnnot], "background-color": arrayOfColorsBrushes[brushSelectionAnnot]});    
+    brushSelectionAnnot = brushSelectionAnnot + 1;
+    $('#' + id).prop('checked', true);
+}
+
+// &+- creation of the checkbox element (created when a user clicks "Plot all genes option")
+function brushSelectionCheckbox(){
+    $.getJSON('/ideogram-extension/data/filter/brushSelection.json', function(data) {
+        var list_items = [],
+            html_wrapper = "<" + data['html']['type'] + "/>",
+            html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
+
+        list_items.push(html_label);
+        
+        $(html_wrapper, {
+            "id": data['html']['id'],
+            html: list_items.join("")
+        }).appendTo("#form-render-brush");
+    })
+    .done(function() {
+        isCheckboxPresent = !isCheckboxPresent;
+        appendCheckbox();
+    })
+}
+
+// &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
+function plotGeneAnnotation(){
+    // &+- make this option inactive while it is ongoing
+    $('.plot-genes').attr('class', 'inactive-link plot-genes'); 
+    var annotArray = [],
+        spinnerConfig = {
+            lines: 9,
+            length: 9,
+            width: 14,
+            radius: 20,
+            scale: 1,
+            corners: 1,
+            color: '#000',
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: 'spinner',
+            top: '20%',
+            left: '25%',
+            shadow: true,
+            hwaccel: false,
+            position: 'absolute'
+        },
+        buffering = document.getElementById("chromosome-render"),
+        spinner = new Spinner(spinnerConfig).spin(buffering),
+        geneAnnotArrayURL = [];
+
+    geneAnnotArrayURL = generateGeneAnnotURLs(geneAnnotArrayURL);
+
+    var temp = ideogram.config.annotationsColor;
+    ideogram.config.annotationsColor = getRandomColor();
+    arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
+
+    asyncLoop({
+        length: 13,
+        functionToLoop: function(loop, i) {
+            setTimeout(function() {
+                processCollectedAnnots(geneAnnotArrayURL[i - 1],
+                    function(processedAnnots) {
+                        // &+- change setTimeout time to cover all/longer processes
+                        // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                        ideogram.drawProcessedAnnots(processedAnnots);
+                        // ideogram.config.annotationsLayout = 'tracks';
+                        counterURLs = counterURLs + 1;
+                        if(counterURLs == activeURLs){
+                            ideogram.config.annotationsColor = temp;
+                            toggleSpinner(spinner, false);
+                            $('.plot-genes').attr('class', 'active-link plot-genes');                 
+
+                            // &+- make the checkbox element for brush selection appear
+                            $('#instructions').animate({ marginTop: 540 });
+                            $('#form-render-brush').css('margin-top', '495');
+                            $('#form-render-brush').css('height', '70');
+                            $('#form-render-brush').css('width', '250');
+
+                            addTrack('brush-selection-' + brushSelectionAnnot);
+                            if(isCheckboxPresent === false){
+                                brushSelectionCheckbox();
+                            }
+                            else{
+                                appendCheckbox();
+                            }
+
+                        }
+                    }
+                );
+                loop();
+            }, 1000);
+        },
+        callback: function() {
+        }
+    });
+}
+
+// &+- thank you https://stackoverflow.com/a/1484514 for this color randomizer
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+// &+- plot the position of the genes with the description that matches the input in the searchbox
+function triggerSearchBox(){
+    $('#searchbox-keyword-message').text('');
+    var spinnerConfig = {
+            lines: 9,
+            length: 9,
+            width: 14,
+            radius: 20,
+            scale: 1,
+            corners: 1,
+            color: '#000',
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: 'spinner',
+            top: '20%',
+            left: '25%',
+            shadow: true,
+            hwaccel: false,
+            position: 'absolute'
+        },
+        buffering = document.getElementById("chromosome-render"),
+        spinner = new Spinner(spinnerConfig).spin(buffering);
+
+    var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/search/word/',
+        keyword = $("#search-keyword").val(),
+        webService = pathname + keyword,
+        temp = ideogram.config.annotationsColor,
+        colors = ideogram.config.annotationsColor = getRandomColor();
+
+    asyncLoop({
+        length: 1,
+        functionToLoop: function(loop, i) {
+            setTimeout(function() {
+                processCollectedAnnots(webService,
+                    function(processedAnnots) {
+                        if(processedAnnots === null){
+                            $('#searchbox-keyword-message').text('No results found.');
+                        }
+                        else{
+                            // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                            ideogram.drawProcessedAnnots(processedAnnots);
+                            // ideogram.config.annotationsLayout = 'tracks';
+                            // $("#searchbox-color").html('testing <b>1 2 3</b>');
+                            // $('#searchbox-color').css('color', colors);
+                            $('#searchbox-keyword-message').text('Results are in this');
+                            $('#searchbox-keyword-message').css('font-weight', 'normal');
+                            $('#searchbox-keyword-message').css('color', 'black');
+                        }
+                        toggleSpinner(spinner, false);                            
+                    }
+                );
+                loop();
+            }, 1000);
+        },
+        callback: function() {
+            // console.log("here at callback function");
+        }
+    });
+}
+
+var isNightMode = true;
+function turnNightMode(){
+    $('style').detach();
+    if(isNightMode){
+        var cssConfig = "<style>"                   +
+            "body"                                  +
+                "{"                                 +
+                    "background-color: #212121;"    +
+                    "color: #EEEEEE;"               +
+                "}\n"                               +
+            ".color-block"                          +
+                "{"                                 +
+                    "outline-color: #212121;"       +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            "#search-keyword"                       +
+                "{"                                 +
+                    "color: #EEEEEE;"               +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            ".domain"                               +
+                "{"                                 +
+                    "stroke: #EEEEEE !important;"   +
+                "}\n"                               +
+            ".tick text"                            +
+                "{"                                 +
+                    "fill: #EEEEEE;"                +
+                "}\n"                               +
+            ".tick line"                            +
+                "{"                                 +
+                    "stroke: #EEEEEE !important;"   +
+                "}\n"                               +
+            ".nightmodebutton button"               +
+                "{"                                 +
+                    "background-color: #FAFAFA;"    +
+                    "color: black;"                 +
+                "}\n"                               +                        
+            ".acen"                                 +
+                "{"                                 +
+                    "fill: #80CBC4 !important;"     +
+                "}\n"                               +
+            ".chromosome text"                      +
+                "{"                                 +
+                    "fill: #EEEEEE;"                +
+                "}\n"                               +
+            ".file_menu"                            +
+                "{"                                 +
+                    "background-color: #BDBDBD;"    +
+                "}\n"                               +
+            ".white-text"                           +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +
+            ".white-text-default"                   +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +                
+            ".white-text-smaller"                   +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +
+            ".submit-chr-details"                   +
+                "{"                                 +
+                    "color: #212121;"               +
+                    "background-color: #EEEEEE;"    +
+                "}\n"                               + 
+            ".file_menu li a "                      +
+                "{"                                 +
+                    "color: #212121;"               +
+                "}\n"                               +
+            "#form-render::-webkit-scrollbar-track,"+
+            "#form-render-qtl::-webkit-scrollbar-track," +
+            "#form-render-brush::-webkit-scrollbar-track" +
+                "{"                                 +
+                    "background-color: #303030;"    +
+                "}\n"                               +
+            "#gene-table-content tbody::-webkit-scrollbar-thumb," +
+            "#form-render::-webkit-scrollbar-thumb," +
+            "#form-render-qtl::-webkit-scrollbar-thumb," +
+            "#form-render-brush::-webkit-scrollbar-thumb" + 
+                "{"                                 +
+                    "background-color: #80CBC4;"    +
+                "}\n"                               +
+            ".table thead"                          +
+                "{"                                 +
+                    "background-color: #424242;"    +
+                "}\n"                               +
+            ".table tbody"                          +
+                "{"                                 +
+                    "background-color: #616161;"    +
+                "}\n"                               +
+            "</style>";
+        $('.nightmodebutton button').text('Day mode');
+        $(document.head).append(cssConfig);
+        ideogram.config.annotationsColor = 'white';
+    }
+    else{
+        var cssConfig = "<style>"                   +
+            "body"                                  +
+                "{"                                 +
+                    "background-color: white;"      +
+                    "color: black;"                 +
+                "}\n"                               +
+            ".color-block"                          +
+                "{"                                 +
+                    "outline-color: white;"         +
+                    "background-color: white;"      +
+                "}\n"                               +
+            "#search-keyword"                       +
+                "{"                                 +
+                    "color: black;"                 +
+                    "background-color: white;"      +
+                "}\n"                               +
+            ".domain"                               +
+                "{"                                 +
+                    "stroke: #000 !important;"      +
+                "}\n"                               +
+            ".tick text"                            +
+                "{"                                 +
+                    "fill: #000;"                   +
+                "}\n"                               +
+            ".tick line"                            +
+                "{"                                 +
+                    "stroke: #000 !important;"      +
+                "}\n"                               +
+            ".nightmodebutton button"               +
+                "{"                                 +
+                    "background-color: #757575;"    +
+                    "color: white;"                 +
+                "}\n"                               +                        
+            ".acen"                                 +
+                "{"                                 +
+                    "fill: #FDD !important;"        +
+                "}\n"                               +
+            ".chromosome text"                      +
+                "{"                                 +
+                    "fill: #000;"                   +
+                "}\n"                               +
+            ".file_menu"                            +
+                "{"                                 +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            ".white-text"                           +
+                "{"                                 +
+                    "color: #E0E0E0;"               +
+                "}\n"                               +
+            ".white-text-default"                   +
+                "{"                                 +
+                    "color: #E0E0E0;"               +
+                "}\n"                               +
+            ".white-text-smaller"                   +
+                "{"                                 +
+                    "color: #E0E0E0;"               +
+                "}\n"                               +
+            ".submit-chr-details"                   +
+                "{"                                 +
+                    "color: #EEEEEE;"               +
+                    "background-color: #424242;"    +
+                "}\n"                               + 
+            ".file_menu li a "                      +
+                "{"                                 +
+                    "color: #FFFFFF;"               +
+                "}\n"                               +
+            "#form-render::-webkit-scrollbar,"      +
+            "#form-render-qtl::-webkit-scrollbar,"  +
+            "#form-render-brush::-webkit-scrollbar" +
+                "{"                                 +
+                    "background-color: white;"      +
+                "}\n"                               +
+            "#gene-table-content tbody::-webkit-scrollbar-thumb," +
+            "#form-render::-webkit-scrollbar-thumb,"+
+            "#form-render-qtl::-webkit-scrollbar-thumb," +
+            "#form-render-brush::-webkit-scrollbar-thumb" + 
+                "{"                                 +
+                    "background-color: #FDD;"       +
+                "}\n"                               +
+            ".table thead"                          +
+                "{"                                 +
+                    "background-color: #212121;"    +
+                "}\n"                               +
+            ".table tbody"                          +
+                "{"                                 +
+                    "background-color: #303030;"    +
+                "}\n"                               +                
+            "</style>";
+        $('.nightmodebutton button').text('Night mode');
+        $(document.head).append(cssConfig);
+        ideogram.config.annotationsColor = 'black';        
+    }
+    isNightMode = !isNightMode;
+}
+
+var emptyJB = true, emptyGT = true;
+// &+- tabs:: thank you https://www.w3schools.com/howto/howto_js_tabs.asp for this awesome tab html structure and css
+function toggleResult(evt, category) {
+    if($('#jbrowse').is(":empty") && emptyJB){
+        $('#JBrowseView').css('height', '140');
+        $('#JBrowseView').append('<div id="no-content-jb"><h3>JBrowse is not active yet.</h3><p>To make it appear, you can do either perform one of the following:</p><p class="li-content">- Click on an annotation.</p><p class="li-content">- Create a brush, then click "Show in JBrowse."</p></div>');
+        emptyJB = !emptyJB;
+    }
+    else if(!($('#jbrowse').is(":empty"))){
+        $('#no-content-jb').remove();
+        $('#JBrowseView').css('height', '460');
+    }
+
+    if($('#gene-table-content').is(":empty") && emptyGT){
+        $('#GeneTable').css('height', '140');
+        $('#GeneTable').append('<div id="no-content-gt"><h3>Gene table has no results yet.</h3><p>You can get to view genomic data by performing one of the following:</p><p class="li-content">- Searching a keyword</p><p class="li-content">- Create a brush, then click "Plot all genes" to view the results.</p></div>');
+        emptyGT = !emptyGT;
+    }
+    else if(!($('#gene-table-content').is(":empty"))){
+        $('#no-content-gt').remove();
+        $('#GeneTable').css('height', '440');
+    }
+
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(category).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+

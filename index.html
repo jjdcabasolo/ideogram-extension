@@ -6,6 +6,7 @@
 
   <!-- for linear scale render -->
   <script src="http://mbostock.github.com/d3/d3.v2.js"></script>
+
   <!-- for chromosomes render -->
   <link type="text/css" rel="stylesheet" href="src/css/ideogram.css" />
   <script type="text/javascript" src="src/js/d3.min.js"></script>
@@ -35,6 +36,7 @@
     <div id="sidebar">
       <div>
         <h1>Rice<br>Ideogram</h1>
+
       </div>
       <div>
         <ul id="view-type">
@@ -53,15 +55,11 @@
         </ul>
       </div>
       <br>
-      <!-- <b>trait genes</b> -->
-      <div id="form-render">
-
-      </div>
+      <div id="form-render"></div>
       <br>
-      <!-- <b>trait genes</b> -->
-      <div id="form-render-qtl">
-
-      </div>
+      <div id="form-render-qtl"></div>
+      <br>
+      <div id="form-render-brush"></div>  
       <br>
       <div id="instructions">
         <ul>
@@ -75,21 +73,100 @@
             <br>- click annotation to view gene
             <br>feature in JBrowse</li>
         </ul>
-
-        <div id="box"></div>
       </div>
     </div>
 
-    <span id="wewwew">12</span>
+    <div id="searchbox">
+      <b>Search</b><span> gene position by keyword</span>
+      <form class="form-wrapper cf">
+        <input id="search-keyword" type="text" placeholder="Enter keyword here..." autofocus required>
+        <button type="button" onclick="triggerSearchBox()">Search</button>
+      </form>
+      <p id="searchbox-keyword-message"><span id="searchbox-color"></span></p>
+    </div>
+    
+    <span class="nightmodebutton">
+    <button type="button" onclick="turnNightMode()">Night mode</button>
+    </span>
+
     <div id="chromosome-render"></div>
     <br>
 
     <div id="jb-div">
-      <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
+    </div>
+
+    <div class="gene-table" id="gt-div">
+
+<!--            <div class="expandable-panel" id="cp-1">
+              <div class="expandable-panel-heading" id="collapsible-tg">
+                  <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-tg" class="arrow-left-stuff"> Content heading 1</p>
+               </div>
+              <div class="expandable-panel-content">
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod</p>
+        <p>tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
+        <p>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
+        <p>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
+        <p>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
+       <p> proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                  <p>First Panel HTML...<br>asdfasdflkj<br>asdfasdf<br>asdfasdf</p>
+              </div>
+          </div>
+           
+          <div class="expandable-panel" id="cp-2">
+              <div class="expandable-panel-heading" id="collapsible-qtl">
+                  <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-qtl" class="arrow-left-stuff"> Content heading 2</p>
+               </div>
+              <div class="expandable-panel-content">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod</p>
+        <p>tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
+        <p>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
+        <p>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
+        <p>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
+       <p> proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                  <p>Second Panel HTML...</p>
+                   
+              </div>
+        </div>
+           
+        <div class="expandable-panel" id="cp-3">
+           <div class="expandable-panel-heading" id="collapsible-gq">
+               <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-gq" class="arrow-left-stuff"> Content heading 3</p>
+           </div>
+           <div class="expandable-panel-content">
+                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod</p>
+        <p>tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
+        <p>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
+        <p>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
+        <p>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
+       <p> proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+               <p>Third Panel HTML...</p>
+           </div>
+        </div>  -->
+
+
+      <div class="tab">
+        <button class="header-tab">Show results</button>
+        <button class="tablinks" onclick="toggleResult(event, 'JBrowseView')" id="defaultOpen">JBrowse</button>
+        <button class="tablinks" onclick="toggleResult(event, 'GeneTable')" id="goToTable">Gene table</button>
+      </div>
+      <div id="JBrowseView" class="tabcontent">
+        <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
+      </div>
+
+      <div id="GeneTable" class="tabcontent">
+        <table id="gene-table-content" border="1" class="table"></table>
+      </div>
     </div>
   </div>
 
   <script>
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+
   var filterMap = {
     "traitGenes": {
       "oryzabase_trait_genes": 1,
@@ -413,7 +490,7 @@
     ideogram = new Ideogram(config);
     // &+- added brush settings
     // &+- providing a larger svg for the dropdown menu 
-            $('#ideogram').attr('width', '100%');
+            $('#ideogram').attr('width', '1200');
             $('#ideogram').attr('height', '1200');
 
             // &+- change cursor
@@ -423,7 +500,7 @@
             $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
 
             // &+- add dropdown menu after using the brush
-            $('.dynamic-dropdown').wrapInner('<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a href="#" id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a href="#">Show statistics</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a href="#" id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a href="#" onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>');
+            $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
             
             // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
             $(".extent").hover(
@@ -511,64 +588,77 @@
     /* get value of tracks attribute */
     var selectedTrack = $("#" + id).attr("tracks");
 
-    // &+- reinitialize colors (color blocks)
-    for (i = 0; i < colors.length; i++) {
-      colorFillBlock = "white";
-      traitGeneID = '#color-block-' + (i);
-      qtlID = '#color-block-' + (i + 30);
-      $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-    }
-    // &+- color blocks will only trigger when the user picks tracks view
-    if(isTracksOn){
-      // &+- added qtl data, more filering, more fun!
-      if(checkbox.id.match('traitGenes') != null){
-        fillColorBlock("traitGenes");
-        color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+    if(selectedTrack.indexOf('brush') !== -1){
+      console.log(checkbox.id);
+      var number = parseInt(checkbox.id.replace(/[^0-9\.]/g, ''), 10);
+      color = arrayOfColorsBrushes[number];
+      // color = shadeColor("#000000", 100 - (brushSelectionAnnot * 10));
+      // console.log(color)
+      for (i = 0; i < (brushSelectionAnnot+1); i++) {
+        $('#color-block' + (i+100)).css({"outline-color": color, "background-color": color});
       }
-      else if(checkbox.id.match('qtl') != null){
-        fillColorBlock("qtl");
-        color = colors[filterMap["qtl"][selectedTrack]]["color"];      
+    }
+    else{
+      // &+- reinitialize colors (color blocks)
+      for (i = 0; i < colors.length; i++) {
+        colorFillBlock = "white";
+        traitGeneID = '#color-block-' + (i);
+        qtlID = '#color-block-' + (i + 30);
+        $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+        $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      }
+      // &+- color blocks will only trigger when the user picks tracks view
+      if(isTracksOn){
+        // &+- added qtl data, more filering, more fun!
+        if(checkbox.id.match('traitGenes') != null){
+          fillColorBlock("traitGenes");
+          color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+        }
+        else if(checkbox.id.match('qtl') != null){
+          fillColorBlock("qtl");  
+          color = colors[filterMap["qtl"][selectedTrack]]["color"];      
+        }
       }
     }
 
     if ($("#" + id).is(':checked')) {
       addTrack(selectedTrack);
+      if(selectedTrack.indexOf('brush') === -1){
+        /* get trackData urls */
+        var trackDataUrls = getTrackDataUrls(selectedTrack);
 
-      /* get trackData urls */
-      var trackDataUrls = getTrackDataUrls(selectedTrack);
+        /* empty traitData to avoid duplication */
+        traitData = [];
 
-      /* empty traitData to avoid duplication */
-      traitData = [];
+        /* clear current view */
+        d3.select("#ideogram").remove();
 
-      /* clear current view */
-      d3.select("#ideogram").remove();
+        /* create new view w/ selectedTrack annots */
+        ideogram = getTrackData(selectedTrack, trackDataUrls, config);
 
-      /* create new view w/ selectedTrack annots */
-      ideogram = getTrackData(selectedTrack, trackDataUrls, config);
+      }
+
 
       /* show annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "show");
 
-      // console.log(ideogram);
-      // var cou = 0;
-      // while(ideogram === undefined){
-      //   console.log(cou);
-      //   cou = cou + 1;
-      // }
 
-    } else {
+    }
+    else {
       removeTrack(selectedTrack);
+      if(selectedTrack.indexOf('brush') === -1){
 
-      /* update allTraitData */
-      var ra = removeSelectedTrack(selectedTrack);
-      config.rawAnnots = ra;
+        /* update allTraitData */
+        var ra = removeSelectedTrack(selectedTrack);
+        config.rawAnnots = ra;
 
-      /* clear current view */
-      d3.select("#ideogram").remove();
+        /* clear current view */
+        d3.select("#ideogram").remove();
 
-      /* new view without selectedTrack*/
-      ideogram = new Ideogram(config);
+        /* new view without selectedTrack*/
+        ideogram = new Ideogram(config);
+        
+      }
 
       /* hide annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "hidden");
@@ -652,6 +742,8 @@
   // &+- addition of the quantitativeTraitLoci.json
   var filepath = "/ideogram-extension/data/filter/quantitativeTraitLoci.json";
   renderForm(filepath, category);
+
+  renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
 
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();
