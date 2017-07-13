@@ -198,7 +198,7 @@ ul {
 #searchbox {
     float: left;
     position: absolute;
-    margin-top: 70px;
+    margin-top: 80px;
 }
 
 #search-keyword {
@@ -216,7 +216,7 @@ ul {
 
 #view-type {
     position: absolute;
-    margin-top: 47px;
+    margin-top: 70px;
 }
 
 #form-render {
@@ -251,7 +251,7 @@ ul {
     float: left;
     height: 100px;
     position: absolute;
-    margin-top: 460px;
+    margin-top: 560px;
 }
 
 #chromosome-render {
@@ -276,8 +276,8 @@ ul {
     outline-style: solid;
     width: 8px;
     height: 8px;
-    outline-color: white;
-    background-color: white;
+    outline-color: transparent;
+    background-color: transparent;
     display: inline;
     margin-left: 10px;
     margin-right: 10px;
@@ -508,7 +508,7 @@ div.tab button.active {
 /* &+- collapsible panels: thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for this awesome collapsible panel */
 
 .expandable-panel {
-    width: 250px;
+    width: 240px;
     position: relative;
     min-height: 50px;
     overflow: auto;
@@ -520,9 +520,10 @@ div.tab button.active {
     cursor: pointer;
     height: 40px;
     clear: both;
-    background-color: #f1f1f1;
+    background-color: #EEEEEE;
     position: relative;
     border-radius: 2px;
+    font-weight: 600;
 }
 
 .expandable-panel-heading:hover {
@@ -551,11 +552,11 @@ div.tab button.active {
 }
 
 #cp-2 {
-    margin-top: -24px;
+    margin-top: -13px;
 }
 
 #cp-3 {
-    margin-top: -24px;
+    margin-top: -13px;
 }
 
 .arrow-left-stuff {
@@ -564,4 +565,36 @@ div.tab button.active {
     -o-transform: rotate(-90deg);
     -ms-transform: rotate(-90deg);
     transform: rotate(-90deg);
+}
+
+#form-render-category {
+    margin-top: 100px;
+    position: absolute;
+    height: 460px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+
+#form-render-category::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: white;
+}
+
+#form-render-category::-webkit-scrollbar {
+    width: 15px;
+    background-color: white;
+}
+
+#form-render-category::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #80CBC4;
+}
+
+.hoverable-li:hover {
+    background-color: #B2DFDB;
+    width: 900px;
+    padding-left: 16px;
+    margin-left: -15px;
 }

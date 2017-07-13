@@ -46,8 +46,6 @@
             <label for="view-type_histogram">
               <input type="radio" name="view-type" id="view-type_histogram" onclick="getViewType(this.value)" value="Histogram" checked="checked">Histogram</input>
             </label>
-          </li>
-          <li>
             <label for="view-type_tracks">
               <input type="radio" name="view-type" id="view-type_tracks" onclick="getViewType(this.value)" value="Tracks">Tracks</input>
             </label>
@@ -55,11 +53,40 @@
         </ul>
       </div>
       <br>
-      <div id="form-render"></div>
-      <br>
-      <div id="form-render-qtl"></div>
-      <br>
-      <div id="form-render-brush"></div>  
+      <div id="form-render-category">
+        <div class="expandable-panel" id="cp-1">
+          <div class="expandable-panel-heading" id="collapsible-tg">
+              <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-tg" class="arrow-left-stuff"><span id="span-tg"></span></p>
+           </div>
+          <div class="expandable-panel-content">
+            <div style="height: 720px;" id="category-content-tg">
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="expandable-panel" id="cp-2">
+          <div class="expandable-panel-heading" id="collapsible-qtl">
+            <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-qtl" class="arrow-left-stuff"><span id="span-qtl"></span></p>
+          </div>
+          <div class="expandable-panel-content">
+            <div style="height: 700px;" id="category-content-qtl">
+              
+            </div>
+          </div>
+        </div>
+               
+        <div class="expandable-panel" id="cp-3">
+          <div class="expandable-panel-heading" id="collapsible-gq">
+           <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-gq" class="arrow-left-stuff"><span id="span-gq"></span></p>
+          </div>
+          <div class="expandable-panel-content">
+            <div style="height: 50px;" id="category-content-gq">
+              <p style="margin-top: 20px;">No gene queries created yet.</p>
+            </div>            
+          </div>
+        </div> 
+      </div>
       <br>
       <div id="instructions">
         <ul>
@@ -96,56 +123,6 @@
     </div>
 
     <div class="gene-table" id="gt-div">
-
-<!--            <div class="expandable-panel" id="cp-1">
-              <div class="expandable-panel-heading" id="collapsible-tg">
-                  <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-tg" class="arrow-left-stuff"> Content heading 1</p>
-               </div>
-              <div class="expandable-panel-content">
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod</p>
-        <p>tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
-        <p>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-        <p>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
-        <p>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-       <p> proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                  <p>First Panel HTML...<br>asdfasdflkj<br>asdfasdf<br>asdfasdf</p>
-              </div>
-          </div>
-           
-          <div class="expandable-panel" id="cp-2">
-              <div class="expandable-panel-heading" id="collapsible-qtl">
-                  <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-qtl" class="arrow-left-stuff"> Content heading 2</p>
-               </div>
-              <div class="expandable-panel-content">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod</p>
-        <p>tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
-        <p>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-        <p>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
-        <p>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-       <p> proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                  <p>Second Panel HTML...</p>
-                   
-              </div>
-        </div>
-           
-        <div class="expandable-panel" id="cp-3">
-           <div class="expandable-panel-heading" id="collapsible-gq">
-               <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-gq" class="arrow-left-stuff"> Content heading 3</p>
-           </div>
-           <div class="expandable-panel-content">
-                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod</p>
-        <p>tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
-        <p>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo</p>
-        <p>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
-        <p>cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non</p>
-       <p> proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-               <p>Third Panel HTML...</p>
-           </div>
-        </div>  -->
 
 
       <div class="tab">
@@ -440,7 +417,7 @@
       
       // &+- reinitialize colors (color blocks)
       for (i = 0; i < colors.length; i++) {
-        colorFillBlock = "white";
+        colorFillBlock = "transparent";
         traitGeneID = '#color-block-' + (i);
         qtlID = '#color-block-' + (i + 30);
         $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
@@ -601,7 +578,7 @@
     else{
       // &+- reinitialize colors (color blocks)
       for (i = 0; i < colors.length; i++) {
-        colorFillBlock = "white";
+        colorFillBlock = "transparent";
         traitGeneID = '#color-block-' + (i);
         qtlID = '#color-block-' + (i + 30);
         $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
@@ -744,6 +721,7 @@
   renderForm(filepath, category);
 
   renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
+  plugCollapsibleJQuery();
 
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();
