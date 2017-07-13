@@ -594,7 +594,7 @@ div.tab button.active {
 
 .hoverable-li:hover {
     background-color: #B2DFDB;
-    width: 900px;
+    width: 220px;
     padding-left: 16px;
     margin-left: -15px;
 }

@@ -133,8 +133,369 @@ var filterMap = {
     },
     traitData = [],
     lfUrls = [],
-    dropdownMenuForm = '<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a class="show-genes" onclick="showStatiscalTable()">Show all genes</a></li><li><a class="plot-genes" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>';
-
+    dropdownMenuForm = '<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a class="show-genes" onclick="showStatiscalTable()">Show all genes</a></li><li><a class="plot-genes" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>',
+    defaultColor = [
+        {
+          "id": "oryzabase_trait_genes",
+          "displayName": "Oryzabase Trait Gene Loci",
+          "color": "#424242"
+        },
+        {
+          "id": "qtaro_trait_genes",
+          "id2": "QTARO QTL",
+          "displayName": "All QTARO trait genes",
+          "color": "#F44336"
+        },
+        {
+          "id": "qtarogenes_bacterial_blight_resistance",
+          "id2": "qtaroqtl_bacterial_blight_resistance",
+          "displayName": "Bacterial blight resistance",
+          "color": "#9C27B0"
+        },
+        {
+          "id": "qtarogenes_blast_resistance",
+          "id2": "qtaroqtl_blast_resistance",
+          "displayName": "Blast resistance",
+          "color": "#673AB7"
+        },
+        {
+          "id": "qtarogenes_cold_tolerance",
+          "id2": "qtaroqtl_cold_tolerance",
+          "displayName": "Cold tolerance",
+          "color": "#3F51B5"
+        },
+        {
+          "id": "qtarogenes_culm_leaf",
+          "id2": "qtaroqtl_culm_leaf",
+          "displayName": "Culm leaf",
+          "color": "#2196F3"
+        },
+        {
+          "id": "qtarogenes_drought_tolerance",
+          "id2": "qtaroqtl_drought_tolerance",
+          "displayName": "Drought tolerance",
+          "color": "#00BCD4"
+        },
+        {
+          "id": "qtarogenes_dwarf",
+          "id2": "qtaroqtl_dwarf",
+          "displayName": "Dwarf",
+          "color": "#009688"
+        },
+        {
+          "id": "qtarogenes_eating_quality",
+          "id2": "qtaroqtl_eating_quality",
+          "displayName": "Eating quality",
+          "color": "#8BC34A"
+        },
+        {
+          "id": "qtarogenes_flowering",
+          "id2": "qtaroqtl_flowering",
+          "displayName": "Flowering Trait",
+          "color": "#69F0AE"
+        },
+        {
+          "id": "qtarogenes_germination_dormancy",
+          "id2": "qtaroqtl_germination_dormancy",
+          "displayName": "Germination dormancy",
+          "color": "#FFC107"
+        },
+        {
+          "id": "qtarogenes_insect_resistance",
+          "id2": "qtaroqtl_insect_resistance",
+          "displayName": "Insect resistance",
+          "color": "#FF9800"
+        },
+        {
+          "id": "qtarogenes_lethality",
+          "id2": "qtaroqtl_lethality",
+          "displayName": "Lethality Trait",
+          "color": "#FF5722"
+        },
+        {
+          "id": "qtarogenes_lodging_resistance",
+          "id2": "qtaroqtl_lodging_resistance",
+          "displayName": "Lodging resistance",
+          "color": "#795548"
+        },
+        {
+          "id": "qtarogenes_morphological_trait",
+          "id2": "qtaroqtl_morphological_trait",
+          "displayName": "Morphological trait",
+          "color": "#9E9E9E"
+        },
+        {
+          "id": "qtarogenes_other_disease_resistance",
+          "id2": "qtaroqtl_other_disease_resistance",
+          "displayName": "Other disease resistance",
+          "color": "#607D8B"
+        },
+        {
+          "id": "qtarogenes_other_soil_stress_tolerance",
+          "id2": "qtaroqtl_other_soil_stress_tolerance",
+          "displayName": "Other soil stress tolerance",
+          "color": "#B71C1C"
+        },
+        {
+          "id": "qtarogenes_other_stress_resistance",
+          "id2": "qtaroqtl_other_stress_resistance",
+          "displayName": "Other stress resistance",
+          "color": "#880E4F"
+        },
+        {
+          "id": "qtarogenes_others",
+          "id2": "qtaroqtl_others",
+          "displayName": "Others",
+          "color": "#4A148C"
+        },
+        {
+          "id": "qtarogenes_panicle_flower",
+          "id2": "qtaroqtl_panicle_flower",
+          "displayName": "Panicle flower",
+          "color": "#311B92"
+        },
+        {
+          "id": "qtarogenes_physiological_trait",
+          "id2": "qtaroqtl_physiological_trait",
+          "displayName": "Physiological trait",
+          "color": "#1A237E"
+        },
+        {
+          "id": "qtarogenes_resistance_or_tolerance",
+          "id2": "qtaroqtl_resistance_or_tolerance",
+          "displayName": "Resistance or tolerance",
+          "color": "#0D47A1"
+        },
+        {
+          "id": "qtarogenes_root",
+          "id2": "qtaroqtl_root",
+          "displayName": "Root",
+          "color": "#01579B"
+        },
+        {
+          "id": "qtarogenes_salinity_tolerance",
+          "id2": "qtaroqtl_salinity_tolerance",
+          "displayName": "Salinity tolerance",
+          "color": "#006064"
+        },
+        {
+          "id": "qtarogenes_seed",
+          "id2": "qtaroqtl_seed",
+          "displayName": "Seed",
+          "color": "#004D40"
+        },
+        {
+          "id": "qtarogenes_sheath_blight_resistance",
+          "id2": "qtaroqtl_sheath_blight_resistance",
+          "displayName": "Sheath blight resistance",
+          "color": "#1B5E20"
+        },
+        {
+          "id": "qtarogenes_shoot_seedling",
+          "id2": "qtaroqtl_shoot_seedling",
+          "displayName": "Shoot seedling",
+          "color": "#827717"
+        },
+        {
+          "id": "qtarogenes_source_activity",
+          "id2": "qtaroqtl_source_activity",
+          "displayName": "Source activity",
+          "color": "#3E2723"
+        },
+        {
+          "id": "qtarogenes_sterility",
+          "id2": "qtaroqtl_sterility",
+          "displayName": "Sterility",
+          "color": "#212121"
+        },
+        {
+          "id": "qtarogenes_submergency_tolerance",
+          "id2": "qtaroqtl_submergency_tolerance",
+          "displayName": "Submergency tolerance",
+          "color": "#BDBDBD"
+        }
+    ],
+    nightModeColor = [
+            {
+            "id": "oryzabase_trait_genes",
+            "displayName": "Oryzabase Trait Gene Loci",
+            "color": "#FF1744"
+        },
+        {
+            "id": "qtaro_trait_genes",
+            "id2": "QTARO QTL",
+            "displayName": "All QTARO trait genes",
+            "color": "#F44336"
+        },
+        {
+            "id": "qtarogenes_bacterial_blight_resistance",
+            "id2": "qtaroqtl_bacterial_blight_resistance",
+            "displayName": "Bacterial blight resistance",
+            "color": "#9C27B0"
+        },
+        {
+            "id": "qtarogenes_blast_resistance",
+            "id2": "qtaroqtl_blast_resistance",
+            "displayName": "Blast resistance",
+            "color": "#673AB7"
+        },
+        {
+            "id": "qtarogenes_cold_tolerance",
+            "id2": "qtaroqtl_cold_tolerance",
+            "displayName": "Cold tolerance",
+            "color": "#3F51B5"
+        },
+        {
+            "id": "qtarogenes_culm_leaf",
+            "id2": "qtaroqtl_culm_leaf",
+            "displayName": "Culm leaf",
+            "color": "#2196F3"
+        },
+        {
+            "id": "qtarogenes_drought_tolerance",
+            "id2": "qtaroqtl_drought_tolerance",
+            "displayName": "Drought tolerance",
+            "color": "#00BCD4"
+        },
+        {
+            "id": "qtarogenes_dwarf",
+            "id2": "qtaroqtl_dwarf",
+            "displayName": "Dwarf",
+            "color": "#009688"
+        },
+        {
+            "id": "qtarogenes_eating_quality",
+            "id2": "qtaroqtl_eating_quality",
+            "displayName": "Eating quality",
+            "color": "#8BC34A"
+        },
+        {
+            "id": "qtarogenes_flowering",
+            "id2": "qtaroqtl_flowering",
+            "displayName": "Flowering Trait",
+            "color": "#69F0AE"
+        },
+        {
+            "id": "qtarogenes_germination_dormancy",
+            "id2": "qtaroqtl_germination_dormancy",
+            "displayName": "Germination dormancy",
+            "color": "#FFC107"
+        },
+        {
+            "id": "qtarogenes_insect_resistance",
+            "id2": "qtaroqtl_insect_resistance",
+            "displayName": "Insect resistance",
+            "color": "#FF9800"
+        },
+        {
+            "id": "qtarogenes_lethality",
+            "id2": "qtaroqtl_lethality",
+            "displayName": "Lethality Trait",
+            "color": "#FF5722"
+        },
+        {
+            "id": "qtarogenes_lodging_resistance",
+            "id2": "qtaroqtl_lodging_resistance",
+            "displayName": "Lodging resistance",
+            "color": "#795548"
+        },
+        {
+            "id": "qtarogenes_morphological_trait",
+            "id2": "qtaroqtl_morphological_trait",
+            "displayName": "Morphological trait",
+            "color": "#9E9E9E"
+        },
+        {
+            "id": "qtarogenes_other_disease_resistance",
+            "id2": "qtaroqtl_other_disease_resistance",
+            "displayName": "Other disease resistance",
+            "color": "#607D8B"
+        },
+        {
+            "id": "qtarogenes_other_soil_stress_tolerance",
+            "id2": "qtaroqtl_other_soil_stress_tolerance",
+            "displayName": "Other soil stress tolerance",
+            "color": "#E57373"
+        },
+        {
+            "id": "qtarogenes_other_stress_resistance",
+            "id2": "qtaroqtl_other_stress_resistance",
+            "displayName": "Other stress resistance",
+            "color": "#F06292"
+        },
+        {
+            "id": "qtarogenes_others",
+            "id2": "qtaroqtl_others",
+            "displayName": "Others",
+            "color": "#BA68C8"
+        },
+        {
+            "id": "qtarogenes_panicle_flower",
+            "id2": "qtaroqtl_panicle_flower",
+            "displayName": "Panicle flower",
+            "color": "#9575CD"
+        },
+        {
+            "id": "qtarogenes_physiological_trait",
+            "id2": "qtaroqtl_physiological_trait",
+            "displayName": "Physiological trait",
+            "color": "#7986CB"
+        },
+        {
+            "id": "qtarogenes_resistance_or_tolerance",
+            "id2": "qtaroqtl_resistance_or_tolerance",
+            "displayName": "Resistance or tolerance",
+            "color": "#64B5F6"
+        },
+        {
+            "id": "qtarogenes_root",
+            "id2": "qtaroqtl_root",
+            "displayName": "Root",
+            "color": "#4FC3F7"
+        },
+        {
+            "id": "qtarogenes_salinity_tolerance",
+            "id2": "qtaroqtl_salinity_tolerance",
+            "displayName": "Salinity tolerance",
+            "color": "#4DD0E1"
+        },
+        {
+            "id": "qtarogenes_seed",
+            "id2": "qtaroqtl_seed",
+            "displayName": "Seed",
+            "color": "#4DB6AC"
+        },
+        {
+            "id": "qtarogenes_sheath_blight_resistance",
+            "id2": "qtaroqtl_sheath_blight_resistance",
+            "displayName": "Sheath blight resistance",
+            "color": "#81C784"
+        },
+        {
+            "id": "qtarogenes_shoot_seedling",
+            "id2": "qtaroqtl_shoot_seedling",
+            "displayName": "Shoot seedling",
+            "color": "#AED581"
+        },
+        {
+            "id": "qtarogenes_source_activity",
+            "id2": "qtaroqtl_source_activity",
+            "displayName": "Source activity",
+            "color": "#DCE775"
+        },
+        {
+            "id": "qtarogenes_sterility",
+            "id2": "qtaroqtl_sterility",
+            "displayName": "Sterility",
+            "color": "#FFF176"
+        },
+        {
+            "id": "qtarogenes_submergency_tolerance",
+            "id2": "qtaroqtl_submergency_tolerance",
+            "displayName": "Submergency tolerance",
+            "color": "#FFD54F"
+        }
+    ];
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
  *  JSON format based on format of jquery.dform and should be:
@@ -213,14 +574,12 @@ var renderForm = function(filepath, category) {
 
 var renderCollapsible = function(filepath) {
     $.getJSON(filepath, function(data) {
-        // console.log(data); 
         for (var category in data) {
             var content = data[category],
                 list_items = [],
-                ultag = $('<ul/>'),
-                putag = $('<p/>');
+                ultag = $('<ul/>');
 
-            for (var i = 1; i < content['collapsible_content'].length; i++) {
+            for (var i = 0; i < content['collapsible_content'].length; i++) {
                 var open_tag = "<" + content['collapsible_content'][i]['tag'] + " class='hoverable-li'>",
                     close_tag = "</" + content['collapsible_content'][i]['tag'] + ">",
                     attr = "<input",
@@ -230,10 +589,10 @@ var renderCollapsible = function(filepath) {
 
                 // &+- inserts the div tag of the color block
                 if(category === 'traitGenes'){
-                    colorBlock = '<div class="color-block" id="color-block-' + (i-1) + '"></div>';
+                    colorBlock = '<div class="color-block" id="color-block-' + (i) + '"></div>';
                 }
                 else if(category === 'qtl'){
-                    colorBlock = '<div class="color-block" id="color-block-' + (i-1+30) + '"></div>';                    
+                    colorBlock = '<div class="color-block" id="color-block-' + (i+30) + '"></div>';                    
                 }
 
                 $.each(content['collapsible_content'][i]['html'], function(key, val) {
@@ -254,9 +613,7 @@ var renderCollapsible = function(filepath) {
             }
 
             $(list_items.join('')).appendTo(ultag);
-            $(ultag).appendTo(putag);
-
-            $(putag).appendTo('#' + content['id']);
+            $(ultag).appendTo('#' + content['id']);
             $('#' + content['appendToClass']).text(' ' + content['header']);
         }
     })
@@ -493,93 +850,8 @@ function getTrackData(selectedTrack, trackDataUrls) {
             toggleSpinner(spinner, false);
 
             ideogram = new Ideogram(config);
-            // &+- providing a larger svg for the dropdown menu 
-            $('#ideogram').attr('width', '1200');
-            $('#ideogram').attr('height', '1200');
-
-            // &+- change cursor
-            $('.background').css('cursor', 'zoom-in');
-
-            // &+- makes the dropdown be located somewhere outside the user's view
-            $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
-
-            // &+- add dropdown menu after using the brush
-            $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
-            
-            // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
-            $(".extent").hover(
-                function( event ) {
-                    brushID = $(this).parent().attr('id');
-                    
-                    // &+- used in getting the details for start and end
-                    if(previousBrush === 'some-id-i-used-to-know') $('#' + previousBrush).attr('id', ('some-id-' + brushID));
-                    else $('#some-id-' + previousBrush).attr('id', ('some-id-' + brushID));
-                    previousBrush = brushID;
-
-                    // &+- makes the show in JBrowse unable to click
-                    var countingTrue = 0;
-                    for (var i = 0; i < ideogram.numChromosomes; i++) {
-                        if(isBrushActive[i]) countingTrue++;
-                    }
-                    if(countingTrue > 1){
-                        // &+- make it inactive
-                        $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
-                    }
-                    else{
-                        // &+- make it active again
-                        $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
-                    }
-
-                    // &+- displays the current chromosome name in the bottom of the menu
-                    var number = parseInt(brushID.replace(/[^0-9\.]/g, ''), 10),
-                        limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
-                    $('#chr-name').text('chr ' + (number + 1) + ' | ');
-                    $('#chr-name-max').text(' ' + limit);
-
-                    // &+- displays the current base pairs on focus
-                    $('#startBPTextbox').val(selectedRegion[number].from);
-                    $('#endBPTextbox').val(selectedRegion[number].to);
-
-                    // &+- make the menu visible
-                    $('.file_menu').css('display', 'visible');
-
-                    // &+- for the foreignObjectobject tag inside the svg tag
-                    $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-270) + ', ' + (event.pageY-50) + ')'); 
-                    $('ul.file_menu').stop(true, true).slideDown('medium');
-
-                    // &+- add the brush id to the anchor tag (used in brush deletion and submission of coordinates)
-                    $('.identify-the-brush').attr('id', brushID); 
-                    $('.submit-chr-details').attr('id', brushID);
-                    $('.show-jbrowse').attr('id', brushID);  
-
-                    // &+- makes the brush visible when the mouse is on the menu
-                    $('#' + $(this).parent().attr('id')).css('visibility', 'visible');
-
-                    isMenuOpen[number] = true;
-                },
-                function() {
-                }
-            );
-
-            // &+- makes the brush re-appear again when the mouse is on the menu
-            $('.dynamic-dropdown').hover(function(){ 
-            }, function(){ 
-                // &+- make the menu return to nowhere
-                $('ul.file_menu').stop(true, true).slideUp('medium');        
-
-                // &+- clear form contents
-                $('#startBPTextbox').val('');
-                $('#endBPTextbox').val('');
-                $('#message-input-menu').text('');        
-
-                // &+- reset colors
-                $('#startBPTextbox').css('background-color', 'white');
-                $('#startBPTextbox').css('color', 'black');
-
-                $('#endBPTextbox').css('background-color', 'white');
-                $('#endBPTextbox').css('color', 'black');
-            });
-
+            adjustIdeogramSVG();
+            dropdownMenuSetup();
             return ideogram;
         }
     });

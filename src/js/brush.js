@@ -94,14 +94,8 @@ function dropdownMenuSetup(){
     });
 }
 
-$(document).ready(function() {    
-    // SVG MENU SETTINGS
-    adjustIdeogramSVG();
-
-    // DROPDOWN MENU
-    dropdownMenuSetup();
-
-    // thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
+// thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
+function searchEnterOverride(){
     $('#search-keyword').bind("keypress", {}, keypressInBox);
     function keypressInBox(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
@@ -109,10 +103,12 @@ $(document).ready(function() {
             e.preventDefault();
             triggerSearchBox();
         }
-    };
-    
+    };    
+}
+
+// &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
+function collapsibleArrowAnimate(){
     // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
-    // &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
     var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
     jQuery.fn.rotate = function(degrees) {
         $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
@@ -135,7 +131,7 @@ $(document).ready(function() {
     
     $('#collapsible-qtl').click(function() {
         if(arrowQTLOn) {
-            ('#arrow-qtl').rotate(0);
+            $('#arrow-qtl').rotate(0);
             $('#collapsible-qtl').css('background-color', '#E0E0E0');
         }
         else{
@@ -156,6 +152,18 @@ $(document).ready(function() {
         }
         arrowGQOn = !arrowGQOn;
     });
+}
+
+$(document).ready(function() {    
+    // SVG MENU SETTINGS
+    adjustIdeogramSVG();
+
+    // DROPDOWN MENU
+    dropdownMenuSetup();
+
+    searchEnterOverride();
+
+    collapsibleArrowAnimate();
 });  
 
 // &+- makes the JBrowse appear with the set coordinates
@@ -792,6 +800,7 @@ function turnNightMode(){
             "</style>";
         $('.nightmodebutton button').text('Day mode');
         $(document.head).append(cssConfig);
+        ideogram.config.annotationTracks = nightModeColors;
         ideogram.config.annotationsColor = 'white';
     }
     else{
@@ -885,6 +894,7 @@ function turnNightMode(){
             "</style>";
         $('.nightmodebutton button').text('Night mode');
         $(document.head).append(cssConfig);
+        ideogram.config.annotationTracks = defaultColor;
         ideogram.config.annotationsColor = 'black';        
     }
     isNightMode = !isNightMode;
@@ -933,8 +943,8 @@ function toggleResult(evt, category) {
     evt.currentTarget.className += " active";
 }
 
+// &+- thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
 function plugCollapsibleJQuery(){
-    // thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
     var panelspeed = 500; //panel animate speed in milliseconds
     var totalpanels = 3; //total number of collapsible panels   
     var defaultopenpanel = 0; //leave 0 for no panel open   

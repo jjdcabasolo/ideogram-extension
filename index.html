@@ -46,7 +46,7 @@
             <label for="view-type_histogram">
               <input type="radio" name="view-type" id="view-type_histogram" onclick="getViewType(this.value)" value="Histogram" checked="checked">Histogram</input>
             </label>
-            <label for="view-type_tracks">
+            <label for="view-type_tracks" id="moveright">
               <input type="radio" name="view-type" id="view-type_tracks" onclick="getViewType(this.value)" value="Tracks">Tracks</input>
             </label>
           </li>
@@ -59,7 +59,7 @@
               <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-tg" class="arrow-left-stuff"><span id="span-tg"></span></p>
            </div>
           <div class="expandable-panel-content">
-            <div style="height: 720px;" id="category-content-tg">
+            <div style="height: 760px;" id="category-content-tg">
               
             </div>
           </div>
@@ -70,7 +70,7 @@
             <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-qtl" class="arrow-left-stuff"><span id="span-qtl"></span></p>
           </div>
           <div class="expandable-panel-content">
-            <div style="height: 700px;" id="category-content-qtl">
+            <div style="height: 740px;" id="category-content-qtl">
               
             </div>
           </div>
@@ -211,157 +211,8 @@
   };
 
   /* annotColorConfig */
-  var colors = [{
-      "id": "oryzabase_trait_genes",   
-      "displayName": "Oryzabase Trait Gene Loci",
-      "color": "#ff0000"
-    }, {
-      "id": "qtaro_trait_genes",
-      "id2": "qtaroqtlt",      
-      "displayName": "All QTARO trait genes",
-      "color": "#ff4000"
-    }, {
-      "id": "qtarogenes_bacterial_blight_resistance",
-      "id2": "qtaroqtl_bacterial_blight_resistance",      
-      "displayName": "Bacterial blight resistance",
-      "color": "#ff8000"
-    }, {
-      "id": "qtarogenes_blast_resistance",
-      "id2": "qtaroqtl_blast_resistance",      
-      "displayName": "Blast resistance",
-      "color": "#ffbf00"
-    }, {
-      "id": "qtarogenes_cold_tolerance",
-      "id2": "qtaroqtl_cold_tolerance",      
-      "displayName": "Cold tolerance",
-      "color": "#bfff00"
-    }, {
-      "id": "qtarogenes_culm_leaf",
-      "id2": "qtaroqtl_culm_leaf",      
-      "displayName": "Culm leaf",
-      "color": "#80ff00"
-    }, {
-      "id": "qtarogenes_drought_tolerance",
-      "id2": "qtaroqtl_drought_tolerance",      
-      "displayName": "Drought tolerance",
-      "color": "#40ff00"
-    }, {
-      "id": "qtarogenes_dwarf",
-      "id2": "qtaroqtl_dwarf",      
-      "displayName": "Dwarf",
-      "color": "#00ff00"
-    }, {
-      "id": "qtarogenes_eating_quality",
-      "id2": "qtaroqtl_eating_quality",      
-      "displayName": "Eating quality",
-      "color": "#00ff40"
-    }, {
-      "id": "qtarogenes_flowering",
-      "id2": "qtaroqtl_flowering",      
-      "displayName": "Flowering Trait",
-      "color": "#00ff80"
-    }, {
-      "id": "qtarogenes_germination_dormancy",
-      "id2": "qtaroqtl_germination_dormancy",      
-      "displayName": "Germination dormancy",
-      "color": "#00ffbf"
-    }, {
-      "id": "qtarogenes_insect_resistance",
-      "id2": "qtaroqtl_insect_resistance",      
-      "displayName": "Insect resistance",
-      "color": "#00ffff"
-    }, {
-      "id": "qtarogenes_lethality",
-      "id2": "qtaroqtl_lethality",      
-      "displayName": "Lethality Trait",
-      "color": "#00bfff"
-    }, {
-      "id": "qtarogenes_lodging_resistance",
-      "id2": "qtaroqtl_lodging_resistance",      
-      "displayName": "Lodging resistance",
-      "color": "#0080ff"
-    }, {
-      "id": "qtarogenes_morphological_trait",
-      "id2": "qtaroqtl_morphological_trait",      
-      "displayName": "Morphological trait",
-      "color": "#0040ff"
-    }, {
-      "id": "qtarogenes_other_disease_resistance",
-      "id2": "qtaroqtl_other_disease_resistance",      
-      "displayName": "Other disease resistance",
-      "color": "#0000ff"
-    }, {
-      "id": "qtarogenes_other_soil_stress_tolerance",
-      "id2": "qtaroqtl_other_soil_stress_tolerance",      
-      "displayName": "Other soil stress tolerance",
-      "color": "#4000ff"
-    }, {
-      "id": "qtarogenes_other_stress_resistance",
-      "id2": "qtaroqtl_other_stress_resistance",      
-      "displayName": "Other stress resistance",
-      "color": "#8000ff"
-    }, {
-      "id": "qtarogenes_others",
-      "id2": "qtaroqtl_others",      
-      "displayName": "Others",
-      "color": "#bf00ff"
-    }, {
-      "id": "qtarogenes_panicle_flower",
-      "id2": "qtaroqtl_panicle_flower",      
-      "displayName": "Panicle flower",
-      "color": "#ff00ff"
-    }, {
-      "id": "qtarogenes_physiological_trait",
-      "id2": "qtaroqtl_physiological_trait",      
-      "displayName": "Physiological trait",
-      "color": "#ff00bf"
-    }, {
-      "id": "qtarogenes_resistance_or_tolerance",
-      "id2": "qtaroqtl_resistance_or_tolerance",      
-      "displayName": "Resistance or tolerance",
-      "color": "#ff0080"
-    }, {
-      "id": "qtarogenes_root",
-      "id2": "qtaroqtl_root",      
-      "displayName": "Root",
-      "color": "#ff0040"
-    }, {
-      "id": "qtarogenes_salinity_tolerance",
-      "id2": "qtaroqtl_salinity_tolerance",      
-      "displayName": "Salinity tolerance",
-      "color": "#b94646"
-    }, {
-      "id": "qtarogenes_seed",
-      "id2": "qtaroqtl_seed",      
-      "displayName": "Seed",
-      "color": "#99ccff"
-    }, {
-      "id": "qtarogenes_sheath_blight_resistance",
-      "id2": "qtaroqtl_sheath_blight_resistance",      
-      "displayName": "Sheath blight resistance",
-      "color": "#D0906D"
-    }, {
-      "id": "qtarogenes_shoot_seedling",
-      "id2": "qtaroqtl_shoot_seedling",      
-      "displayName": "Shoot seedling",
-      "color": "#004080"
-    }, {
-      "id": "qtarogenes_source_activity",
-      "id2": "qtaroqtl_source_activity",      
-      "displayName": "Source activity",
-      "color": "#ddb880"
-    }, {
-      "id": "qtarogenes_sterility",
-      "id2": "qtaroqtl_sterility",      
-      "displayName": "Sterility",
-      "color": "#a6ccf2"
-    }, {
-      "id": "qtarogenes_submergency_tolerance",
-      "id2": "qtaroqtl_submergency_tolerance",      
-      "displayName": "Submergency tolerance",
-      "color": "#ff9999"
-  }];
-
+  var colorSettings = defaultColor;
+  // var colorSettings = nightModeColor;
 
   /* width and height config */
   var w = $(window).width() * .01,
@@ -391,7 +242,7 @@
     chrHeight: 800,
     chrMargin: 30,
     annotationHeight: 4,
-    annotationTracks: colors,
+    annotationTracks: colorSettings,
     annotationsLayout: "tracks",
     container: "#chromosome-render",
 
@@ -415,8 +266,8 @@
       config.annotationsLayout = "histogram";
       text = "<b>Histogram view</b><br>Hover your mouse on a histogram bar to see count";
       
-      // &+- reinitialize colors (color blocks)
-      for (i = 0; i < colors.length; i++) {
+      // &+- reinitialize colorSettings (color blocks)
+      for (i = 0; i < colorSettings.length; i++) {
         colorFillBlock = "transparent";
         traitGeneID = '#color-block-' + (i);
         qtlID = '#color-block-' + (i + 30);
@@ -465,93 +316,8 @@
     d3.select("svg").remove();
 
     ideogram = new Ideogram(config);
-    // &+- added brush settings
-    // &+- providing a larger svg for the dropdown menu 
-            $('#ideogram').attr('width', '1200');
-            $('#ideogram').attr('height', '1200');
-
-            // &+- change cursor
-            $('.background').css('cursor', 'zoom-in');
-
-            // &+- makes the dropdown be located somewhere outside the user's view
-            $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
-
-            // &+- add dropdown menu after using the brush
-            $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
-            
-            // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
-            $(".extent").hover(
-                function( event ) {
-                    brushID = $(this).parent().attr('id');
-                    
-                    // &+- used in getting the details for start and end
-                    if(previousBrush === 'some-id-i-used-to-know') $('#' + previousBrush).attr('id', ('some-id-' + brushID));
-                    else $('#some-id-' + previousBrush).attr('id', ('some-id-' + brushID));
-                    previousBrush = brushID;
-
-                    // &+- makes the show in JBrowse unable to click
-                    var countingTrue = 0;
-                    for (var i = 0; i < ideogram.numChromosomes; i++) {
-                        if(isBrushActive[i]) countingTrue++;
-                    }
-                    if(countingTrue > 1){
-                        // &+- make it inactive
-                        $('.show-jbrowse').attr('class', 'inactive-link show-jbrowse'); 
-                    }
-                    else{
-                        // &+- make it active again
-                        $('.show-jbrowse').attr('class', 'active-link show-jbrowse');                 
-                    }
-
-                    // &+- displays the current chromosome name in the bottom of the menu
-                    var number = parseInt(brushID.replace(/[^0-9\.]/g, ''), 10),
-                        limit = ideogram.chromosomesArray[number].bands[1].bp.stop;
-                    $('#chr-name').text('chr ' + (number + 1) + ' | ');
-                    $('#chr-name-max').text(' ' + limit);
-
-                    // &+- displays the current base pairs on focus
-                    $('#startBPTextbox').val(selectedRegion[number].from);
-                    $('#endBPTextbox').val(selectedRegion[number].to);
-
-                    // &+- make the menu visible
-                    $('.file_menu').css('display', 'visible');
-
-                    // &+- for the foreignObjectobject tag inside the svg tag
-                    $('.dynamic-dropdown').attr('transform', 'translate(' + (event.pageX-270) + ', ' + (event.pageY-50) + ')'); 
-                    $('ul.file_menu').stop(true, true).slideDown('medium');
-
-                    // &+- add the brush id to the anchor tag (used in brush deletion and submission of coordinates)
-                    $('.identify-the-brush').attr('id', brushID); 
-                    $('.submit-chr-details').attr('id', brushID);
-                    $('.show-jbrowse').attr('id', brushID);  
-
-                    // &+- makes the brush visible when the mouse is on the menu
-                    $('#' + $(this).parent().attr('id')).css('visibility', 'visible');
-
-                    isMenuOpen[number] = true;
-                },
-                function() {
-                }
-            );
-
-            // &+- makes the brush re-appear again when the mouse is on the menu
-            $('.dynamic-dropdown').hover(function(){ 
-            }, function(){ 
-                // &+- make the menu return to nowhere
-                $('ul.file_menu').stop(true, true).slideUp('medium');        
-
-                // &+- clear form contents
-                $('#startBPTextbox').val('');
-                $('#endBPTextbox').val('');
-                $('#message-input-menu').text('');        
-
-                // &+- reset colors
-                $('#startBPTextbox').css('background-color', 'white');
-                $('#startBPTextbox').css('color', 'black');
-
-                $('#endBPTextbox').css('background-color', 'white');
-                $('#endBPTextbox').css('color', 'black');
-            });
+    adjustIdeogramSVG();
+    dropdownMenuSetup();
   };
 
   /*
@@ -576,8 +342,8 @@
       }
     }
     else{
-      // &+- reinitialize colors (color blocks)
-      for (i = 0; i < colors.length; i++) {
+      // &+- reinitialize colorSettings (color blocks)
+      for (i = 0; i < colorSettings.length; i++) {
         colorFillBlock = "transparent";
         traitGeneID = '#color-block-' + (i);
         qtlID = '#color-block-' + (i + 30);
@@ -589,11 +355,11 @@
         // &+- added qtl data, more filering, more fun!
         if(checkbox.id.match('traitGenes') != null){
           fillColorBlock("traitGenes");
-          color = colors[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+          color = colorSettings[filterMap["traitGenes"][selectedTrack] - 1]["color"];
         }
         else if(checkbox.id.match('qtl') != null){
           fillColorBlock("qtl");  
-          color = colors[filterMap["qtl"][selectedTrack]]["color"];      
+          color = colorSettings[filterMap["qtl"][selectedTrack]]["color"];      
         }
       }
     }
@@ -645,64 +411,29 @@
     }
   }
 
-  // &+- fills up the color blocks. the colors in the colors blocks will correspond to the
-  // &+- colors used in the tracks annotations (only) || triggered when a user picks one from the 
+  // &+- fills up the color blocks. the color in the color blocks will correspond to the
+  // &+- color used in the tracks annotations (only) || triggered when a user picks one from the 
   // &+- checkbox of trait genes/qtl
   function fillColorBlock(category){
-    var colors = [
-        "#ff0000",
-        "#ff4000",
-        "#ff8000",
-        "#ffbf00",
-        "#bfff00",
-        "#80ff00",
-        "#40ff00",
-        "#00ff00",
-        "#00ff40",
-        "#00ff80",
-        "#00ffbf",
-        "#00ffff",
-        "#00bfff",
-        "#0080ff",
-        "#0040ff",
-        "#0000ff",
-        "#4000ff",
-        "#8000ff",
-        "#bf00ff",
-        "#ff00ff",
-        "#ff00bf",
-        "#ff0080",
-        "#ff0040",
-        "#b94646",
-        "#99ccff",
-        "#D0906D",
-        "#004080",
-        "#ddb880",
-        "#a6ccf2",
-        "#ff9999"
-    ];
-
-    $(document).ready(function(){
-        var colorFillBlock, traitGeneID, qtlID, i;
-
-        // &+- adding color blocks to the trait genes section
-        for (i = 0; i < colors.length; i++) {
-            colorFillBlock = colors[i];
-            traitGeneID = '#color-block-' + (i);
-            qtlID = '#color-block-' + (i + 30);
-            if(category === "traitGenes"){
-              $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-            }
-            else if(category === "qtl"){
-              $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-            }
-        }
+    var index = 0;
+    // &+- adding color blocks to the trait genes section
+    $.each(ideogram.config.annotationTracks, function(key, val) {
+      colorFillBlock = val['color'];
+      traitGeneID = '#color-block-' + (index);
+      qtlID = '#color-block-' + (index + 30);
+      if(category === "traitGenes"){
+        $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      }
+      else if(category === "qtl"){
+        $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      }
+      index = index + 1;
     });
   }
 
   /* render default view as histogram */
-  getViewType("Histogram");
-  // getViewType("Tracks");
+  // getViewType("Histogram");
+  getViewType("Tracks");
 
   var category;
   if($("#view-type_histogram").is(':checked')) {
