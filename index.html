@@ -9,26 +9,29 @@
 
   <!-- for chromosomes render -->
   <link type="text/css" rel="stylesheet" href="src/css/ideogram.css" />
-  <script type="text/javascript" src="src/js/d3.min.js"></script>
-  <script type="text/javascript" src="src/js/ideogram.js"></script>
-  <script type="text/javascript" src="src/js/crossfilter.min.js"></script>
-  <script type="text/javascript" src="src/js/ideogram.filter.js"></script>
+  <script src="src/js/d3.min.js"></script>
+  <script src="src/js/ideogram.js"></script>
+  <script src="src/js/crossfilter.min.js"></script>
+  <script src="src/js/ideogram.filter.js"></script>
 
   <!-- jQuery library -->
-  <script type="text/javascript" src="src/js/jquery-3.2.1.js"></script>
-  <!-- <script type="text/javascript" src="src/js/jquery-ui.min.js"></script> -->
+  <script src="src/js/jquery-3.2.1.js"></script>
+  <!-- <script src="src/js/jquery-ui.min.js"></script> -->
   
   <!-- for form render -->
-  <script ty1pe="text/javascript" src="src/js/jrf.form.js"></script>
+  <script src="src/js/jrf.form.js"></script>
   <!-- for spinner -->
-  <script type="text/javascript" src="src/js/spin.min.js"></script>
+  <script src="src/js/spin.min.js"></script>
   
   <!-- jqueries -->
   <!-- brush -->
-  <script type="text/javascript" src="src/js/brush.js"></script>
+  <script src="src/js/brush.js"></script>
 
   <!-- dropdown menu css -->
   <link type="text/css" rel="stylesheet" href="src/css/dropdownMenu.css">
+
+  <script src="src/js/FileSaver.min.js"></script>
+  <script src="src/js/tableexport.min.js"></script>
 </head>
 
 <body>
@@ -89,42 +92,50 @@
       </div>
       <br>
       <div id="instructions">
-        <ul>
-          <b>How to use</b>
-          <li>* <u>Select trait gene(s).</u></li>
-          <li>* <u>For histogram view</u>
-            <br>- hover mouse on a bar to see count</li>
-          <li>* <u>For tracks view</u>
-            <br>- hover mouse on annotation to see
-            <br>gene feature's name
-            <br>- click annotation to view gene
-            <br>feature in JBrowse</li>
-        </ul>
+        <div class="tab">
+          <button class="tablinks-anotherone" onclick="anotherTab(event, 'Instructions')" id="goToInstr">Instructions</button>
+          <button class="tablinks-anotherone" onclick="anotherTab(event, 'Settings')" id="">Settings</button>
+        </div>
+        <div id="Instructions" class="tabcontent-anotherone">
+          <ul>
+            <b>How to use</b>
+            <li>* <u>Select trait gene(s).</u></li>
+            <li>* <u>For histogram view</u>
+              <br>- hover mouse on a bar to see count</li>
+            <li>* <u>For tracks view</u>
+              <br>- hover mouse on annotation to see
+              <br>gene feature's name
+              <br>- click annotation to view gene
+              <br>feature in JBrowse</li>
+          </ul>
+        </div>
+        <div id="Settings" class="tabcontent-anotherone">
+          <b>Color scheme for ideogram:<br></b>
+          <span id="nightmodebutton" class="button-color"><button type="button" onclick="turnNightMode()">Night mode</button></span>
+          <br><br><b>Colorblind-friendly color scheme for track annotations:<br></b>
+          <p>Protans are people with protanomaly, a type of red-green color blindness in which the red cones do not detect enough red. Click the button below to activate.</p>
+          <span id="promode" class="button-color"><button type="button" onclick="colorBlindMode('proto')">Enable protan-friendly colors</button></span>
+          <p>Deutans are people with deuteranomaly, a type of red-green color blindness in which the green cones do not detect enough green. Click the button below to activate.</p>
+          <span id="deumode" class="button-color"><button type="button" onclick="colorBlindMode('deuto')">Enable deutan-friendly colors</button></span>
+          <p>Tritans are people with tritanomaly, a type of blue-yellow color blindness in which the blue cones do not detect enough blue. Click the button below to activate.</p>
+          <span id="trimode" class="button-color"><button type="button" onclick="colorBlindMode('trito')">Enable tritan-friendly colors</button></span>
+        </div>
       </div>
     </div>
 
+      <span class="button-color" id="download-ideogram"><button class="exportImageButton" onclick="exportSVG">Export to png</button></span>
     <div id="searchbox">
       <b>Search</b><span> gene position by keyword</span>
       <form class="form-wrapper cf">
         <input id="search-keyword" type="text" placeholder="Enter keyword here..." autofocus required>
-        <button type="button" onclick="triggerSearchBox()">Search</button>
+        <button type="button" onclick="triggerSearchBox()" id="search-button">Search</button>
       </form>
       <p id="searchbox-keyword-message"><span id="searchbox-color"></span></p>
     </div>
     
-    <span class="nightmodebutton">
-    <button type="button" onclick="turnNightMode()">Night mode</button>
-    </span>
-
     <div id="chromosome-render"></div>
     <br>
-
-    <div id="jb-div">
-    </div>
-
     <div class="gene-table" id="gt-div">
-
-
       <div class="tab">
         <button class="header-tab">Show results</button>
         <button class="tablinks" onclick="toggleResult(event, 'JBrowseView')" id="defaultOpen">JBrowse</button>
@@ -133,16 +144,17 @@
       <div id="JBrowseView" class="tabcontent">
         <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
       </div>
-
       <div id="GeneTable" class="tabcontent">
         <table id="gene-table-content" border="1" class="table"></table>
       </div>
+
     </div>
   </div>
 
   <script>
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
+  document.getElementById("goToInstr").click();
 
   var filterMap = {
     "traitGenes": {
@@ -219,18 +231,7 @@
     h = $(window).height() * .9;
 
   // $+- brush function:: data presentation
-  function writeSelectedRange() {
-    // for(var i = 0; i < selectedRegion.length; i++){
-    //   var r = selectedRegion[i],
-    //       to = r.from.toLocaleString(), // Adds thousands-separator
-    //       from = r.to.toLocaleString(),
-    //       extent = r.extent.toLocaleString();
-
-    //   document.getElementById("from" + (i+1)).innerHTML = to;
-    //   document.getElementById("to" + (i+1)).innerHTML = from;
-    //   document.getElementById("extent" + (i+1)).innerHTML = extent;
-    // }
-  }
+  function writeSelectedRange(){}
 
   // &+- to determine whether the color blocks must appear or not
   var isTracksOn = false;
@@ -267,46 +268,46 @@
       text = "<b>Histogram view</b><br>Hover your mouse on a histogram bar to see count";
       
       // &+- reinitialize colorSettings (color blocks)
-      for (i = 0; i < colorSettings.length; i++) {
-        colorFillBlock = "transparent";
-        traitGeneID = '#color-block-' + (i);
-        qtlID = '#color-block-' + (i + 30);
-        $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-        $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      }
-      isTracksOn = false;
+      // for (i = 0; i < colorSettings.length; i++) {
+      //   colorFillBlock = "transparent";
+      //   traitGeneID = '#color-block-' + (i);
+      //   qtlID = '#color-block-' + (i + 30);
+      //   $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      //   $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      // }
+      // isTracksOn = false;
     
     } else if (viewType === "Tracks") {
       config.annotationsLayout = "tracks";
       text = "<b>Tracks view</b><br>Hover your mouse on an annotation to see gene feature's name";
     
       // &+- determine whether the user has clicked a trait/qtl while the user was on histogram mode going to track mode
-      jQuery.each(filterMap["qtl"], function(key, value){
-        if(key === "QTARO QTL") key = "qtaroqtl"; 
+      // jQuery.each(filterMap["qtl"], function(key, value){
+      //   if(key === "QTARO QTL") key = "qtaroqtl"; 
 
-        // &+- toggles on qtl 
-        var IDForm = "filter-qtl-" + key;
-        if($('input#' + IDForm).is(':checked')){
-          fillColorBlock("qtl");
-        }
-        isTracksOn = true;
+      //   // &+- toggles on qtl 
+      //   var IDForm = "filter-qtl-" + key;
+      //   if($('input#' + IDForm).is(':checked')){
+      //     fillColorBlock();
+      //   }
+      //   isTracksOn = true;
 
-        // &+- changes radio to checkbox
-        $('#filter-qtl-' + key).attr('name', key);
-        $('#filter-qtl-' + key).attr('type', 'checkbox');
-      });
-      jQuery.each(filterMap["traitGenes"], function(key, value){
-        // &+- toggles on trait genes
-        var IDForm = "filter-traitGenes-" + key;
-        if($('input#' + IDForm).is(':checked')){
-          fillColorBlock("traitGenes");
-        }
-        isTracksOn = true;
+      //   // &+- changes radio to checkbox
+      //   $('#filter-qtl-' + key).attr('name', key);
+      //   $('#filter-qtl-' + key).attr('type', 'checkbox');
+      // });
+      // jQuery.each(filterMap["traitGenes"], function(key, value){
+      //   // &+- toggles on trait genes
+      //   var IDForm = "filter-traitGenes-" + key;
+      //   if($('input#' + IDForm).is(':checked')){
+      //     fillColorBlock();
+      //   }
+      //   isTracksOn = true;
 
-        // &+- changes radio to checkbox
-        $('#filter-traitGenes-' + key).attr('name', key);
-        $('#filter-traitGenes-' + key).attr('type', 'checkbox');
-      });
+      //   // &+- changes radio to checkbox
+      //   $('#filter-traitGenes-' + key).attr('name', key);
+      //   $('#filter-traitGenes-' + key).attr('type', 'checkbox');
+      // });
     }
 
     // show linear scale
@@ -341,28 +342,28 @@
         $('#color-block' + (i+100)).css({"outline-color": color, "background-color": color});
       }
     }
-    else{
+    // else{
       // &+- reinitialize colorSettings (color blocks)
-      for (i = 0; i < colorSettings.length; i++) {
-        colorFillBlock = "transparent";
-        traitGeneID = '#color-block-' + (i);
-        qtlID = '#color-block-' + (i + 30);
-        $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-        $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      }
+      // for (i = 0; i < colorSettings.length; i++) {
+      //   colorFillBlock = "transparent";
+      //   traitGeneID = '#color-block-' + (i);
+      //   qtlID = '#color-block-' + (i + 30);
+      //   $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      //   $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
+      // }
       // &+- color blocks will only trigger when the user picks tracks view
-      if(isTracksOn){
+      // if(isTracksOn){
         // &+- added qtl data, more filering, more fun!
-        if(checkbox.id.match('traitGenes') != null){
-          fillColorBlock("traitGenes");
-          color = colorSettings[filterMap["traitGenes"][selectedTrack] - 1]["color"];
-        }
-        else if(checkbox.id.match('qtl') != null){
-          fillColorBlock("qtl");  
-          color = colorSettings[filterMap["qtl"][selectedTrack]]["color"];      
-        }
-      }
-    }
+        // if(checkbox.id.match('traitGenes') != null){
+          // fillColorBlock();
+          // color = colorSettings[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+        // }
+        // else if(checkbox.id.match('qtl') != null){
+          // fillColorBlock();
+          // color = colorSettings[filterMap["qtl"][selectedTrack]]["color"];      
+        // }
+      // }
+    // }
 
     if ($("#" + id).is(':checked')) {
       addTrack(selectedTrack);
@@ -414,21 +415,22 @@
   // &+- fills up the color blocks. the color in the color blocks will correspond to the
   // &+- color used in the tracks annotations (only) || triggered when a user picks one from the 
   // &+- checkbox of trait genes/qtl
-  function fillColorBlock(category){
-    var index = 0;
-    // &+- adding color blocks to the trait genes section
-    $.each(ideogram.config.annotationTracks, function(key, val) {
-      colorFillBlock = val['color'];
-      traitGeneID = '#color-block-' + (index);
-      qtlID = '#color-block-' + (index + 30);
-      if(category === "traitGenes"){
-        $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      }
-      else if(category === "qtl"){
-        $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      }
-      index = index + 1;
-    });
+
+  function colorBlindMode(category){
+      if(category === 'proto') config.annotationTracks = protanopiaNoRed;
+      else if(category === 'deuto') config.annotationTracks = deutanopiaNoGreen;
+      else config.annotationTracks = tritanopiaNoBlue;
+
+      // show linear scale
+      toggleLinearScale("show");
+
+      // clear current view
+      d3.select("svg").remove();
+
+      ideogram = new Ideogram(config);
+      adjustIdeogramSVG();
+      dropdownMenuSetup();
+      fillColorBlock();
   }
 
   /* render default view as histogram */
@@ -453,6 +455,8 @@
 
   renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
   plugCollapsibleJQuery();
+  console.log(ideogram.config.annotationTracks);
+  fillColorBlock();
 
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();

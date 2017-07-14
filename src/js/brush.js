@@ -164,6 +164,7 @@ $(document).ready(function() {
     searchEnterOverride();
 
     collapsibleArrowAnimate();
+    exportSVG();
 });  
 
 // &+- makes the JBrowse appear with the set coordinates
@@ -296,6 +297,18 @@ function setTheBrush(brush){
     }
 } 
 
+function countActiveBrushes(){
+    var countActive = 0;
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            countActive = countActive + 1;
+        }
+    }
+    return countActive;
+}
+
+var isHeaderPresent = false;
+
 // &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
     // &+- automatically open the genetable tab
@@ -312,7 +325,6 @@ function showStatiscalTable(table){
     var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
         start = 'start=' + $('#startBPTextbox').val() + '&',
         end = 'end=' + $('#endBPTextbox').val(),
-        isHeaderPresent = false,
         spinnerConfig = {
             lines: 9,
             length: 9,
@@ -329,7 +341,7 @@ function showStatiscalTable(table){
             fps: 20,
             zIndex: 2e9,
             className: 'gt-spinner',
-            top: '16%',
+            top: '500px',
             left: '44%',
             shadow: true,
             hwaccel: false,
@@ -337,7 +349,9 @@ function showStatiscalTable(table){
         },
         buffering = document.getElementById("gt-div"),
         spinner = new Spinner(spinnerConfig).spin(buffering),
-        chrNum, webService, extent, from, to, arrayCatch, myList;
+        chrNum, webService, extent, from, to, arrayCatch, myList, countActive = 0, counterIndex = 0;
+
+    countActive = countActiveBrushes();
 
     for (var i = 0; i < ideogram.numChromosomes; i++) {
         if(isBrushActive[i]){
@@ -358,7 +372,7 @@ function showStatiscalTable(table){
             // snp-seek.irri.org -> 172.29.4.215:8080/iric-portal
             // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
             webService = pathname + chrNum + start + end;
-            console.log(webService);
+            // console.log(webService);
             $.ajax({
                 dataType: "json",
                 crossDomain: true,
@@ -366,73 +380,89 @@ function showStatiscalTable(table){
                 data: arrayCatch,
                 success: function(arrayCatch) {
                     buildHtmlTable(arrayCatch, "#gene-table-content");  
+                    counterIndex = counterIndex + 1;
                     $('#defaultOpen').attr('class', 'active-link tablinks'); 
                     $('.show-genes').attr('class', 'active-link show-genes');                   
+
                     toggleSpinner(spinner, false);
                     isHeaderPresent = true;
+                    if(counterIndex == countActive){
+                        $('#GeneTable').css('height', '480');
+                        // console.log(counterIndex + "==" + countActive);
+                        // &+- export to csv, txt, xls
+                        $("table").tableExport({
+                            headings: true,                   
+                            footers: true,
+                            formats: ["xls", "csv", "txt"],          
+                            fileName: "gene-table",                        
+                            emptyCSS: ".tableexport-empty",  
+                            trimWhitespace: false        
+                        });    
+
+                        isHeaderPresent = false;
+                    }
                 }
             });
-
         }
     }
+}
 
-    // &+- code snippet for converting JSON to HTML table. thank you https://stackoverflow.com/a/11480797
-    // Builds the HTML Table out of myList.
-    function buildHtmlTable(myList, selector) {
-        var columns = addAllColumnHeaders(myList, selector, isHeaderPresent),
-            tBodyProper = $('<tbody/>');
+// &+- code snippet for converting JSON to HTML table. thank you https://stackoverflow.com/a/11480797
+// Builds the HTML Table out of myList.
+function buildHtmlTable(myList, selector) {
+    var columns = addAllColumnHeaders(myList, selector, isHeaderPresent),
+        tBodyProper = $('<tbody/>');
 
-        for(var i = 0; i < myList.length; i++) {
-            var row = $('<tr/>');
-            for(var colIndex = 0; colIndex < columns.length; colIndex++) {
-                var cellValue = myList[i][columns[colIndex]];
-                if(cellValue == null){
-                    row.append($('<td/>').html(""));
-                }
-                else{
-                    var stringValue = String(cellValue);
-                    stringValue = stringValue.replace(/,/g, '<br>');
-                    row.append($('<td/>').html(stringValue));
-                }
-            }
-            if(!isHeaderPresent){
-                $(tBodyProper).append(row);
+    for(var i = 0; i < myList.length; i++) {
+        var row = $('<tr/>');
+        for(var colIndex = 0; colIndex < columns.length; colIndex++) {
+            var cellValue = myList[i][columns[colIndex]];
+            if(cellValue == null){
+                row.append($('<td/>').html(""));
             }
             else{
-                $(selector + ' tBody').append(row);            
+                var stringValue = String(cellValue);
+                stringValue = stringValue.replace(/,/g, '<br>');
+                row.append($('<td/>').html(stringValue));
             }
         }
-
         if(!isHeaderPresent){
-            $(selector).append(tBodyProper);
+            $(tBodyProper).append(row);
+        }
+        else{
+            $(selector + ' tBody').append(row);            
         }
     }
 
-    // Adds a header row to the table and returns the set of columns.
-    // Need to do union of keys from all records as some records may not contain
-    // all records.
-    function addAllColumnHeaders(myList, selector, isHeaderPresent) {
-        var columnSet = [];
-        var headerTr = $('<tr/>');
-        var tHeadProper = $('<thead/>');
+    if(!isHeaderPresent){
+        $(selector).append(tBodyProper);
+    }
+}
 
-        for (var i = 0; i < myList.length; i++) {
-            var rowHash = myList[i];
-            for (var key in rowHash) {
-                if ($.inArray(key, columnSet) == -1) {
-                    columnSet.push(key);
-                    headerTr.append($('<th/>').html(key));
-                }
+// Adds a header row to the table and returns the set of columns.
+// Need to do union of keys from all records as some records may not contain
+// all records.
+function addAllColumnHeaders(myList, selector, isHeaderPresent) {
+    var columnSet = [];
+    var headerTr = $('<tr/>');
+    var tHeadProper = $('<thead/>');
+
+    for (var i = 0; i < myList.length; i++) {
+        var rowHash = myList[i];
+        for (var key in rowHash) {
+            if ($.inArray(key, columnSet) == -1) {
+                columnSet.push(key);
+                headerTr.append($('<th/>').html(key));
             }
         }
-
-        if(!isHeaderPresent){
-            $(tHeadProper).append(headerTr);
-            $(selector).append(tHeadProper);        
-        }
-
-        return columnSet;
     }
+
+    if(!isHeaderPresent){
+        $(tHeadProper).append(headerTr);
+        $(selector).append(tHeadProper);        
+    }
+
+    return columnSet;
 }
 
 var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
@@ -607,7 +637,6 @@ function plotGeneAnnotation(){
                             $('.plot-genes').attr('class', 'active-link plot-genes');                 
 
                             // &+- make the checkbox element for brush selection appear
-                            $('#instructions').animate({ marginTop: 540 });
                             $('#form-render-brush').css('margin-top', '495');
                             $('#form-render-brush').css('height', '70');
                             $('#form-render-brush').css('width', '250');
@@ -643,6 +672,22 @@ function getRandomColor() {
 
 // &+- plot the position of the genes with the description that matches the input in the searchbox
 function triggerSearchBox(){
+    // &+- automatically open the genetable tab
+    $('#defaultOpen').attr('class', 'inactive-link tablinks'); 
+    document.getElementById("goToTable").click();
+    $('#no-content-gt').remove();
+    $('#GeneTable').css('height', '440');
+
+    // &+- disable another search
+    $("input#search-keyword").prop('disabled', true);
+    $("#search-button").prop('disabled', true);    
+
+    // &+- automatic scrolling to bottom
+    $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
+    $('#gene-table-content').empty();
+
+
+    // &+- clear message
     $('#searchbox-keyword-message').text('');
     var spinnerConfig = {
             lines: 9,
@@ -673,7 +718,8 @@ function triggerSearchBox(){
         keyword = $("#search-keyword").val(),
         webService = pathname + keyword,
         temp = ideogram.config.annotationsColor,
-        colors = ideogram.config.annotationsColor = getRandomColor();
+        colors = ideogram.config.annotationsColor = getRandomColor(),
+        arrayCatch;
 
     asyncLoop({
         length: 1,
@@ -685,16 +731,47 @@ function triggerSearchBox(){
                             $('#searchbox-keyword-message').text('No results found.');
                         }
                         else{
+                            // &+- annotation generation
                             // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
                             ideogram.drawProcessedAnnots(processedAnnots);
                             // ideogram.config.annotationsLayout = 'tracks';
-                            // $("#searchbox-color").html('testing <b>1 2 3</b>');
-                            // $('#searchbox-color').css('color', colors);
-                            $('#searchbox-keyword-message').text('Results are in this');
-                            $('#searchbox-keyword-message').css('font-weight', 'normal');
-                            $('#searchbox-keyword-message').css('color', 'black');
+                            $('#searchbox-keyword-message').text('Annotations are in this color.');
+                            // $('#searchbox-keyword-message').css('font-weight', 'normal');
+                            $('#searchbox-keyword-message').css('color', colors);
+
+                            // &+- put the results in a table
+                            $.ajax({
+                                dataType: "json",
+                                crossDomain: true,
+                                url: webService,
+                                data: arrayCatch,
+                                success: function(arrayCatch) {
+                                    var isHeaderPresent = false;
+                                    buildHtmlTable(arrayCatch, "#gene-table-content");  
+
+                                    // &+- tab links activation
+                                    $('#defaultOpen').attr('class', 'active-link tablinks'); 
+                                    $('.show-genes').attr('class', 'active-link show-genes');                   
+                                    // &+- search activation
+                                    $("input#search-keyword").prop('disabled', false);
+                                    $("#search-button").prop('disabled', false);    
+
+                                    toggleSpinner(spinner, false);
+
+                                    $('#GeneTable').css('height', '480');
+                                    // &+- export to csv, txt, xls
+                                    $("table").tableExport({
+                                        headings: true,                   
+                                        footers: true,
+                                        formats: ["xls", "csv", "txt"],          
+                                        fileName: "gene-table",                        
+                                        emptyCSS: ".tableexport-empty",  
+                                        trimWhitespace: false        
+                                    });    
+                                }
+                            });
+
                         }
-                        toggleSpinner(spinner, false);                            
                     }
                 );
                 loop();
@@ -800,7 +877,7 @@ function turnNightMode(){
             "</style>";
         $('.nightmodebutton button').text('Day mode');
         $(document.head).append(cssConfig);
-        ideogram.config.annotationTracks = nightModeColors;
+        ideogram.config.annotationTracks = nightModeColor;
         ideogram.config.annotationsColor = 'white';
     }
     else{
@@ -943,6 +1020,28 @@ function toggleResult(evt, category) {
     evt.currentTarget.className += " active";
 }
 
+// &+- tab settings for the instruction and color scheme settings
+function anotherTab(evt, category) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent-anotherone");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks-anotherone");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(category).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
 // &+- thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
 function plugCollapsibleJQuery(){
     var panelspeed = 500; //panel animate speed in milliseconds
@@ -1003,4 +1102,46 @@ function plugCollapsibleJQuery(){
     }
     
     panelinit();
+}
+
+// function downloadTable(){
+//     $("table").tableExport({
+//         headings: true,                   
+//         footers: true,
+//         formats: ["csv"],          
+//         fileName: "gene-table",                        
+//         emptyCSS: ".tableexport-empty",  
+//         trimWhitespace: false        
+//     });
+
+// }
+
+function exportSVG(){
+    $(".exportImageButton").on("click", function() {
+        var svg = document.querySelector("svg");
+        var svgData = new XMLSerializer().serializeToString(svg);
+        var canvas = document.createElement("canvas");
+        var svgSize = svg.getBoundingClientRect();
+        canvas.width = svgSize.width * 3;
+        canvas.height = svgSize.height * 3;
+        canvas.style.width = svgSize.width;
+        canvas.style.height = svgSize.height;
+        var ctx = canvas.getContext("2d");
+        ctx.scale(3, 3);
+        var img = document.createElement("img");
+        img.setAttribute("src", "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData))));
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+            var canvasdata = canvas.toDataURL("image/png", 1);
+
+            var pngimg = '<img src="' + canvasdata + '">';
+            d3.select("#pngdataurl").html(pngimg);
+
+            var a = document.createElement("a");
+            a.download = "download_img" + ".png";
+            a.href = canvasdata;
+            document.body.appendChild(a);
+            a.click();
+        };
+    });
 }

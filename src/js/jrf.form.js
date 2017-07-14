@@ -316,10 +316,10 @@ var filterMap = {
         }
     ],
     nightModeColor = [
-            {
-            "id": "oryzabase_trait_genes",
-            "displayName": "Oryzabase Trait Gene Loci",
-            "color": "#FF1744"
+        {
+        "id": "oryzabase_trait_genes",
+        "displayName": "Oryzabase Trait Gene Loci",
+        "color": "#FF1744"
         },
         {
             "id": "qtaro_trait_genes",
@@ -495,7 +495,551 @@ var filterMap = {
             "displayName": "Submergency tolerance",
             "color": "#FFD54F"
         }
+    ],
+    protanopiaNoRed = [
+        {
+            "id": "oryzabase_trait_genes",
+            "displayName": "Oryzabase Trait Gene Loci",
+            "color": "#000E1F"
+        },
+        {
+            "id": "qtaro_trait_genes",
+            "id2": "QTARO QTL",
+            "displayName": "All QTARO trait genes",
+            "color": "#001D3E"
+        },
+        {
+            "id": "qtarogenes_bacterial_blight_resistance",
+            "id2": "qtaroqtl_bacterial_blight_resistance",
+            "displayName": "Bacterial blight resistance",
+            "color": "#002C5D"
+        },
+        {
+            "id": "qtarogenes_blast_resistance",
+            "id2": "qtaroqtl_blast_resistance",
+            "displayName": "Blast resistance",
+            "color": "#003B7C"
+        },
+        {
+            "id": "qtarogenes_cold_tolerance",
+            "id2": "qtaroqtl_cold_tolerance",
+            "displayName": "Cold tolerance",
+            "color": "#004A9C"
+        },
+        {
+            "id": "qtarogenes_culm_leaf",
+            "id2": "qtaroqtl_culm_leaf",
+            "displayName": "Culm leaf",
+            "color": "#1D366A"
+        },
+        {
+            "id": "qtarogenes_drought_tolerance",
+            "id2": "qtaroqtl_drought_tolerance",
+            "displayName": "Drought tolerance",
+            "color": "#003F85"
+        },
+        {
+            "id": "qtarogenes_dwarf",
+            "id2": "qtaroqtl_dwarf",
+            "displayName": "Dwarf",
+            "color": "#004A9B"
+        },
+        {
+            "id": "qtarogenes_eating_quality",
+            "id2": "qtaroqtl_eating_quality",
+            "displayName": "Eating quality",
+            "color": "#0056B4"
+        },
+        {
+            "id": "qtarogenes_flowering",
+            "id2": "qtaroqtl_flowering",
+            "displayName": "Flowering Trait",
+            "color": "#5A699B"
+        },
+        {
+            "id": "qtarogenes_germination_dormancy",
+            "id2": "qtaroqtl_germination_dormancy",
+            "displayName": "Germination dormancy",
+            "color": "#3A6DD4"
+        },
+        {
+            "id": "qtarogenes_insect_resistance",
+            "id2": "qtaroqtl_insect_resistance",
+            "displayName": "Insect resistance",
+            "color": "#0075F8"
+        },
+        {
+            "id": "qtarogenes_lethality",
+            "id2": "qtaroqtl_lethality",
+            "displayName": "Lethality Trait",
+            "color": "#8F9BCD"
+        },
+        {
+            "id": "qtarogenes_lodging_resistance",
+            "id2": "qtaroqtl_lodging_resistance",
+            "displayName": "Lodging resistance",
+            "color": "#7FA0FF"
+        },
+        {
+            "id": "qtarogenes_morphological_trait",
+            "id2": "qtaroqtl_morphological_trait",
+            "displayName": "Morphological trait",
+            "color": "#C4CEFF"
+        },
+        {
+            "id": "qtarogenes_other_disease_resistance",
+            "id2": "qtaroqtl_other_disease_resistance",
+            "displayName": "Other disease resistance",
+            "color": "#312B00"
+        },
+        {
+            "id": "qtarogenes_other_soil_stress_tolerance",
+            "id2": "qtaroqtl_other_soil_stress_tolerance",
+            "displayName": "Other soil stress tolerance",
+            "color": "#625700"
+        },
+        {
+            "id": "qtarogenes_other_stress_resistance",
+            "id2": "qtaroqtl_other_stress_resistance",
+            "displayName": "Other stress resistance",
+            "color": "#635A2F"
+        },
+        {
+            "id": "qtarogenes_others",
+            "id2": "qtaroqtl_others",
+            "displayName": "Others",
+            "color": "#938200"
+        },
+        {
+            "id": "qtarogenes_panicle_flower",
+            "id2": "qtaroqtl_panicle_flower",
+            "displayName": "Panicle flower",
+            "color": "#94852D"
+        },
+        {
+            "id": "qtarogenes_physiological_trait",
+            "id2": "qtaroqtl_physiological_trait",
+            "displayName": "Physiological trait",
+            "color": "#978C60"
+        },
+        {
+            "id": "qtarogenes_resistance_or_tolerance",
+            "id2": "qtaroqtl_resistance_or_tolerance",
+            "displayName": "Resistance or tolerance",
+            "color": "#C4AE00"
+        },
+        {
+            "id": "qtarogenes_root",
+            "id2": "qtaroqtl_root",
+            "displayName": "Root",
+            "color": "#C5B02B"
+        },
+        {
+            "id": "qtarogenes_salinity_tolerance",
+            "id2": "qtaroqtl_salinity_tolerance",
+            "displayName": "Salinity tolerance",
+            "color": "#C7B55E"
+        },
+        {
+            "id": "qtarogenes_seed",
+            "id2": "qtaroqtl_seed",
+            "displayName": "Seed",
+            "color": "#CBBE92"
+        },
+        {
+            "id": "qtarogenes_sheath_blight_resistance",
+            "id2": "qtaroqtl_sheath_blight_resistance",
+            "displayName": "Sheath blight resistance",
+            "color": "#F5DA00"
+        },
+        {
+            "id": "qtarogenes_shoot_seedling",
+            "id2": "qtaroqtl_shoot_seedling",
+            "displayName": "Shoot seedling",
+            "color": "#F6DB29"
+        },
+        {
+            "id": "qtarogenes_source_activity",
+            "id2": "qtaroqtl_source_activity",
+            "displayName": "Source activity",
+            "color": "#F8DF5C"
+        },
+        {
+            "id": "qtarogenes_sterility",
+            "id2": "qtaroqtl_sterility",
+            "displayName": "Sterility",
+            "color": "#FBE68F"
+        },
+        {
+            "id": "qtarogenes_submergency_tolerance",
+            "id2": "qtaroqtl_submergency_tolerance",
+            "displayName": "Submergency tolerance",
+            "color": "#FFF0C6"
+        }
+    ],    
+    deutanopiaNoGreen = [
+        {
+            "id": "oryzabase_trait_genes",
+            "displayName": "Oryzabase Trait Gene Loci",
+            "color": "#000E1F"
+        },
+        {
+            "id": "qtaro_trait_genes",
+            "id2": "QTARO QTL",
+            "displayName": "All QTARO trait genes",
+            "color": "#001D3E"
+        },
+        {
+            "id": "qtarogenes_bacterial_blight_resistance",
+            "id2": "qtaroqtl_bacterial_blight_resistance",
+            "displayName": "Bacterial blight resistance",
+            "color": "#002C5D"
+        },
+        {
+            "id": "qtarogenes_blast_resistance",
+            "id2": "qtaroqtl_blast_resistance",
+            "displayName": "Blast resistance",
+            "color": "#003B7C"
+        },
+        {
+            "id": "qtarogenes_cold_tolerance",
+            "id2": "qtaroqtl_cold_tolerance",
+            "displayName": "Cold tolerance",
+            "color": "#004A9C"
+        },
+        {
+            "id": "qtarogenes_culm_leaf",
+            "id2": "qtaroqtl_culm_leaf",
+            "displayName": "Culm leaf",
+            "color": "#1D366A"
+        },
+        {
+            "id": "qtarogenes_drought_tolerance",
+            "id2": "qtaroqtl_drought_tolerance",
+            "displayName": "Drought tolerance",
+            "color": "#003F85"
+        },
+        {
+            "id": "qtarogenes_dwarf",
+            "id2": "qtaroqtl_dwarf",
+            "displayName": "Dwarf",
+            "color": "#004A9B"
+        },
+        {
+            "id": "qtarogenes_eating_quality",
+            "id2": "qtaroqtl_eating_quality",
+            "displayName": "Eating quality",
+            "color": "#0056B4"
+        },
+        {
+            "id": "qtarogenes_flowering",
+            "id2": "qtaroqtl_flowering",
+            "displayName": "Flowering Trait",
+            "color": "#5A699B"
+        },
+        {
+            "id": "qtarogenes_germination_dormancy",
+            "id2": "qtaroqtl_germination_dormancy",
+            "displayName": "Germination dormancy",
+            "color": "#3A6DD4"
+        },
+        {
+            "id": "qtarogenes_insect_resistance",
+            "id2": "qtaroqtl_insect_resistance",
+            "displayName": "Insect resistance",
+            "color": "#0075F8"
+        },
+        {
+            "id": "qtarogenes_lethality",
+            "id2": "qtaroqtl_lethality",
+            "displayName": "Lethality Trait",
+            "color": "#8F9BCD"
+        },
+        {
+            "id": "qtarogenes_lodging_resistance",
+            "id2": "qtaroqtl_lodging_resistance",
+            "displayName": "Lodging resistance",
+            "color": "#7FA0FF"
+        },
+        {
+            "id": "qtarogenes_morphological_trait",
+            "id2": "qtaroqtl_morphological_trait",
+            "displayName": "Morphological trait",
+            "color": "#C4CEFF"
+        },
+        {
+            "id": "qtarogenes_other_disease_resistance",
+            "id2": "qtaroqtl_other_disease_resistance",
+            "displayName": "Other disease resistance",
+            "color": "#36290B"
+        },
+        {
+            "id": "qtarogenes_other_soil_stress_tolerance",
+            "id2": "qtaroqtl_other_soil_stress_tolerance",
+            "displayName": "Other soil stress tolerance",
+            "color": "#6D5216"
+        },
+        {
+            "id": "qtarogenes_other_stress_resistance",
+            "id2": "qtaroqtl_other_stress_resistance",
+            "displayName": "Other stress resistance",
+            "color": "#A47B21"
+        },
+        {
+            "id": "qtarogenes_others",
+            "id2": "qtaroqtl_others",
+            "displayName": "Others",
+            "color": "#DAA52C"
+        },
+        {
+            "id": "qtarogenes_panicle_flower",
+            "id2": "qtaroqtl_panicle_flower",
+            "displayName": "Panicle flower",
+            "color": "#FFD28E"
+        },
+        {
+            "id": "qtarogenes_physiological_trait",
+            "id2": "qtaroqtl_physiological_trait",
+            "displayName": "Physiological trait",
+            "color": "#6D5636"
+        },
+        {
+            "id": "qtarogenes_resistance_or_tolerance",
+            "id2": "qtaroqtl_resistance_or_tolerance",
+            "displayName": "Resistance or tolerance",
+            "color": "#A47E3B"
+        },
+        {
+            "id": "qtarogenes_root",
+            "id2": "qtaroqtl_root",
+            "displayName": "Root",
+            "color": "#DBA741"
+        },
+        {
+            "id": "qtarogenes_salinity_tolerance",
+            "id2": "qtaroqtl_salinity_tolerance",
+            "displayName": "Salinity tolerance",
+            "color": "#FFD495"
+        },
+        {
+            "id": "qtarogenes_seed",
+            "id2": "qtaroqtl_seed",
+            "displayName": "Seed",
+            "color": "#A5866A"
+        },
+        {
+            "id": "qtarogenes_sheath_blight_resistance",
+            "id2": "qtaroqtl_sheath_blight_resistance",
+            "displayName": "Sheath blight resistance",
+            "color": "#DBAC6D"
+        },
+        {
+            "id": "qtarogenes_shoot_seedling",
+            "id2": "qtaroqtl_shoot_seedling",
+            "displayName": "Shoot seedling",
+            "color": "#FFD8A8"
+        },
+        {
+            "id": "qtarogenes_source_activity",
+            "id2": "qtaroqtl_source_activity",
+            "displayName": "Source activity",
+            "color": "#DCB79D"
+        },
+        {
+            "id": "qtarogenes_sterility",
+            "id2": "qtaroqtl_sterility",
+            "displayName": "Sterility",
+            "color": "#FFE1C5"
+        },
+        {
+            "id": "qtarogenes_submergency_tolerance",
+            "id2": "qtaroqtl_submergency_tolerance",
+            "displayName": "Submergency tolerance",
+            "color": "#FFEEE5"
+        }
+    ],
+    tritanopiaNoBlue = [
+        {
+            "id": "oryzabase_trait_genes",
+            "displayName": "Oryzabase Trait Gene Loci",
+            "color": "#152F33"
+        },
+        {
+            "id": "qtaro_trait_genes",
+            "id2": "QTARO QTL",
+            "displayName": "All QTARO trait genes",
+            "color": "#2A5E66"
+        },
+        {
+            "id": "qtarogenes_bacterial_blight_resistance",
+            "id2": "qtaroqtl_bacterial_blight_resistance",
+            "displayName": "Bacterial blight resistance",
+            "color": "#408E99"
+        },
+        {
+            "id": "qtarogenes_blast_resistance",
+            "id2": "qtaroqtl_blast_resistance",
+            "displayName": "Blast resistance",
+            "color": "#55BDCC"
+        },
+        {
+            "id": "qtarogenes_cold_tolerance",
+            "id2": "qtaroqtl_cold_tolerance",
+            "displayName": "Cold tolerance",
+            "color": "#71ECFF"
+        },
+        {
+            "id": "qtarogenes_culm_leaf",
+            "id2": "qtaroqtl_culm_leaf",
+            "displayName": "Culm leaf",
+            "color": "#3E6067"
+        },
+        {
+            "id": "qtarogenes_drought_tolerance",
+            "id2": "qtaroqtl_drought_tolerance",
+            "displayName": "Drought tolerance",
+            "color": "#4D8F9A"
+        },
+        {
+            "id": "qtarogenes_dwarf",
+            "id2": "qtaroqtl_dwarf",
+            "displayName": "Dwarf",
+            "color": "#5FBECD"
+        },
+        {
+            "id": "qtarogenes_eating_quality",
+            "id2": "qtaroqtl_eating_quality",
+            "displayName": "Eating quality",
+            "color": "#7AECFF"
+        },
+        {
+            "id": "qtarogenes_flowering",
+            "id2": "qtaroqtl_flowering",
+            "displayName": "Flowering Trait",
+            "color": "#70929D"
+        },
+        {
+            "id": "qtarogenes_germination_dormancy",
+            "id2": "qtaroqtl_germination_dormancy",
+            "displayName": "Germination dormancy",
+            "color": "#7CC0CF"
+        },
+        {
+            "id": "qtarogenes_insect_resistance",
+            "id2": "qtaroqtl_insect_resistance",
+            "displayName": "Insect resistance",
+            "color": "#96EDFF"
+        },
+        {
+            "id": "qtarogenes_lethality",
+            "id2": "qtaroqtl_lethality",
+            "displayName": "Lethality Trait",
+            "color": "#A3C4D3"
+        },
+        {
+            "id": "qtarogenes_lodging_resistance",
+            "id2": "qtaroqtl_lodging_resistance",
+            "displayName": "Lodging resistance",
+            "color": "#BCEFFF"
+        },
+        {
+            "id": "qtarogenes_morphological_trait",
+            "id2": "qtaroqtl_morphological_trait",
+            "displayName": "Morphological trait",
+            "color": "#E3F4FF"
+        },
+        {
+            "id": "qtarogenes_other_disease_resistance",
+            "id2": "qtaroqtl_other_disease_resistance",
+            "displayName": "Other disease resistance",
+            "color": "#FD1700"
+        },
+        {
+            "id": "qtarogenes_other_soil_stress_tolerance",
+            "id2": "qtaroqtl_other_soil_stress_tolerance",
+            "displayName": "Other soil stress tolerance",
+            "color": "#CA1200"
+        },
+        {
+            "id": "qtarogenes_other_stress_resistance",
+            "id2": "qtaroqtl_other_stress_resistance",
+            "displayName": "Other stress resistance",
+            "color": "#FF3332"
+        },
+        {
+            "id": "qtarogenes_others",
+            "id2": "qtaroqtl_others",
+            "displayName": "Others",
+            "color": "#970E00"
+        },
+        {
+            "id": "qtarogenes_panicle_flower",
+            "id2": "qtaroqtl_panicle_flower",
+            "displayName": "Panicle flower",
+            "color": "#CC3234"
+        },
+        {
+            "id": "qtarogenes_physiological_trait",
+            "id2": "qtaroqtl_physiological_trait",
+            "displayName": "Physiological trait",
+            "color": "#FF656B"
+        },
+        {
+            "id": "qtarogenes_resistance_or_tolerance",
+            "id2": "qtaroqtl_resistance_or_tolerance",
+            "displayName": "Resistance or tolerance",
+            "color": "#650900"
+        },
+        {
+            "id": "qtarogenes_root",
+            "id2": "qtaroqtl_root",
+            "displayName": "Root",
+            "color": "#993235"
+        },
+        {
+            "id": "qtarogenes_salinity_tolerance",
+            "id2": "qtaroqtl_salinity_tolerance",
+            "displayName": "Salinity tolerance",
+            "color": "#CC656C"
+        },
+        {
+            "id": "qtarogenes_seed",
+            "id2": "qtaroqtl_seed",
+            "displayName": "Seed",
+            "color": "#FF97A2"
+        },
+        {
+            "id": "qtarogenes_sheath_blight_resistance",
+            "id2": "qtaroqtl_sheath_blight_resistance",
+            "displayName": "Sheath blight resistance",
+            "color": "#320400"
+        },
+        {
+            "id": "qtarogenes_shoot_seedling",
+            "id2": "qtaroqtl_shoot_seedling",
+            "displayName": "Shoot seedling",
+            "color": "#663236"
+        },
+        {
+            "id": "qtarogenes_source_activity",
+            "id2": "qtaroqtl_source_activity",
+            "displayName": "Source activity",
+            "color": "#99646C"
+        },
+        {
+            "id": "qtarogenes_sterility",
+            "id2": "qtaroqtl_sterility",
+            "displayName": "Sterility",
+            "color": "#CD97A3"
+        },
+        {
+            "id": "qtarogenes_submergency_tolerance",
+            "id2": "qtaroqtl_submergency_tolerance",
+            "displayName": "Submergency tolerance",
+            "color": "#FFCAD9"
+        }
     ];
+
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
  *  JSON format based on format of jquery.dform and should be:
@@ -572,6 +1116,22 @@ var renderForm = function(filepath, category) {
     });
 }
 
+function fillColorBlock(){
+    var index = 0, colorFillBlock;
+    
+    // &+- adding color blocks to the trait genes section
+    $.each(ideogram.config.annotationTracks, function(key, val) {
+        colorFillBlock = val['color'];
+        traitGeneID = '#color-block-' + (index);
+        qtlID = '#color-block-' + (index + 30);
+        console.log(traitGeneID + "|" + qtlID);
+        $(traitGeneID).css('background-color', colorFillBlock);
+        $(qtlID).css('background-color', colorFillBlock);
+        index = index + 1;
+    });
+}
+
+
 var renderCollapsible = function(filepath) {
     $.getJSON(filepath, function(data) {
         for (var category in data) {
@@ -619,6 +1179,7 @@ var renderCollapsible = function(filepath) {
     })
     .done(function() {
         console.log("Form rendered");
+        fillColorBlock();
     })
     .fail(function() {
         console.warn("Error form render");
@@ -640,7 +1201,6 @@ function toggleSpinner(spinner, loading) {
 function getJsonData(addr, func) {
     d3.json(addr, function(error, data) {
         if (error) {
-            // console.log(addr + ":" + error);
             data = null;
             func(data);
         } else {
