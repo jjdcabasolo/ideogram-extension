@@ -328,43 +328,28 @@
   function toggleFilter(checkbox) {
     var id = checkbox.id,
       color, counts, key, count;
-
     /* get value of tracks attribute */
     var selectedTrack = $("#" + id).attr("tracks");
 
     if(selectedTrack.indexOf('brush') !== -1){
-      console.log(checkbox.id);
+      // console.log(checkbox.id);
       var number = parseInt(checkbox.id.replace(/[^0-9\.]/g, ''), 10);
-      color = arrayOfColorsBrushes[number];
+      color = arrayOfColorsBrushes[(number-59)];
       // color = shadeColor("#000000", 100 - (brushSelectionAnnot * 10));
-      // console.log(color)
-      for (i = 0; i < (brushSelectionAnnot+1); i++) {
-        $('#color-block' + (i+100)).css({"outline-color": color, "background-color": color});
+      // console.log(color);
+    }
+    else{
+      if(isTracksOn){
+        // &+- added qtl data, more filering, more fun!
+        if(checkbox.id.match('traitGenes') != null){
+          color = colorSettings[filterMap["traitGenes"][selectedTrack] - 1]["color"];
+        }
+        else if(checkbox.id.match('qtl') != null){
+          color = colorSettings[filterMap["qtl"][selectedTrack]]["color"];      
+        }
       }
     }
-    // else{
-      // &+- reinitialize colorSettings (color blocks)
-      // for (i = 0; i < colorSettings.length; i++) {
-      //   colorFillBlock = "transparent";
-      //   traitGeneID = '#color-block-' + (i);
-      //   qtlID = '#color-block-' + (i + 30);
-      //   $(traitGeneID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      //   $(qtlID).css({"outline-color": colorFillBlock, "background-color": colorFillBlock});
-      // }
-      // &+- color blocks will only trigger when the user picks tracks view
-      // if(isTracksOn){
-        // &+- added qtl data, more filering, more fun!
-        // if(checkbox.id.match('traitGenes') != null){
-          // fillColorBlock();
-          // color = colorSettings[filterMap["traitGenes"][selectedTrack] - 1]["color"];
-        // }
-        // else if(checkbox.id.match('qtl') != null){
-          // fillColorBlock();
-          // color = colorSettings[filterMap["qtl"][selectedTrack]]["color"];      
-        // }
-      // }
-    // }
-
+    
     if ($("#" + id).is(':checked')) {
       addTrack(selectedTrack);
       if(selectedTrack.indexOf('brush') === -1){
@@ -379,37 +364,49 @@
 
         /* create new view w/ selectedTrack annots */
         ideogram = getTrackData(selectedTrack, trackDataUrls, config);
-
       }
-
+      else{
+        for(var i = 0; i < brushAnnots.length; i++) {
+          ideogram.drawProcessedAnnots(brushAnnots[i]);
+          addAnnotationLinks();
+        }
+      }
 
       /* show annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "show");
-
-
     }
     else {
       removeTrack(selectedTrack);
-      if(selectedTrack.indexOf('brush') === -1){
 
-        /* update allTraitData */
-        var ra = removeSelectedTrack(selectedTrack);
-        config.rawAnnots = ra;
+      /* update allTraitData */
+      var ra = removeSelectedTrack(selectedTrack);
+      config.rawAnnots = ra;
 
-        /* clear current view */
-        d3.select("#ideogram").remove();
+      /* clear current view */
+      d3.select("#ideogram").remove();
 
-        /* new view without selectedTrack*/
-        ideogram = new Ideogram(config);
-        
-      }
+      /* new view without selectedTrack*/
+      ideogram = new Ideogram(config);
 
       /* hide annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "hidden");
+
+      if(brushAnnots.length > 0){
+        for(var i = 0; i < brushAnnots.length; i++) {
+          var selection = brushAnnots[i][annots];
+          for(var j = 0; j < brushAnnots.length; j++) {
+            selection[j]['trackIndex'] = selection[j]['trackIndex'] - 1;
+          }
+          
+          // ideogram.drawProcessedAnnots(brushAnnots[i]);
+          // addAnnotationLinks();
+        }
+      }
     }
     if (getAllTracksCount() > 0) {
       $("#jb-div").show();
     }
+
   }
 
   // &+- fills up the color blocks. the color in the color blocks will correspond to the
@@ -437,27 +434,13 @@
   // getViewType("Histogram");
   getViewType("Tracks");
 
-  var category;
-  if($("#view-type_histogram").is(':checked')) {
-    category = "histogram";
-  }
-  else{
-    category = "tracks";
-  }
-
-  /* render form */
-  var filepath = "/ideogram-extension/data/filter/traitGenes.json";
-  renderForm(filepath, category);
-
-  // &+- addition of the quantitativeTraitLoci.json
-  var filepath = "/ideogram-extension/data/filter/quantitativeTraitLoci.json";
-  renderForm(filepath, category);
-
   renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
   plugCollapsibleJQuery();
-  console.log(ideogram.config.annotationTracks);
   fillColorBlock();
 
+  document.getElementById("collapsible-gq").click();
+  $('body').css({'background-color': '#E0E0E0', 'color': 'black'});
+  
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();
   </script>

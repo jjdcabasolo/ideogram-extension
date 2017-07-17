@@ -35,35 +35,35 @@ var filterMap = {
             "qtarogenes_submergency_tolerance": 30
         },
         "qtl": {
-            "QTARO QTL": 1,
-            "qtaroqtl_bacterial_blight_resistance": 2,
-            "qtaroqtl_blast_resistance": 3,
-            "qtaroqtl_cold_tolerance": 4,
-            "qtaroqtl_culm_leaf": 5,
-            "qtaroqtl_drought_tolerance": 6,
-            "qtaroqtl_dwarf": 7,
-            "qtaroqtl_eating_quality": 8,
-            "qtaroqtl_flowering": 9,
-            "qtaroqtl_germination_dormancy": 10,
-            "qtaroqtl_insect_resistance": 11,
-            "qtaroqtl_lethality": 12,
-            "qtaroqtl_lodging_resistance": 13,
-            "qtaroqtl_morphological_trait": 14,
-            "qtaroqtl_other_disease_resistance": 15,
-            "qtaroqtl_other_soil_stress_tolerance": 16,
-            "qtaroqtl_other_stress_resistance": 17,
-            "qtaroqtl_others": 18,
-            "qtaroqtl_panicle_flower": 19,
-            "qtaroqtl_physiological_trait": 20,
-            "qtaroqtl_resistance_or_tolerance": 21,
-            "qtaroqtl_root": 22,
-            "qtaroqtl_salinity_tolerance": 23,
-            "qtaroqtl_seed": 24,
-            "qtaroqtl_sheath_blight_resistance": 25,
-            "qtaroqtl_shoot_seedling": 26,
-            "qtaroqtl_source_activity": 27,
-            "qtaroqtl_sterility": 28,
-            "qtaroqtl_submergency_tolerance": 29
+            "QTARO QTL": 31,
+            "qtaroqtl_bacterial_blight_resistance": 32,
+            "qtaroqtl_blast_resistance": 33,
+            "qtaroqtl_cold_tolerance": 34,
+            "qtaroqtl_culm_leaf": 35,
+            "qtaroqtl_drought_tolerance": 36,
+            "qtaroqtl_dwarf": 37,
+            "qtaroqtl_eating_quality": 38,
+            "qtaroqtl_flowering": 39,
+            "qtaroqtl_germination_dormancy": 40,
+            "qtaroqtl_insect_resistance": 41,
+            "qtaroqtl_lethality": 42,
+            "qtaroqtl_lodging_resistance": 43,
+            "qtaroqtl_morphological_trait": 44,
+            "qtaroqtl_other_disease_resistance": 45,
+            "qtaroqtl_other_soil_stress_tolerance": 46,
+            "qtaroqtl_other_stress_resistance": 47,
+            "qtaroqtl_others": 48,
+            "qtaroqtl_panicle_flower": 49,
+            "qtaroqtl_physiological_trait": 50,
+            "qtaroqtl_resistance_or_tolerance": 51,
+            "qtaroqtl_root": 52,
+            "qtaroqtl_salinity_tolerance": 53,
+            "qtaroqtl_seed": 54,
+            "qtaroqtl_sheath_blight_resistance": 55,
+            "qtaroqtl_shoot_seedling": 56,
+            "qtaroqtl_source_activity": 57,
+            "qtaroqtl_sterility": 58,
+            "qtaroqtl_submergency_tolerance": 59
         },
         "brush": {
 
@@ -1038,7 +1038,8 @@ var filterMap = {
             "displayName": "Submergency tolerance",
             "color": "#FFCAD9"
         }
-    ];
+    ],
+    brushAnnots = [];
 
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
@@ -1124,7 +1125,6 @@ function fillColorBlock(){
         colorFillBlock = val['color'];
         traitGeneID = '#color-block-' + (index);
         qtlID = '#color-block-' + (index + 30);
-        console.log(traitGeneID + "|" + qtlID);
         $(traitGeneID).css('background-color', colorFillBlock);
         $(qtlID).css('background-color', colorFillBlock);
         index = index + 1;
@@ -1497,16 +1497,26 @@ function addTrack(track) {
 }
 
 function removeTrack(track) {
-    var i, rem = -1;
-    for (i = 0; i < allTracks.length; i++) {
-        if (track === allTracks[i]) {
-            rem = i;
-        } else if (rem != -1) {
-            allTracks[i]["trackIndex"]--;
+    var saveIndex = 0;
+
+    // &+- redesigned the deletion of the track 
+    for(var i = 0; i < allTracks.length; i++) {
+        var obj = allTracks[i];
+        if(obj['track'] === track){
+            // &+- step 1: find and delete the track at the track array
+            allTracks.splice(i, 1);
+            allTracksCount--;
+            saveIndex = i;
+            console.log('erasing' + obj['track']);
+            break;
         }
     }
-    allTracks.splice(rem, 1);
-    allTracksCount--;
+
+    // &+- step 2: decrement all of the remaining track indices
+    for(var i = saveIndex; i < allTracks.length; i++) {
+        var obj = allTracks[i]['trackIndex'];
+        allTracks[i]['trackIndex'] = obj - 1;
+    }
 }
 
 function getAllTracksCount(){

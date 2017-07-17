@@ -349,7 +349,7 @@ ul {
 .annot path:hover {
     fill: #424242;
     stroke: #424242;
-    transform: translateY(5px);
+    transform: translateY(3px) scale(1.5);
     -webkit-transition: transform 1s;
     /* Safari */
     transition: transform 1s;

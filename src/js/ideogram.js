@@ -1315,7 +1315,6 @@ Ideogram.prototype.convertBpToPx = function(chr, bp) {
             iscn = band.iscn.start + (bp - band.bp.start) * bpToIscnScale;
 
             px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
-            console.log("eweitz");
             return px;
         }
         lastbandstop= band.bp.stop;
@@ -1326,7 +1325,6 @@ Ideogram.prototype.convertBpToPx = function(chr, bp) {
     iscn = band.iscn.start + (lastbandstop - band.bp.start) * bpToIscnScale;
 
     px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
-    console.log("mansueto");
     return px;
 };
 
@@ -1590,15 +1588,7 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             annot['stop'] = annot.start + annot.length;
 
-            // if(keys.length == 5){
-            //     if(chr == 2){
-            //         chrModel = ideo.chromosomes["4530"][chr];
-            //     }
-            // }
-            // else{
-                chrModel = ideo.chromosomes["4530"][chr];
-                console.log(chrModel);
-            // }
+            chrModel = ideo.chromosomes["4530"][chr];
 
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
@@ -1612,37 +1602,37 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             color = ideo.config.annotationsColor;
 
-            if(keys.length != 5){
-                /* adjust format by chaning trackIndex [*] */
-                if (ideo.config.annotationTracks) {
-                    var allTracks = ideo.config.allTracks,
-                        c;
+            /* adjust format by chaning trackIndex [*] */
+            if (ideo.config.annotationTracks) {
+                var allTracks = ideo.config.allTracks,
+                    c;
 
-                    for (c = 0; c < allTracks.length; c++) {
-                        var t = allTracks[c];
-                        if (t["mapping"] === ra[3]) {
-                            annot["trackIndex"] = t["trackIndex"];
-                        }
+                for (c = 0; c < allTracks.length; c++) {
+                    var track = allTracks[c];
+                    if (track["mapping"] === ra[3]) {
+                        annot["trackIndex"] = track["trackIndex"];
                     }
-
-                    color = ideo.config.annotationTracks[ra[3] - 1].color;
-                } else {
-                    annot['trackIndex'] = -1;
                 }
+
+                if(keys.length != 5){
+                    color = ideo.config.annotationTracks[ra[3] - 1].color;
+                }
+                else{
+                    color = ideo.config.annotationsColor;
+                }
+            } else {
+                annot['trackIndex'] = -1;
             }
+
+            // console.log(ideo.config.allTracks);
 
             if ('color' in annot) {
                 color = annot['color'];
             }
 
             annot['chr'] = chr;
-            if(keys.length == 5){
-                annot['chrIndex'] = parseInt(String(annot.chrName).replace(/[^0-9\.]/g, ''), 10) - 1;;
-                console.log(annot['chrIndex']);
-            }
-            else{
-                annot['chrIndex'] = i;
-            }
+            annot['chrIndex'] = i;
+
             annot['px'] = px;
             annot['color'] = color;
 
@@ -1847,29 +1837,27 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
                     index = d.chrIndex, y;
 
                 // &=- brush generated track annotations
-                if(d.chrName !== undefined){
-                    y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                    // &=- appended on the first chromosome (<g>) but is adjusted according to chrName using offset variable
-                    y = y - (76 * offset) - (chrMargin * index);
-                }
-                else{   
-                    // &+- if the operation is on normal track annotation creation
-                    y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                }
+                // if(d.chrName !== undefined){
+                //     y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                //     // &=- appended on the first chromosome (<g>) but is adjusted according to chrName using offset variable
+                //     y = y - (76 * offset) - (chrMargin * index);
+                // }
+                // else{   
+                //     // &+- if the operation is on normal track annotation creation
+                // }
+                // console.log(d.name);
+                // console.log(ideo.config.allTracks);
+                y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
                 
                 // &+- used in tracing // weekly progress presentation
-                var popo = Math.ceil(d.stopPx - d.startPx);
+                // var popo = Math.ceil(d.stopPx - d.startPx);
                 // var starttopx = convertBpToPx(d.start);
                 // var stoptopx = convertBpToPx(d.stop);
-
-                // console.log(d.start+"|"+d.stop);
                 // console.log("[bp] " + d.start + ", " + d.stop + "\t\t-> [px] " + d.startPx + ", " + d.stopPx + "\t\t| diffPx: " + popo);
-                // console.log()
-                // console.log(Math.round((d.startPx + d.stopPx) / 2) - 28);
-                // px = Math.round((startPx + stopPx) / 2) - 28;
+             
                 if(difference >= 5){
                     return "translate(" + Math.ceil(d.startPx) + "," + y + ")";                        
                 }
@@ -1908,14 +1896,10 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
                 return null;
             })
             .attr("fill", function(d) {
-                // &+- will work if the track annotation is in a single position
-                // var difference = Math.ceil(d.stopPx - d.startPx) - 28;
-                // if(difference >= 5){
-                //     return null;
-                // }
                 return d.color;
             })
             .attr("visibility", "show")
+            .attr("onclick", "showJBrowseAnnotClick()") // &+- automatic JBrowse tab click 
             .append("title") // add tooltip [*]
             .html(function(d) {
                 return d.name;
@@ -2746,7 +2730,6 @@ Ideogram.prototype.init = function() {
                 /* Add clickable annotations and display in jBrowse [*] */
                 d3.selectAll(".annot")
                     .on("click", function(d, i) {
-                        console.log(ideo.config.selectedTrack);
                         toggleLinearScale("visible");
                         // var pathname = "http://oryzasnp.org/jbrowse-dev2/",
                         var pathname = "http://172.29.4.215:8080/jbrowse-dev2/",                     
@@ -2762,12 +2745,6 @@ Ideogram.prototype.init = function() {
                             chrNum = "?loc=chr" + d.chr + "%3A"
                         }
                         $("#jbrowse").prop("src", pathname + chrNum + locOnChr + track);
-
-                        // &+- draggable jbrowse iframe!
-                        // $('#jbrowse').draggable();
-                        // $('#jbrowse').attr('height', '500px !important;');
-                        // $('#jbrowse').attr('width', '500px !important;');
-
                         $("#jbrowse").show();
                     });
             } else {

@@ -1,4 +1,15 @@
 // HTML DOM changes on brush-related elements
+$(document).ready(function() {
+    // SVG MENU SETTINGS
+    adjustIdeogramSVG();
+    // DROPDOWN MENU
+    dropdownMenuSetup();
+    searchEnterOverride();
+    collapsibleArrowAnimate();
+    // showJBrowseAnnotClick();
+    exportSVG();
+});  
+
 var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [], arrayOfColorsBrushes = [];
 
 function adjustIdeogramSVG(){
@@ -94,79 +105,7 @@ function dropdownMenuSetup(){
     });
 }
 
-// thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
-function searchEnterOverride(){
-    $('#search-keyword').bind("keypress", {}, keypressInBox);
-    function keypressInBox(e) {
-        var code = (e.keyCode ? e.keyCode : e.which);
-        if (code == 13) { //Enter keycode                        
-            e.preventDefault();
-            triggerSearchBox();
-        }
-    };    
-}
-
-// &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
-function collapsibleArrowAnimate(){
-    // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
-    var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
-    jQuery.fn.rotate = function(degrees) {
-        $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
-                     '-moz-transform' : 'rotate('+ degrees +'deg)',
-                     '-ms-transform' : 'rotate('+ degrees +'deg)',
-                     'transform' : 'rotate('+ degrees +'deg)'});
-    };
-
-    $('#collapsible-tg').click(function() {
-        if(arrowTGOn){
-            $('#arrow-tg').rotate(0);
-            $('#collapsible-tg').css('background-color', '#E0E0E0');
-        }
-        else{
-            $('#arrow-tg').rotate(-90);
-            $('#collapsible-tg').css('background-color', '#EEEEEE');
-        }
-        arrowTGOn = !arrowTGOn;
-    });
-    
-    $('#collapsible-qtl').click(function() {
-        if(arrowQTLOn) {
-            $('#arrow-qtl').rotate(0);
-            $('#collapsible-qtl').css('background-color', '#E0E0E0');
-        }
-        else{
-            $('#arrow-qtl').rotate(-90);
-            $('#collapsible-qtl').css('background-color', '#EEEEEE');
-        }
-        arrowQTLOn = !arrowQTLOn;
-    });
-    
-    $('#collapsible-gq').click(function() {
-        if(arrowGQOn){
-            $('#arrow-gq').rotate(0);
-            $('#collapsible-gq').css('background-color', '#E0E0E0');
-        }
-        else{
-            $('#arrow-gq').rotate(-90);
-            $('#collapsible-gq').css('background-color', '#EEEEEE');
-        }
-        arrowGQOn = !arrowGQOn;
-    });
-}
-
-$(document).ready(function() {    
-    // SVG MENU SETTINGS
-    adjustIdeogramSVG();
-
-    // DROPDOWN MENU
-    dropdownMenuSetup();
-
-    searchEnterOverride();
-
-    collapsibleArrowAnimate();
-    exportSVG();
-});  
-
+// &+- "SHOW IN JBROWSE" option at brush menu, ideogram page
 // &+- makes the JBrowse appear with the set coordinates
 function redirectToJBrowse(brush){
     // &+- automatically open the jbrowse tab
@@ -216,6 +155,7 @@ function deleteThisBrush(brush){
     isBrushActive[parseInt(brush.replace(/[^0-9\.]/g, ''), 10)] = false;
 }
 
+// &+- "SET BASE PAIR RANGE" option at brush menu
 // &+- setting the brush extent by inputting start and end coordinates
 function setTheBrush(brush){
     var start = $('#startBPTextbox').val(),
@@ -309,6 +249,7 @@ function countActiveBrushes(){
 
 var isHeaderPresent = false;
 
+// &+- "SHOW ALL GENES" option at brush menu
 // &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
     // &+- automatically open the genetable tab
@@ -465,6 +406,7 @@ function addAllColumnHeaders(myList, selector, isHeaderPresent) {
     return columnSet;
 }
 
+// &+- ANNOTATION CREATION (data coming from brush selection and serach queries)
 var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
 
 // &+- generate the links for each chromosome using the brush extent as the start and end values
@@ -542,47 +484,52 @@ function processCollectedAnnots(webService, func) {
 }
 
 // &=- insertion to the brush selection checkbox element
-function appendCheckbox(){
+function appendCheckbox(categoryQuery){
     var open_tag = "<li>",
         close_tag = "</li>",
         attr = '<input type="checkbox" onclick="toggleFilter(this)"',
         label = "",
         id = "",
-        colorBlock = '<div class="color-block" id="color-block-' + (brushSelectionAnnot) + '"></div>';
+        colorBlock = '<div class="color-block" id="color-block-' + (brushSelectionAnnot+59) + '" style="background-color: '+ arrayOfColorsBrushes[brushSelectionAnnot] +' "></div>';
 
     var item,
-        id = 'brush-selection-' + brushSelectionAnnot;
-        label = "<label for='" + id + "'>" + colorBlock + id + "</label>";
+        id = categoryQuery + '-' + (brushSelectionAnnot+59);
+        label = "<label for='" + id + "'>" + colorBlock + categoryQuery + '-' + (brushSelectionAnnot) + "</label>";
 
     attr = attr + 'id="' + id + '" tracks="' + id + '"></input>';
     item = open_tag + attr + label + close_tag;
 
-    $(item).appendTo("#brush-slct");
-    $('#color-block' + (brushSelectionAnnot+100)).css({"outline-color": arrayOfColorsBrushes[brushSelectionAnnot], "background-color": arrayOfColorsBrushes[brushSelectionAnnot]});    
+    $(item).appendTo("#category-content-gq ul");
+    // $('#color-block' + (brushSelectionAnnot+59)).css("background-color", arrayOfColorsBrushes[brushSelectionAnnot]);    
+    
+    $('#' + id).prop('checked', true); 
     brushSelectionAnnot = brushSelectionAnnot + 1;
-    $('#' + id).prop('checked', true);
 }
 
-// &+- creation of the checkbox element (created when a user clicks "Plot all genes option")
-function brushSelectionCheckbox(){
-    $.getJSON('/ideogram-extension/data/filter/brushSelection.json', function(data) {
-        var list_items = [],
-            html_wrapper = "<" + data['html']['type'] + "/>",
-            html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
+/* Add clickable annotations and display in jBrowse [*] */
+function addAnnotationLinks(){
+    d3.selectAll(".annot")
+        .on("click", function(d, i) {
+            toggleLinearScale("visible");
+            // var pathname = "http://oryzasnp.org/jbrowse-dev2/",
+            var pathname = "http://172.29.4.215:8080/jbrowse-dev2/",                     
+                locOnChr = d.start.toString() + ".." + (d.start + d.length).toString(),
+                track = "&tracks=DNA%2C" + ideogram.config.selectedTrack + "&highlight=",
+                chrNum;
 
-        list_items.push(html_label);
-        
-        $(html_wrapper, {
-            "id": data['html']['id'],
-            html: list_items.join("")
-        }).appendTo("#form-render-brush");
-    })
-    .done(function() {
-        isCheckboxPresent = !isCheckboxPresent;
-        appendCheckbox();
-    })
+            if (d.chr < 10) {
+                chrNum = "?loc=chr0" + d.chr + "%3A"
+            } else {
+                chrNum = "?loc=chr" + d.chr + "%3A"
+            }
+            console.log("src", pathname + chrNum + locOnChr + track);
+            $("#jbrowse").prop("src", pathname + chrNum + locOnChr + track);
+            $("#jbrowse").show();
+        }
+    );
 }
 
+// &+- "PLOT ALL GENES" option @ brush menu
 // &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
 function plotGeneAnnotation(){
     // &+- make this option inactive while it is ongoing
@@ -615,6 +562,7 @@ function plotGeneAnnotation(){
         geneAnnotArrayURL = [];
 
     geneAnnotArrayURL = generateGeneAnnotURLs(geneAnnotArrayURL);
+    console.log(activeURLs);
 
     var temp = ideogram.config.annotationsColor;
     ideogram.config.annotationsColor = getRandomColor();
@@ -628,12 +576,24 @@ function plotGeneAnnotation(){
                     function(processedAnnots) {
                         // &+- change setTimeout time to cover all/longer processes
                         // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                        // console.log(allTracks);
+                        ideogram.config.allTracks = allTracks;
+                        console.log(processedAnnots);
+                        if(processedAnnots !== null){
+                            processedAnnots['mapping'] = brushTrackCount;
+                            brushAnnots.push(processedAnnots);
+                            console.log(brushAnnots);
+                        }
                         ideogram.drawProcessedAnnots(processedAnnots);
+                        console.log(allTracks);
                         // ideogram.config.annotationsLayout = 'tracks';
                         counterURLs = counterURLs + 1;
                         if(counterURLs == activeURLs){
                             ideogram.config.annotationsColor = temp;
                             toggleSpinner(spinner, false);
+                            
+                            addAnnotationLinks();
+
                             $('.plot-genes').attr('class', 'active-link plot-genes');                 
 
                             // &+- make the checkbox element for brush selection appear
@@ -641,14 +601,8 @@ function plotGeneAnnotation(){
                             $('#form-render-brush').css('height', '70');
                             $('#form-render-brush').css('width', '250');
 
-                            addTrack('brush-selection-' + brushSelectionAnnot);
-                            if(isCheckboxPresent === false){
-                                brushSelectionCheckbox();
-                            }
-                            else{
-                                appendCheckbox();
-                            }
-
+                            addTrack('brush-selection-' + (brushSelectionAnnot+59));
+                            appendCheckbox('brush-selection');
                         }
                     }
                 );
@@ -660,7 +614,7 @@ function plotGeneAnnotation(){
     });
 }
 
-// &+- thank you https://stackoverflow.com/a/1484514 for this color randomizer
+// &+- thank you https://stackoverflow.com/a/1484514 for this color randomizer :: used in search annotation and brush selection annotation
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -668,6 +622,19 @@ function getRandomColor() {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+
+// &+- "SEARCH GENE POSITION BY KEYWORD" section in ideogram page
+// thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
+function searchEnterOverride(){
+    $('#search-keyword').bind("keypress", {}, keypressInBox);
+    function keypressInBox(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) { //Enter keycode                        
+            e.preventDefault();
+            triggerSearchBox();
+        }
+    };    
 }
 
 // &+- plot the position of the genes with the description that matches the input in the searchbox
@@ -683,9 +650,7 @@ function triggerSearchBox(){
     $("#search-button").prop('disabled', true);    
 
     // &+- automatic scrolling to bottom
-    $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
     $('#gene-table-content').empty();
-
 
     // &+- clear message
     $('#searchbox-keyword-message').text('');
@@ -729,6 +694,18 @@ function triggerSearchBox(){
                     function(processedAnnots) {
                         if(processedAnnots === null){
                             $('#searchbox-keyword-message').text('No results found.');
+
+                            toggleSpinner(spinner, false);
+
+                            $("input#search-keyword").prop('disabled', false);
+                            $("#search-button").prop('disabled', false);    
+
+                            $('#GeneTable').css('height', '140');
+                            $('#GeneTable').append('<div id="no-content-gt"><h3>Gene table has no results yet.</h3><p>You can get to view genomic data by performing one of the following:</p><p class="li-content">- Searching a keyword</p><p class="li-content">- Create a brush, then click "Plot all genes" to view the results.</p></div>');
+
+                            $('#defaultOpen').attr('class', 'active-link tablinks'); 
+                            $('.show-genes').attr('class', 'active-link show-genes');  
+
                         }
                         else{
                             // &+- annotation generation
@@ -751,10 +728,13 @@ function triggerSearchBox(){
 
                                     // &+- tab links activation
                                     $('#defaultOpen').attr('class', 'active-link tablinks'); 
-                                    $('.show-genes').attr('class', 'active-link show-genes');                   
+                                    $('.show-genes').attr('class', 'active-link show-genes');  
+
                                     // &+- search activation
                                     $("input#search-keyword").prop('disabled', false);
                                     $("#search-button").prop('disabled', false);    
+
+                                    addAnnotationLinks();
 
                                     toggleSpinner(spinner, false);
 
@@ -783,6 +763,7 @@ function triggerSearchBox(){
     });
 }
 
+// "TURN NIGHT MODE ON" at settings tab, ideogram page
 var isNightMode = true;
 function turnNightMode(){
     $('style').detach();
@@ -977,6 +958,7 @@ function turnNightMode(){
     isNightMode = !isNightMode;
 }
 
+// &+- TABS (show results and ideogram settings/instructions tabs)
 var emptyJB = true, emptyGT = true;
 // &+- tabs:: thank you https://www.w3schools.com/howto/howto_js_tabs.asp for this awesome tab html structure and css
 function toggleResult(evt, category) {
@@ -1042,6 +1024,65 @@ function anotherTab(evt, category) {
     evt.currentTarget.className += " active";
 }
 
+// &+- ANNOTATION CLICK :: opening the jbrowse tab and triggering the application of jbrowse settings
+function showJBrowseAnnotClick(){
+    $('.annot').click(function() {
+        $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
+        document.getElementById("defaultOpen").click();
+        $('#JBrowseView').css('height', '460');
+        $('#no-content-jb').remove();
+    });
+}
+
+// &+- COLLAPSIBLE STRUCTURE JQUERY
+// &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
+function collapsibleArrowAnimate(){
+    // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
+    var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
+    jQuery.fn.rotate = function(degrees) {
+        $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
+                     '-moz-transform' : 'rotate('+ degrees +'deg)',
+                     '-ms-transform' : 'rotate('+ degrees +'deg)',
+                     'transform' : 'rotate('+ degrees +'deg)'});
+    };
+
+    $('#collapsible-tg').click(function() {
+        if(arrowTGOn){
+            $('#arrow-tg').rotate(0);
+            $('#collapsible-tg').css('background-color', '#E0E0E0');
+        }
+        else{
+            $('#arrow-tg').rotate(-90);
+            $('#collapsible-tg').css('background-color', '#EEEEEE');
+        }
+        arrowTGOn = !arrowTGOn;
+    });
+    
+    $('#collapsible-qtl').click(function() {
+        if(arrowQTLOn) {
+            $('#arrow-qtl').rotate(0);
+            $('#collapsible-qtl').css('background-color', '#E0E0E0');
+        }
+        else{
+            $('#arrow-qtl').rotate(-90);
+            $('#collapsible-qtl').css('background-color', '#EEEEEE');
+        }
+        arrowQTLOn = !arrowQTLOn;
+    });
+    
+    $('#collapsible-gq').click(function() {
+        if(arrowGQOn){
+            $('#arrow-gq').rotate(0);
+            $('#collapsible-gq').css('background-color', '#E0E0E0');
+        }
+        else{
+            $('#arrow-gq').rotate(-90);
+            $('#collapsible-gq').css('background-color', '#EEEEEE');
+        }
+        arrowGQOn = !arrowGQOn;
+    });
+}
+
 // &+- thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
 function plugCollapsibleJQuery(){
     var panelspeed = 500; //panel animate speed in milliseconds
@@ -1104,18 +1145,8 @@ function plugCollapsibleJQuery(){
     panelinit();
 }
 
-// function downloadTable(){
-//     $("table").tableExport({
-//         headings: true,                   
-//         footers: true,
-//         formats: ["csv"],          
-//         fileName: "gene-table",                        
-//         emptyCSS: ".tableexport-empty",  
-//         trimWhitespace: false        
-//     });
-
-// }
-
+// "EXPORT TO PNG" button at ideogram page
+// &+- thank you https://stackoverflow.com/a/41735524 for this function that exports svg to .png
 function exportSVG(){
     $(".exportImageButton").on("click", function() {
         var svg = document.querySelector("svg");
