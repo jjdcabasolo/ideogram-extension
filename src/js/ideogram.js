@@ -1624,14 +1624,18 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
                 annot['trackIndex'] = -1;
             }
 
-            // console.log(ideo.config.allTracks);
-
             if ('color' in annot) {
                 color = annot['color'];
             }
 
             annot['chr'] = chr;
-            annot['chrIndex'] = i;
+
+            if(keys.length == 5){
+                annot['chrIndex'] = (chr - 1);
+            }
+            else{
+                annot['chrIndex'] = i;
+            }
 
             annot['px'] = px;
             annot['color'] = color;
@@ -1816,14 +1820,54 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
         'a ' + r + ',' + r + ' 0 1,0 ' + (r * 2) + ',0' +
         'a ' + r + ',' + r + ' 0 1,0 -' + (r * 2) + ',0';
 
-    chrAnnot = d3.selectAll(".chromosome")
-        .data(annots)
-        .selectAll("path.annot")
-        .data(function(d) {
-            console.log(d);
-            return d["annots"];
-        })
-        .enter();
+    // &+- construction of a empty copy of annots
+    var modifiedAnnot = [], goToConstruct = false;
+    for(var j = 0; j < this.numChromosomes; j++) {
+        var arr = ['1'];
+        arr.splice(0, 1);
+        var annotObj = { 'chr': (j+1).toString(), 'annots': arr};
+        modifiedAnnot.push(annotObj);
+    }
+
+    // &+- checking if the annotations to create comes from the brush/search or not
+    for(var i = 0; i < annots.length; i++) {
+        var obj = annots[i];
+        if(obj['mapping'] === 'asdf'){
+            goToConstruct = true;
+            break;
+        }
+    }
+
+    // &+- if it comes from the search/brush, pass the copy of annots while uniting the brush/search annots with the copy of annots
+    if(goToConstruct){
+        for(var i = 0; i < annots.length; i++) {
+            var obj = annots[i];
+            for(var k = 0; k < this.numChromosomes; k++) {
+                if(modifiedAnnot[k]['chr'] == obj['chr']){
+                    modifiedAnnot[k]['annots'] = obj['annots'];
+                }
+            }
+        }
+        chrAnnot = d3.selectAll(".chromosome")
+            .data(modifiedAnnot)
+            .selectAll("path.annot")
+            .data(function(d) {
+                console.log(d);
+                return d["annots"];
+            })
+            .enter();
+    }
+    else{
+        chrAnnot = d3.selectAll(".chromosome")
+            .data(annots)
+            .selectAll("path.annot")
+            .data(function(d) {
+                console.log(d);
+                return d["annots"];
+            })
+            .enter();
+    }
+
 
     if (layout === "tracks") {
         chrAnnot
@@ -1833,20 +1877,7 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             })
             .attr("class", "annot")
             .attr("transform", function(d) {
-                var offset = parseInt(String(d.chrName).replace(/[^0-9\.]/g, ''), 10) - 1,
-                    index = d.chrIndex, y;
-
-                // &=- brush generated track annotations
-                // if(d.chrName !== undefined){
-                //     y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                //     // &=- appended on the first chromosome (<g>) but is adjusted according to chrName using offset variable
-                //     y = y - (76 * offset) - (chrMargin * index);
-                // }
-                // else{   
-                //     // &+- if the operation is on normal track annotation creation
-                // }
-                // console.log(d.name);
-                // console.log(ideo.config.allTracks);
+                var index = d.chrIndex, y;
                 y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start

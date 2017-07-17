@@ -5,7 +5,7 @@
   <title>Rice Ideogram</title>
 
   <!-- for linear scale render -->
-  <script src="http://mbostock.github.com/d3/d3.v2.js"></script>
+  <!-- <script src="http://mbostock.github.com/d3/d3.v2.js"></script> -->
 
   <!-- for chromosomes render -->
   <link type="text/css" rel="stylesheet" href="src/css/ideogram.css" />
@@ -367,8 +367,8 @@
       }
       else{
         for(var i = 0; i < brushAnnots.length; i++) {
-          ideogram.drawProcessedAnnots(brushAnnots[i]);
-          addAnnotationLinks();
+          // ideogram.drawProcessedAnnots(brushAnnots[i]);
+          // addAnnotationLinks();
         }
       }
 
@@ -391,17 +391,17 @@
       /* hide annots/tracks (tracks view filtering) */
       d3.selectAll("path[fill = '" + color + "']").attr("visibility", "hidden");
 
-      if(brushAnnots.length > 0){
-        for(var i = 0; i < brushAnnots.length; i++) {
-          var selection = brushAnnots[i][annots];
-          for(var j = 0; j < brushAnnots.length; j++) {
-            selection[j]['trackIndex'] = selection[j]['trackIndex'] - 1;
-          }
+      // if(brushAnnots.length > 0){
+      //   for(var i = 0; i < brushAnnots.length; i++) {
+      //     var selection = brushAnnots[i][annots];
+      //     for(var j = 0; j < brushAnnots.length; j++) {
+      //       selection[j]['trackIndex'] = selection[j]['trackIndex'] - 1;
+      //     }
           
-          // ideogram.drawProcessedAnnots(brushAnnots[i]);
-          // addAnnotationLinks();
-        }
-      }
+      //     // ideogram.drawProcessedAnnots(brushAnnots[i]);
+      //     // addAnnotationLinks();
+      //   }
+      // }
     }
     if (getAllTracksCount() > 0) {
       $("#jb-div").show();

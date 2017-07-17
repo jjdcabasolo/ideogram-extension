@@ -578,15 +578,13 @@ function plotGeneAnnotation(){
                         // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
                         // console.log(allTracks);
                         ideogram.config.allTracks = allTracks;
-                        console.log(processedAnnots);
+                        // console.log(allTracks);
                         if(processedAnnots !== null){
-                            processedAnnots['mapping'] = brushTrackCount;
+                            processedAnnots.push({'mapping': 'asdf'});
                             brushAnnots.push(processedAnnots);
-                            console.log(brushAnnots);
+                            // console.log(brushAnnots);
                         }
                         ideogram.drawProcessedAnnots(processedAnnots);
-                        console.log(allTracks);
-                        // ideogram.config.annotationsLayout = 'tracks';
                         counterURLs = counterURLs + 1;
                         if(counterURLs == activeURLs){
                             ideogram.config.annotationsColor = temp;
@@ -637,6 +635,11 @@ function searchEnterOverride(){
     };    
 }
 
+// AL;SKDF;ASDLFH;BFICLJKB
+function fixAnnotChr(){
+
+}
+
 // &+- plot the position of the genes with the description that matches the input in the searchbox
 function triggerSearchBox(){
     // &+- automatically open the genetable tab
@@ -685,6 +688,8 @@ function triggerSearchBox(){
         temp = ideogram.config.annotationsColor,
         colors = ideogram.config.annotationsColor = getRandomColor(),
         arrayCatch;
+               
+    ideogram.config.allTracks = allTracks;
 
     asyncLoop({
         length: 1,
@@ -708,12 +713,13 @@ function triggerSearchBox(){
 
                         }
                         else{
-                            // &+- annotation generation
-                            // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
+                            fixAnnotChr();
+                            console.log(processedAnnots);
+                            processedAnnots.push({'mapping': 'asdf'});
+                            brushAnnots.push(processedAnnots);
                             ideogram.drawProcessedAnnots(processedAnnots);
-                            // ideogram.config.annotationsLayout = 'tracks';
+
                             $('#searchbox-keyword-message').text('Annotations are in this color.');
-                            // $('#searchbox-keyword-message').css('font-weight', 'normal');
                             $('#searchbox-keyword-message').css('color', colors);
 
                             // &+- put the results in a table

@@ -1500,14 +1500,13 @@ function removeTrack(track) {
     var saveIndex = 0;
 
     // &+- redesigned the deletion of the track 
+    // &+- step 1: find and delete the track at the track array
     for(var i = 0; i < allTracks.length; i++) {
         var obj = allTracks[i];
         if(obj['track'] === track){
-            // &+- step 1: find and delete the track at the track array
             allTracks.splice(i, 1);
             allTracksCount--;
             saveIndex = i;
-            console.log('erasing' + obj['track']);
             break;
         }
     }
