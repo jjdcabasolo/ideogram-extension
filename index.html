@@ -332,11 +332,8 @@
     var selectedTrack = $("#" + id).attr("tracks");
 
     if(selectedTrack.indexOf('brush') !== -1){
-      // console.log(checkbox.id);
       var number = parseInt(checkbox.id.replace(/[^0-9\.]/g, ''), 10);
       color = arrayOfColorsBrushes[(number-59)];
-      // color = shadeColor("#000000", 100 - (brushSelectionAnnot * 10));
-      // console.log(color);
     }
     else{
       if(isTracksOn){
@@ -440,6 +437,8 @@
 
   document.getElementById("collapsible-gq").click();
   $('body').css({'background-color': '#E0E0E0', 'color': 'black'});
+  $('#search-keyword').val('alcohol');
+  document.getElementById('search-button').click();
   
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();

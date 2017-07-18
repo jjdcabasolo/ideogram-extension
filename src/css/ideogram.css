@@ -346,13 +346,22 @@ ul {
     border: 1px solid #757575;
 }
 
-.annot path:hover {
+.singleposition path:hover {
     fill: #424242;
     stroke: #424242;
     transform: translateY(3px) scale(1.5);
-    -webkit-transition: transform 1s;
+    -webkit-transition: transform 0.2s;
     /* Safari */
-    transition: transform 1s;
+    transition: transform 0.2s;
+}
+
+.rangedannot path:hover {
+    fill: #424242;
+    stroke: #424242;
+    transform: translateY(6px);
+    -webkit-transition: transform 0.2s;
+    /* Safari */
+    transition: transform 0.2s;
 }
 
 .gene-table {

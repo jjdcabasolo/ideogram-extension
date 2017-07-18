@@ -407,7 +407,7 @@ function addAllColumnHeaders(myList, selector, isHeaderPresent) {
 }
 
 // &+- ANNOTATION CREATION (data coming from brush selection and serach queries)
-var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
+var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, geneQueryCount = 0, searchQueryAnnot = 0, brushSelectionCount = 0, geneQueryCountArray = [], isCheckboxPresent = false;
 
 // &+- generate the links for each chromosome using the brush extent as the start and end values
 function generateGeneAnnotURLs(geneAnnotArrayURL){
@@ -484,26 +484,33 @@ function processCollectedAnnots(webService, func) {
 }
 
 // &=- insertion to the brush selection checkbox element
-function appendCheckbox(categoryQuery){
+function appendCheckbox(categoryQuery, nameNum){
     var open_tag = "<li>",
         close_tag = "</li>",
         attr = '<input type="checkbox" onclick="toggleFilter(this)"',
         label = "",
         id = "",
-        colorBlock = '<div class="color-block" id="color-block-' + (brushSelectionAnnot+59) + '" style="background-color: '+ arrayOfColorsBrushes[brushSelectionAnnot] +' "></div>';
+        colorBlock = '<div class="color-block" id="color-block-' + (geneQueryCount+59) + '" style="background-color: '+ arrayOfColorsBrushes[geneQueryCount] +' "></div>';
 
     var item,
-        id = categoryQuery + '-' + (brushSelectionAnnot+59);
-        label = "<label for='" + id + "'>" + colorBlock + categoryQuery + '-' + (brushSelectionAnnot) + "</label>";
+        id = categoryQuery + '-' + (geneQueryCount+59);
+        label = "<label for='" + id + "'>" + colorBlock + categoryQuery + '-' + (nameNum) + "</label>";
 
     attr = attr + 'id="' + id + '" tracks="' + id + '"></input>';
     item = open_tag + attr + label + close_tag;
 
     $(item).appendTo("#category-content-gq ul");
-    // $('#color-block' + (brushSelectionAnnot+59)).css("background-color", arrayOfColorsBrushes[brushSelectionAnnot]);    
+    // $('#color-block' + (geneQueryCount+59)).css("background-color", arrayOfColorsBrushes[geneQueryCount]);    
     
     $('#' + id).prop('checked', true); 
-    brushSelectionAnnot = brushSelectionAnnot + 1;
+    geneQueryCount = geneQueryCount + 1;
+
+    var searchIdentifier = new RegExp("search");
+    if(searchIdentifier.test(categoryQuery)){
+        searchQueryAnnot = searchQueryAnnot + 1;
+    }else{
+        brushSelectionCount = brushSelectionCount + 1;
+    }
 }
 
 /* Add clickable annotations and display in jBrowse [*] */
@@ -575,14 +582,11 @@ function plotGeneAnnotation(){
                 processCollectedAnnots(geneAnnotArrayURL[i - 1],
                     function(processedAnnots) {
                         // &+- change setTimeout time to cover all/longer processes
-                        // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
-                        // console.log(allTracks);
                         ideogram.config.allTracks = allTracks;
-                        // console.log(allTracks);
+
                         if(processedAnnots !== null){
                             processedAnnots.push({'mapping': 'asdf'});
                             brushAnnots.push(processedAnnots);
-                            // console.log(brushAnnots);
                         }
                         ideogram.drawProcessedAnnots(processedAnnots);
                         counterURLs = counterURLs + 1;
@@ -599,8 +603,8 @@ function plotGeneAnnotation(){
                             $('#form-render-brush').css('height', '70');
                             $('#form-render-brush').css('width', '250');
 
-                            addTrack('brush-selection-' + (brushSelectionAnnot+59));
-                            appendCheckbox('brush-selection');
+                            addTrack('brush-selection-' + (geneQueryCount+59));
+                            appendCheckbox('brush-selection', brushSelectionCount);
                         }
                     }
                 );
@@ -635,9 +639,39 @@ function searchEnterOverride(){
     };    
 }
 
-// AL;SKDF;ASDLFH;BFICLJKB
-function fixAnnotChr(){
+// &+- adjustments on search results and transform it to an array of objects which the ideogram.js can procress
+function fixAnnotChr(processedAnnots){
+    var annotArray = processedAnnots,
+        obj = annotArray['0'],
+        annot = obj['annots'];
 
+    for (var i = 0; i < annot.length; i++) {
+        var innerObj = annot[i];
+            number = parseInt(innerObj['chrName'].replace(/[^0-9\.]/g, ''), 10);
+
+        processedAnnots['0']['annots'][i]['chr'] = number;
+    }
+
+    // &+- construction of a empty copy of annots
+    var modifiedAnnot = [], goToConstruct = false;
+    for(var j = 0; j < ideogram.numChromosomes; j++) {
+        var arr = ['1'];
+        arr.splice(0, 1);
+        var annotObj = { 'chr': (j+1).toString(), 'annots': arr};
+        modifiedAnnot.push(annotObj);
+    }
+
+    for(var i = 0; i < annot.length; i++) {
+        var chrObj = annot[i];
+        for(var k = 0; k < ideogram.numChromosomes; k++) {
+            if(modifiedAnnot[k]['chr'] == chrObj['chr']){
+                chrObj['chrIndex'] = (chrObj['chr'] - 1);
+                modifiedAnnot[k]['annots'].push(chrObj);
+            }
+        }
+    }
+
+    return modifiedAnnot;
 }
 
 // &+- plot the position of the genes with the description that matches the input in the searchbox
@@ -686,10 +720,12 @@ function triggerSearchBox(){
         keyword = $("#search-keyword").val(),
         webService = pathname + keyword,
         temp = ideogram.config.annotationsColor,
-        colors = ideogram.config.annotationsColor = getRandomColor(),
+        colors,
         arrayCatch;
                
     ideogram.config.allTracks = allTracks;
+    colors = ideogram.config.annotationsColor = getRandomColor();
+    arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
 
     asyncLoop({
         length: 1,
@@ -713,14 +749,17 @@ function triggerSearchBox(){
 
                         }
                         else{
-                            fixAnnotChr();
-                            console.log(processedAnnots);
-                            processedAnnots.push({'mapping': 'asdf'});
+                            processedAnnots = fixAnnotChr(processedAnnots);
+
+                            // processedAnnots.push({'mapping': 'asdf'});
                             brushAnnots.push(processedAnnots);
                             ideogram.drawProcessedAnnots(processedAnnots);
 
                             $('#searchbox-keyword-message').text('Annotations are in this color.');
                             $('#searchbox-keyword-message').css('color', colors);
+
+                            addTrack('search-query-' + (geneQueryCount+59));
+                            appendCheckbox('search-query', searchQueryAnnot);
 
                             // &+- put the results in a table
                             $.ajax({

@@ -1852,7 +1852,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .data(modifiedAnnot)
             .selectAll("path.annot")
             .data(function(d) {
-                console.log(d);
                 return d["annots"];
             })
             .enter();
@@ -1862,7 +1861,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .data(annots)
             .selectAll("path.annot")
             .data(function(d) {
-                console.log(d);
                 return d["annots"];
             })
             .enter();
@@ -1875,7 +1873,15 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .attr("id", function(d, i) {
                 return d.id;
             })
-            .attr("class", "annot")
+            // .attr("class", "annot")
+            .attr("class", function(d) {
+                var difference = Math.ceil(d.stopPx - d.startPx) - 28;
+                
+                if(difference >= 5){
+                    return "rangedannot annot";                        
+                }
+                return "singleposition annot";
+            })
             .attr("transform", function(d) {
                 var index = d.chrIndex, y;
                 y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
