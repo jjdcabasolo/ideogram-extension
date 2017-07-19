@@ -31,13 +31,13 @@ function toggleZoom(){
     if(isZoomOn){
         panZoomTiger.enableZoom();
         panZoomTiger.enablePan();
-        $('#enable-zoom button').text('Disable zoom');
+        $('#enable-zoom button').text('Zoom enabled');
         $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'visible'); 
     }
     else{
         panZoomTiger.disableZoom();
         panZoomTiger.disablePan();
-        $('#enable-zoom button').text('Enable zoom');
+        $('#enable-zoom button').text('Zoom disabled');
         $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'hidden'); 
     }
     isZoomOn = !isZoomOn;
@@ -46,11 +46,11 @@ function toggleZoom(){
 function togglePan(){
     if(isPanOn){
         panZoomTiger.enablePan();
-        $('#enable-pan button').text('Enable pan');
+        $('#enable-pan button').text('Pan enabled');
     }
     else{
         panZoomTiger.disablePan();
-        $('#enable-pan button').text('Disable pan');
+        $('#enable-pan button').text('Pan disabled');
     }
     isPanOn = !isPanOn;
 }
@@ -338,8 +338,8 @@ function showStatiscalTable(table){
             fps: 20,
             zIndex: 2e9,
             className: 'gt-spinner',
-            top: '500px',
-            left: '44%',
+            top: '-100px',
+            left: '38%',
             shadow: true,
             hwaccel: false,
             position: 'absolute'
