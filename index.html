@@ -30,8 +30,12 @@
   <!-- dropdown menu css -->
   <link type="text/css" rel="stylesheet" href="src/css/dropdownMenu.css">
 
+  <!-- table export -->
   <script src="src/js/FileSaver.min.js"></script>
   <script src="src/js/tableexport.min.js"></script>
+
+  <!-- svg zoom feature -->
+  <script src="src/js/svg-pan-zoom.min.js"></script>  
 </head>
 
 <body>
@@ -123,7 +127,11 @@
       </div>
     </div>
 
-      <span class="button-color" id="download-ideogram"><button class="exportImageButton" onclick="exportSVG">Export to png</button></span>
+    <span class="button-color" id="download-ideogram"><button class="exportImageButton" onclick="exportSVG()">Export to png</button></span>
+
+    <span class="button-color" id="enable-zoom"><button onclick="toggleZoom()">Disable zoom</button></span>
+    <span class="button-color" id="enable-pan"><button onclick="togglePan()">Enable pan</button></span>
+
     <div id="searchbox">
       <b>Search</b><span> gene position by keyword</span>
       <form class="form-wrapper cf">
@@ -317,8 +325,7 @@
     d3.select("svg").remove();
 
     ideogram = new Ideogram(config);
-    adjustIdeogramSVG();
-    dropdownMenuSetup();
+    setUpBrush();
   };
 
   /*
@@ -326,6 +333,8 @@
    * and tracks view, as well the data in allTraitData
    */
   function toggleFilter(checkbox) {
+    console.log(allTracks);
+
     var id = checkbox.id,
       color, counts, key, count;
     /* get value of tracks attribute */
@@ -335,6 +344,10 @@
       var number = parseInt(checkbox.id.replace(/[^0-9\.]/g, ''), 10);
       color = arrayOfColorsBrushes[(number-59)];
     }
+    else if(selectedTrack.indexOf('search') !== -1){
+      var number = parseInt(checkbox.id.replace(/[^0-9\.]/g, ''), 10);
+      color = arrayOfColorsBrushes[(number-59)];
+    }    
     else{
       if(isTracksOn){
         // &+- added qtl data, more filering, more fun!
@@ -346,10 +359,24 @@
         }
       }
     }
+        // console.log(color);
+        // console.log(brushAnnots);
     
     if ($("#" + id).is(':checked')) {
       addTrack(selectedTrack);
-      if(selectedTrack.indexOf('brush') === -1){
+
+      if(selectedTrack.indexOf('brush') !== -1){
+        for(var i = 0; i < brushAnnots.length; i++) {
+          ideogram.drawProcessedAnnots(brushAnnots[i]);
+          addAnnotationLinks();
+        }
+        setUpBrush();
+        setUpZoomButtons();
+      } 
+      else if (selectedTrack.indexOf('search') !== -1){
+        console.log("searching ka pa gago");
+      }
+      else{
         /* get trackData urls */
         var trackDataUrls = getTrackDataUrls(selectedTrack);
 
@@ -361,12 +388,6 @@
 
         /* create new view w/ selectedTrack annots */
         ideogram = getTrackData(selectedTrack, trackDataUrls, config);
-      }
-      else{
-        for(var i = 0; i < brushAnnots.length; i++) {
-          // ideogram.drawProcessedAnnots(brushAnnots[i]);
-          // addAnnotationLinks();
-        }
       }
 
       /* show annots/tracks (tracks view filtering) */
@@ -435,10 +456,10 @@
   plugCollapsibleJQuery();
   fillColorBlock();
 
-  document.getElementById("collapsible-gq").click();
-  $('body').css({'background-color': '#E0E0E0', 'color': 'black'});
-  $('#search-keyword').val('alcohol');
-  document.getElementById('search-button').click();
+  // document.getElementById("collapsible-gq").click();
+  // $('body').css({'background-color': '#E0E0E0', 'color': 'black'});
+  // $('#search-keyword').val('alcohol');
+  // document.getElementById('search-button').click();
   
   /* default of jbrowse is hidden */
   $("#jbrowse").hide();

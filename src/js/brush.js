@@ -1,21 +1,76 @@
 // HTML DOM changes on brush-related elements
 $(document).ready(function() {
-    // SVG MENU SETTINGS
-    adjustIdeogramSVG();
-    // DROPDOWN MENU
-    dropdownMenuSetup();
+    setUpBrush();
+
     searchEnterOverride();
     collapsibleArrowAnimate();
-    // showJBrowseAnnotClick();
     exportSVG();
+
+    // &+- ZOOM BUTTONS
+    setUpZoomButtons();
 });  
+
+var panZoomTiger, isZoomOn = false, isPanOn = true;
+function setUpZoomButtons(){
+    var svgElement = document.querySelector('#ideogram');
+    panZoomTiger = svgPanZoom(svgElement, {
+        panEnabled: false,
+        controlIconsEnabled: true,
+        mouseWheelZoomEnabled: true,
+        zoomScaleSensitivity: 0.5,
+        minZoom: 1,
+        maxZoom: 5,
+    });
+
+    $('g#svg-pan-zoom-zoom-in').attr('transform', 'translate(-250.5 33) scale(0.027)'); 
+    $('g#svg-pan-zoom-zoom-out').attr('transform', 'translate(-200.5 33) scale(0.027)'); 
+    $('g#svg-pan-zoom-reset-pan-zoom').attr('transform', 'translate(-150.5 28.5) scale(0.7)'); 
+}
+
+function toggleZoom(){
+    if(isZoomOn){
+        panZoomTiger.enableZoom();
+        panZoomTiger.enablePan();
+        $('#enable-zoom button').text('Disable zoom');
+        $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'visible'); 
+    }
+    else{
+        panZoomTiger.disableZoom();
+        panZoomTiger.disablePan();
+        $('#enable-zoom button').text('Enable zoom');
+        $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'hidden'); 
+    }
+    isZoomOn = !isZoomOn;
+}
+
+function togglePan(){
+    if(isPanOn){
+        panZoomTiger.enablePan();
+        $('#enable-pan button').text('Enable pan');
+    }
+    else{
+        panZoomTiger.disablePan();
+        $('#enable-pan button').text('Disable pan');
+    }
+    isPanOn = !isPanOn;
+}
+
+function setUpBrush(){
+    // &+- SVG MENU SETTINGS
+    adjustIdeogramSVG();
+    // &+- DROPDOWN MENU
+    dropdownMenuSetup();
+}
 
 var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [], arrayOfColorsBrushes = [];
 
 function adjustIdeogramSVG(){
     // &+- providing a larger svg for the dropdown menu 
-    $('#ideogram').attr('width', '1200');
-    $('#ideogram').attr('height', '1200');
+    // $('#ideogram').attr('width', '1200');
+    // $('#ideogram').attr('height', '1200');
+
+    $('#ideogram').attr('width', '1000');
+    $('#ideogram').attr('height', '900');
     
     // &+- change cursor
     $('.background').css('cursor', 'zoom-in');
@@ -23,11 +78,12 @@ function adjustIdeogramSVG(){
 
 function dropdownMenuSetup(){
     // &+- makes the dropdown be located somewhere outside the user's view
-    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
+    // $('.dynamic-dropdown').attr('transform', 'translate(-1000, -1000)');
 
     // &+- add dropdown menu after using the brush
     $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
-    
+    $('ul.file_menu').stop(true, true).slideUp(1);   
+
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
         function( event ) {
@@ -464,8 +520,11 @@ function processCollectedAnnots(webService, func) {
                         d.contig
                     ];
                     compiledAnnots.push(annotContent);
+
+                    var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
+                    allTraitData["annots"][number - 1]["annots"].push(annotContent);
+                    
                     if(getNumber){
-                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
                         annotObject["chr"] = number;
                         getNumber = !getNumber;
                     }

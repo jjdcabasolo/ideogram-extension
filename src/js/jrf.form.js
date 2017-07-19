@@ -1234,14 +1234,20 @@ var asyncLoop = function(o) {
  * change format of annots from jBrowse to the format of ideogram.js
  */
 function reformatTraitData(selectedTrack) {
-    var i, j, category, isQTL = false;
+    var i, j, category;
 
     // &+- added to determine if the option is a qtl
-    var qtlIdentifier = new RegExp("(qtl|QTL)");
+    var qtlIdentifier = new RegExp("(qtl|QTL)"),
+        brushIdentifier = new RegExp("brush"),
+        searchIdentifier = new RegExp("search");
+
     if(qtlIdentifier.test(selectedTrack)){
         category = "qtl";
-        isQTL = true;
-    } else {
+    } 
+    else if(brushIdentifier.test(selectedTrack) || searchIdentifier.test(selectedTrack)){
+        category = "brush";
+    } 
+    else {
         category = "traitGenes";
     }
 
@@ -1403,15 +1409,14 @@ function getTrackData(selectedTrack, trackDataUrls) {
             }
 
             lfUrls = [];
-
             config.rawAnnots = reformatTraitData(selectedTrack);
             config.selectedTrack = selectedTrack;
             config.allTracks = allTracks;
             toggleSpinner(spinner, false);
 
             ideogram = new Ideogram(config);
-            adjustIdeogramSVG();
-            dropdownMenuSetup();
+            setUpBrush();
+            setUpZoomButtons();
             return ideogram;
         }
     });
@@ -1424,31 +1429,51 @@ var brushTrackCount = 100;
  */
 function removeSelectedTrack(selectedTrack) {
     // &+-
+    console.log(allTraitData);
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         brushIdentifier = new RegExp("brush"),
-        category;
-    if(qtlIdentifier.test(selectedTrack)){
-        category = "qtl";
-    }
-    else if(brushIdentifier.test(selectedTrack)){
-        category = "brush";    
-    }
-    else {
-        category = "traitGenes";
-    }
-    var num = filterMap[category][selectedTrack],
-        i, j;
+        searchIdentifier = new RegExp("search"),
+        category, i, j, num;
 
-    for (i = 0; i < 12; i++) {
-        var numOfAnnots = allTraitData["annots"][i]["annots"].length;
-        for (j = 0; j < numOfAnnots; j++) {
-            if (allTraitData["annots"][i]["annots"][j][3] === num) {
-                allTraitData["annots"][i]["annots"].splice(j, 1);
-                j--;
-                numOfAnnots--;
+    if(brushIdentifier.test(selectedTrack) || searchIdentifier.test(selectedTrack)){
+        category = "brush";    
+
+        num = filterMap[category][selectedTrack];
+        for (i = 0; i < 12; i++) {
+            var numOfAnnots = allTraitData["annots"][i]["annots"].length;
+
+            for (j = 0; j < numOfAnnots; j++) {
+                console.log(allTraitData["annots"][i]["annots"][j]);
+                // if (allTraitData["annots"][i]["annots"][j][3] === num) {
+                //     allTraitData["annots"][i]["annots"].splice(j, 1);
+                //     j--;
+                //     numOfAnnots--;
+                // }
             }
         }
     }
+    else{
+        if(qtlIdentifier.test(selectedTrack)){
+            category = "qtl";
+        }
+        else{
+            category = "traitGenes";
+        }
+
+        num = filterMap[category][selectedTrack];
+        for (i = 0; i < 12; i++) {
+            var numOfAnnots = allTraitData["annots"][i]["annots"].length;
+            for (j = 0; j < numOfAnnots; j++) {
+                if (allTraitData["annots"][i]["annots"][j][3] === num) {
+                    allTraitData["annots"][i]["annots"].splice(j, 1);
+                    j--;
+                    numOfAnnots--;
+                }
+            }
+        }
+    }
+    
+    // console.log(allTraitData);
     return allTraitData;
 }
 
@@ -1472,16 +1497,22 @@ function addTrack(track) {
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         brushIdentifier = new RegExp("brush"),
         category, mapValue;
+
+    if(jQuery.isEmptyObject(filterMap['brush'])){
+        filterMap.brush = {};        
+    }
+
     if(qtlIdentifier.test(track)){
         category = "qtl";
         mapValue = filterMap["qtl"][track];
     } 
     else if(brushIdentifier.test(track)){
         // &+-
+        if(!filterMap.brush.hasOwnProperty(track)){
+            brushTrackCount = brushTrackCount + 1;
+        }
         mapValue = brushTrackCount;
-        filterMap.brush = {};
-        filterMap["brush"][track] = brushTrackCount;
-        brushTrackCount = brushTrackCount + 1;
+        filterMap.brush[track] = brushTrackCount;
     }    
     else {
         category = "traitGenes";

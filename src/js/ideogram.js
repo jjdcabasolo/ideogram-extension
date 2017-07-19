@@ -1873,7 +1873,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .attr("id", function(d, i) {
                 return d.id;
             })
-            // .attr("class", "annot")
             .attr("class", function(d) {
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
                 
@@ -1885,6 +1884,7 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .attr("transform", function(d) {
                 var index = d.chrIndex, y;
                 y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
+                console.log(d.trackIndex);
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;

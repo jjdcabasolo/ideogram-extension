@@ -313,8 +313,22 @@ ul {
 
 #download-ideogram button{
     position: absolute;
-    top: 800px;
-    left: 1100px;
+    top: 854px;
+    left: 357px;
+    z-index: 100000000000000000000;
+}
+
+#enable-zoom button{
+    position: absolute;
+    top: 854px;
+    left: 460px;
+    z-index: 100000000000000000000;
+}
+
+#enable-pan button{
+    position: absolute;
+    top: 854px;
+    left: 565px;
     z-index: 100000000000000000000;
 }
 
