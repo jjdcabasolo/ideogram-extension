@@ -133,7 +133,7 @@ var filterMap = {
     },
     traitData = [],
     lfUrls = [],
-    dropdownMenuForm = '<foreignObject width="100" height="500" requiredExtensions="http://www.w3.org/1999/xhtml"><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a class="show-genes" onclick="showStatiscalTable()">Show all genes</a></li><li><a class="plot-genes" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></foreignObject>',
+    dropdownMenuForm = '<div><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a class="show-genes" onclick="showStatiscalTable()">Show all genes</a></li><li><a class="plot-genes" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></div>',
     defaultColor = [
         {
           "id": "oryzabase_trait_genes",
@@ -1039,7 +1039,8 @@ var filterMap = {
             "color": "#FFCAD9"
         }
     ],
-    brushAnnots = [];
+    brushAnnots = [],
+    processedAnnotsObj = {};
 
 /*
  *  jQuery-based script to generate a form given a JSON object from .json file.
@@ -1251,6 +1252,8 @@ function reformatTraitData(selectedTrack) {
         category = "traitGenes";
     }
 
+    console.log(filterMap);
+
     /* assign annots */
     for (i = 0; i < traitData.length; i++) {
         var td = traitData[i],
@@ -1383,7 +1386,6 @@ function getTrackData(selectedTrack, trackDataUrls) {
             }, 100);
         },
         callback: function() {
-
             /* if other json files need to be accessed to retrieve data */
             if (lfUrls.length) {
                 for (k = 0; k < 12; k++) {
@@ -1422,58 +1424,57 @@ function getTrackData(selectedTrack, trackDataUrls) {
     });
 }
 
-var brushTrackCount = 100;
+var brushTrackCount = 0;
 
 /*
  * remove data of selectedTrack in the allTraitData array
  */
 function removeSelectedTrack(selectedTrack) {
+    var num = filterMap["traitGenes"][selectedTrack],
+        i, j;
+
+    for (i = 0; i < 12; i++) {
+        var numOfAnnots = allTraitData["annots"][i]["annots"].length;
+        for (j = 0; j < numOfAnnots; j++) {
+            if (allTraitData["annots"][i]["annots"][j][3] === num) {
+                allTraitData["annots"][i]["annots"].splice(j, 1);
+                j--;
+                numOfAnnots--;
+            }
+        }
+    }
+    return allTraitData;
+}
+
+function removeSelectedTrack(selectedTrack) {
     // &+-
-    console.log(allTraitData);
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         brushIdentifier = new RegExp("brush"),
         searchIdentifier = new RegExp("search"),
         category, i, j, num;
 
-    if(brushIdentifier.test(selectedTrack) || searchIdentifier.test(selectedTrack)){
+    if(qtlIdentifier.test(selectedTrack)){
+        category = "qtl";
+    }
+    else if(brushIdentifier.test(selectedTrack) || searchIdentifier.test(selectedTrack)){
         category = "brush";    
-
-        num = filterMap[category][selectedTrack];
-        for (i = 0; i < 12; i++) {
-            var numOfAnnots = allTraitData["annots"][i]["annots"].length;
-
-            for (j = 0; j < numOfAnnots; j++) {
-                console.log(allTraitData["annots"][i]["annots"][j]);
-                // if (allTraitData["annots"][i]["annots"][j][3] === num) {
-                //     allTraitData["annots"][i]["annots"].splice(j, 1);
-                //     j--;
-                //     numOfAnnots--;
-                // }
-            }
-        }
     }
     else{
-        if(qtlIdentifier.test(selectedTrack)){
-            category = "qtl";
-        }
-        else{
-            category = "traitGenes";
-        }
+        category = "traitGenes";
+    }
 
-        num = filterMap[category][selectedTrack];
-        for (i = 0; i < 12; i++) {
-            var numOfAnnots = allTraitData["annots"][i]["annots"].length;
-            for (j = 0; j < numOfAnnots; j++) {
-                if (allTraitData["annots"][i]["annots"][j][3] === num) {
-                    allTraitData["annots"][i]["annots"].splice(j, 1);
-                    j--;
-                    numOfAnnots--;
-                }
+    num = filterMap[category][selectedTrack];
+    for (i = 0; i < 12; i++) {
+        var numOfAnnots = allTraitData["annots"][i]["annots"].length;
+        for (j = 0; j < numOfAnnots; j++) {
+            if (allTraitData["annots"][i]["annots"][j][3] === num) {
+                allTraitData["annots"][i]["annots"].splice(j, 1);
+                j--;
+                numOfAnnots--;
             }
         }
     }
     
-    // console.log(allTraitData);
     return allTraitData;
 }
 
@@ -1496,6 +1497,7 @@ function addTrack(track) {
     // &+- determines whether the track to be added is a qtl or trait gene 
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         brushIdentifier = new RegExp("brush"),
+        searchIdentifier = new RegExp("search"),
         category, mapValue;
 
     if(jQuery.isEmptyObject(filterMap['brush'])){
@@ -1506,13 +1508,14 @@ function addTrack(track) {
         category = "qtl";
         mapValue = filterMap["qtl"][track];
     } 
-    else if(brushIdentifier.test(track)){
+    else if(brushIdentifier.test(track) || searchIdentifier.test(track)){
         // &+-
         if(!filterMap.brush.hasOwnProperty(track)){
             brushTrackCount = brushTrackCount + 1;
         }
-        mapValue = brushTrackCount;
         filterMap.brush[track] = brushTrackCount;
+        mapValue = filterMap["brush"][track];
+        console.log(filterMap);
     }    
     else {
         category = "traitGenes";

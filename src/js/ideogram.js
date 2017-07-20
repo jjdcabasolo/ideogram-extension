@@ -1562,6 +1562,7 @@ Ideogram.prototype.drawAnnots = function(friendlyAnnots) {
  * Also adds pixel offset information.
  */
 Ideogram.prototype.processAnnotData = function(rawAnnots) {
+
     var keys = rawAnnots.keys,
         rawAnnots = rawAnnots.annots,
         i, j, annot, annots, rawAnnot, annotsByChr,
@@ -1575,6 +1576,8 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
     for (i = 0; i < 12; i++) {
         annotsByChr = rawAnnots[i];
         annots.push({ "chr": annotsByChr.chr, "annots": [] });
+
+        // console.log(rawAnnots[i]);
 
         for (j = 0; j < annotsByChr.annots.length; j++) {
             chr = annotsByChr.chr;
@@ -1593,13 +1596,10 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
 
-            // &+- added startPx and stopPx :: ranged annotation
-            annot['startPx'] = startPx;
-            annot['stopPx'] = stopPx;           
+             //if (startPx == -1 || stopPx == -1) continue; // [*]
 
-            //if (startPx == -1 || stopPx == -1) continue; // [*]
             px = Math.round((startPx + stopPx) / 2) - 28;
-
+            // console.log(rawAnnots);
             color = ideo.config.annotationsColor;
 
             /* adjust format by chaning trackIndex [*] */
@@ -1608,17 +1608,14 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
                     c;
 
                 for (c = 0; c < allTracks.length; c++) {
-                    var track = allTracks[c];
-                    if (track["mapping"] === ra[3]) {
-                        annot["trackIndex"] = track["trackIndex"];
+                    var t = allTracks[c];
+                    if (t["mapping"] === ra[3]) {
+                        annot["trackIndex"] = t["trackIndex"];
                     }
                 }
 
-                if(keys.length != 5){
+                if(!ideo.config.isSearchBrush){
                     color = ideo.config.annotationTracks[ra[3] - 1].color;
-                }
-                else{
-                    color = ideo.config.annotationsColor;
                 }
             } else {
                 annot['trackIndex'] = -1;
@@ -1629,22 +1626,12 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
             }
 
             annot['chr'] = chr;
-
-            if(keys.length == 5){
-                annot['chrIndex'] = (chr - 1);
-            }
-            else{
-                annot['chrIndex'] = i;
-            }
-
+            annot['chrIndex'] = i;
             annot['px'] = px;
             annot['color'] = color;
 
             annots[i]["annots"].push(annot);
-        }
 
-        if(keys.length == 5){
-            break;
         }
     }
 
@@ -1787,6 +1774,7 @@ function fill(d) {
  * running parallel to each chromosome.
  */
 Ideogram.prototype.drawProcessedAnnots = function(annots) {
+    // console.log(annots);
 
     var chrMargin, chrWidth, layout,
         annotHeight, triangle, circle, r, chrAnnot, horizontalLine,
@@ -1884,7 +1872,6 @@ Ideogram.prototype.drawProcessedAnnots = function(annots) {
             .attr("transform", function(d) {
                 var index = d.chrIndex, y;
                 y = (index + 1) * chrMargin + chrWidth + (d.trackIndex * annotHeight * 2);
-                console.log(d.trackIndex);
 
                 // &+- if the ranged trait/QTL is more than 5, the position of the annotation (default: average of start and stop) will be changed to start
                 var difference = Math.ceil(d.stopPx - d.startPx) - 28;
@@ -2141,10 +2128,15 @@ Ideogram.prototype.createBrush = function(from, to) {
             .attr("width", length);
     }
 
+    // &+- adding the dropdown menu
     d3.select("#ideogram").append("svg:foreignObject")
       .attr("class", "dynamic-dropdown")
       .attr("id", "some-id-i-used-to-know");
 
+    // &+- adding legends on the png file
+    d3.select("#ideogram").append("svg:foreignObject")
+      .attr("class", "legend-section")
+      .attr("id", "legends");
 
     // &+- used in determining if brush is active or not | initialization
     for (var i = 0; i < this.numChromosomes; i++) {
@@ -2501,6 +2493,7 @@ Ideogram.prototype.init = function() {
     }
 
     function writeContainer() {
+
         if (ideo.config.annotationsPath) {
             getTrackData(ideo.config.selectedTrack, ideo.config.annotationsPath);
             setTimeout(function() {
@@ -2508,6 +2501,7 @@ Ideogram.prototype.init = function() {
             }, 1000);
 
         }
+
         if (ideo.config.rawAnnots) {
             ideo.rawAnnots = ideo.config.rawAnnots;
         }
@@ -2639,7 +2633,6 @@ Ideogram.prototype.init = function() {
     }
 
     function finishInit() {
-
         try {
             var t0_a = new Date().getTime();
 
@@ -2668,6 +2661,8 @@ Ideogram.prototype.init = function() {
 
             }
 
+            // console.log(ideo.rawAnnots);
+
             // Waits for potentially large annotation dataset
             // to be received by the client, then triggers annotation processing
             if (ideo.config.annotationsPath || ideo.rawAnnots) {
@@ -2677,8 +2672,12 @@ Ideogram.prototype.init = function() {
                         window.clearTimeout(timeout);
                     }
 
+                    // console.log('processing annots');
                     ideo.annots = ideo.processAnnotData(ideo.rawAnnots);
+                    // console.log('finished processing annots');
+                    // console.log('drawing annots');
                     ideo.drawProcessedAnnots(ideo.annots);
+                    // console.log('finished drawing annots');
 
                     if (ideo.initCrossFilter) {
                         ideo.initCrossFilter();
@@ -2793,5 +2792,4 @@ Ideogram.prototype.init = function() {
         }
 
     }
-
 };

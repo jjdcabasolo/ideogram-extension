@@ -12,17 +12,8 @@ body {
 }
 
 svg {
-    padding-left: 5px;
-    padding-right: 10px;
-}
-
-svg.labeled {
-    padding-left: 15px;
-}
-
-svg.labeledLeft {
-    padding-left: 15px;
-    padding-top: 15px;
+    margin-left: 10px;
+    width: 1100px;
 }
 
 text {
@@ -257,7 +248,7 @@ ul {
 #chromosome-render {
     position: absolute;
     margin-left: 250px;
-    width: 2000px;
+    /*width: 2000px;*/
 }
 
 .button-color button {
@@ -328,7 +319,7 @@ ul {
 #enable-pan button{
     position: absolute;
     top: 854px;
-    left: 565px;
+    left: 569px;
     z-index: 100000000000000000000;
 }
 
@@ -681,4 +672,8 @@ div.tab button.active {
     width: 220px;
     padding-left: 16px;
     margin-left: -15px;
+}
+
+#canvas {
+    visibility: hidden;
 }
