@@ -1,7 +1,6 @@
 $(document).ready(function() {
     searchEnterOverride();
     collapsibleArrowAnimate();
-
     setUpBrush();
 });  
 
@@ -343,8 +342,10 @@ function showStatiscalTable(table){
             fps: 20,
             zIndex: 2e9,
             className: 'gt-spinner',
-            top: '-100px',
-            left: '38%',
+            // top: '-100px',
+            // left: '38%',
+            top: '200px',
+            left: '42%',
             shadow: true,
             hwaccel: false,
             position: 'absolute'
@@ -574,6 +575,49 @@ function addAnnotationLinks(){
     );
 }
 
+
+// &+- process the annotations and put it in an object that can be processed by ideogram.js
+var getNumber = true;
+function processCollectedAnnotsBROKE(webService, func) {
+  
+    d3.json(webService, function(error, data) {
+        if(error){
+            func(null);
+        }
+        else{
+            if(data.length <= 0){
+                func(null);
+            }
+            else{
+                var compiledAnnots = [], getNumber = true;
+                data.forEach(function(d){
+                    var annotContent = [
+                        (d.uniquename + '\n' + d.description),
+                        d.fmin,
+                        d.fmax - d.fmin,
+                        allTracksCount,
+                        d.contig
+                    ];
+                    compiledAnnots.push(annotContent);
+
+                    if(getNumber){
+                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);                    
+                        annotObject["chr"] = number;
+                        getNumber = !getNumber;
+                    }
+                });
+                annotObject["annots"] = compiledAnnots;
+                annotArray.push(annotObject);
+
+                var keys = ["name", "start", "length", "trackIndex", "chrName"];
+                var rawAnnots = { "keys": keys, "annots": annotArray };
+                var processedAnnots = ideogram.processAnnotData(rawAnnots);
+
+                func(data);
+            }
+        }
+    });
+}
 // &+- "PLOT ALL GENES" option @ brush menu
 // &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
 function plotGeneAnnotation(){
@@ -617,7 +661,7 @@ function plotGeneAnnotation(){
         length: 13,
         functionToLoop: function(loop, i) {
             setTimeout(function() {
-                processCollectedAnnots(geneAnnotArrayURL[i - 1],
+                processCollectedAnnotsBROKE(geneAnnotArrayURL[i - 1],
                     function(processedAnnots) {
                         // &+- change setTimeout time to cover all/longer processes
                         ideogram.config.allTracks = allTracks;
@@ -727,10 +771,10 @@ function transformToNCList(processedAnnots){
     return nclistCopy;
 }
 
-function putSearchToTable(webService){
+function putSearchToTable(webService, color){
     // &+- put the results in a table
     var arrayCatch;
-
+    
     $.ajax({
         dataType: "json",
         crossDomain: true,
@@ -764,32 +808,20 @@ function putSearchToTable(webService){
     });
 }
 
+function addColorToAnnotationTracks(selectedTrack, color){
+
+    var newColorObj = {};
+    newColorObj['id'] = selectedTrack;
+    newColorObj['color'] = color;
+
+    config.annotationTracks.push(newColorObj);
+    console.log('size of color storage: ' + config.annotationTracks.length);
+    console.log('index of new color: ' + config.annotationTracks.indexOf(newColorObj));
+    console.log(config.annotationTracks);
+}
+
 function configureSearchAnnot(index, colors, addToCheckboxList){
-    var spinnerConfig = {
-            lines: 9,
-            length: 9,
-            width: 14,
-            radius: 20,
-            scale: 1,
-            corners: 1,
-            color: '#000',
-            opacity: 0.25,
-            rotate: 0,
-            direction: 1,
-            speed: 1,
-            trail: 60,
-            fps: 20,
-            zIndex: 2e9,
-            className: 'spinner',
-            top: '20%',
-            left: '25%',
-            shadow: true,
-            hwaccel: false,
-            position: 'absolute'
-        },
-        buffering = document.getElementById("chromosome-render"),
-        spinner = new Spinner(spinnerConfig).spin(buffering),
-        processedAnnots = processedAnnotsObj[index]['contents'];
+    var processedAnnots = processedAnnotsObj[index]['contents'];
 
     d3.select("#ideogram").remove();
 
@@ -816,10 +848,10 @@ function configureSearchAnnot(index, colors, addToCheckboxList){
 
     var selectedTrack = 'search-query-' + (geneQueryCount+59);
     
-    // console.log(filterMap);
     if(addToCheckboxList){
         addTrack(selectedTrack);
         appendCheckbox('search-query', searchQueryAnnot);
+        addColorToAnnotationTracks(selectedTrack, colors);
     }
 
     config.isSearchBrush = true;
@@ -827,13 +859,15 @@ function configureSearchAnnot(index, colors, addToCheckboxList){
     config.rawAnnots = reformatTraitData(selectedTrack);
     config.selectedTrack = selectedTrack;
     config.allTracks = allTracks;
-    toggleSpinner(spinner, false);
 
-    ideogram = new Ideogram(config);
+    // toggleSpinner(spinner, false);
+    if(addToCheckboxList){    
+        ideogram = new Ideogram(config);
 
-    setUpBrush();
-    setUpZoomButtons();
-    config.isSearchBrush = false;
+        setUpBrush();
+        setUpZoomButtons();
+        config.isSearchBrush = false;
+    }
 }
 
 // &+- plot the position of the genes with the description that matches the input in the searchbox
@@ -860,8 +894,32 @@ function triggerSearchBox(){
         temp = ideogram.config.annotationsColor,
         colors,
         arrayCatch = [];
+
+    var spinnerConfig = {
+            lines: 9,
+            length: 9,
+            width: 14,
+            radius: 20,
+            scale: 1,
+            corners: 1,
+            color: '#000',
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: 'spinner',
+            top: '20%',
+            left: '25%',
+            shadow: true,
+            hwaccel: false,
+            position: 'absolute'
+        },
+        buffering = document.getElementById("chromosome-render"),
+        spinner = new Spinner(spinnerConfig).spin(buffering);
                
-    // ideogram.config.allTracks = allTracks;
     colors = ideogram.config.annotationsColor = getRandomColor();
     arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
 
@@ -871,13 +929,36 @@ function triggerSearchBox(){
             setTimeout(function() {
                 processCollectedAnnots(webService,
                     function(processedAnnots) {
-                        var obj = {};
-                        obj['id'] = 'search-query-' + (geneQueryCount+59);
-                        obj['contents'] = processedAnnots;
-                        processedAnnotsObj[geneQueryCount] = obj;
+                        if(processedAnnots === null){
+                            $('#searchbox-keyword-message').text('No results found.');
 
-                        configureSearchAnnot(geneQueryCount, colors, true);
-                        putSearchToTable(webService);
+                            $('#GeneTable').css('height', '140');
+                            $('#GeneTable').append('<div id="no-content-gt"><h3>Gene table has no results yet.</h3><p>You can get to view genomic data by performing one of the following:</p><p class="li-content">- Searching a keyword</p><p class="li-content">- Create a brush, then click "Plot all genes" to view the results.</p></div>');
+                            
+
+                            // &+- tab links activation
+                            $('#defaultOpen').attr('class', 'active-link tablinks'); 
+                            $('.show-genes').attr('class', 'active-link show-genes');  
+
+                            // &+- search activation
+                            $("input#search-keyword").prop('disabled', false);
+                            $("#search-button").prop('disabled', false);    
+                        }
+                        else{
+                            var obj = {};
+                            obj['id'] = 'search-query-' + (geneQueryCount+59);
+                            obj['contents'] = processedAnnots;
+                            processedAnnotsObj[geneQueryCount] = obj;
+
+                            configureSearchAnnot(geneQueryCount, colors, true);
+                            putSearchToTable(webService, colors);
+                            // countTable();
+
+                            $('#searchbox-keyword-message').text('Annotations are in this color.');
+                            $('#searchbox-keyword-message').css('color', colors);
+                        }
+
+                        toggleSpinner(spinner, false);
                     }
                 );
                 loop();
@@ -886,7 +967,6 @@ function triggerSearchBox(){
         callback: function() {
             // console.log("here at callback function");
                         
-
             // var selectedTrack = 'search-query-' + (geneQueryCount+59);
             // config.rawAnnots = reformatTraitData(selectedTrack);
             // console.log(config.rawAnnots);

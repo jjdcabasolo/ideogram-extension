@@ -344,7 +344,7 @@ ul {
 }
 
 .gt-spinner {
-    margin-top: 67%;
+    /*top: 67%;*/
 }
 
 #divider {
@@ -412,7 +412,7 @@ table {
     text-align: left;
 }
 
-#gene-table-content td:nth-child(1),
+/*#gene-table-content td:nth-child(1),
 #gene-table-content th:nth-child(1) {
     min-width: 40px;
 }
@@ -460,6 +460,62 @@ table {
 #gene-table-content td:nth-child(10),
 #gene-table-content th:nth-child(10) {
     width: 110px;
+}
+
+#gene-table-content td:nth-child(11),
+#gene-table-content th:nth-child(11) {
+    min-width: 200px;
+}
+*/
+
+#gene-table-content td:nth-child(1),
+#gene-table-content th:nth-child(1) {
+    min-width: 40px;
+}
+
+#gene-table-content td:nth-child(2),
+#gene-table-content th:nth-child(2) {
+    min-width: 110px;
+}
+
+#gene-table-content td:nth-child(3),
+#gene-table-content th:nth-child(3) {
+    min-width: 100px;
+}
+
+#gene-table-content td:nth-child(4),
+#gene-table-content th:nth-child(4) {
+    min-width: 100px;
+}
+
+#gene-table-content td:nth-child(5),
+#gene-table-content th:nth-child(5) {
+    min-width: 110px;
+}
+
+#gene-table-content td:nth-child(6),
+#gene-table-content th:nth-child(6) {
+    min-width: 100px;
+}
+
+#gene-table-content td:nth-child(7),
+#gene-table-content th:nth-child(7) {
+    min-width: 60px;
+}
+
+#gene-table-content td:nth-child(8),
+#gene-table-content th:nth-child(8) {
+    min-width: 60px;
+}
+
+#gene-table-content td:nth-child(9),
+#gene-table-content th:nth-child(9) {
+    min-width: 100px;
+}
+
+#gene-table-content td:nth-child(10),
+#gene-table-content th:nth-child(10) {
+    width: 35px;
 }
 
 #gene-table-content td:nth-child(11),

@@ -1596,11 +1596,17 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
 
+
+            // &+- added startPx and stopPx :: ranged annotation
+            annot['startPx'] = startPx;
+            annot['stopPx'] = stopPx; 
+
              //if (startPx == -1 || stopPx == -1) continue; // [*]
 
             px = Math.round((startPx + stopPx) / 2) - 28;
-            // console.log(rawAnnots);
+
             color = ideo.config.annotationsColor;
+            // console.log(ideo.config.annotationTracks);
 
             /* adjust format by chaning trackIndex [*] */
             if (ideo.config.annotationTracks) {
@@ -1614,14 +1620,22 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
                     }
                 }
 
-                if(!ideo.config.isSearchBrush){
+                // &+- true true true
+                // color = ideo.config.annotationTracks[ra[3] - 1].color;
+
+                // &+- dry run presentation
+                if(keys.length != 5){
                     color = ideo.config.annotationTracks[ra[3] - 1].color;
+                }
+                else{
+                    color = ideo.config.annotationsColor;
                 }
             } else {
                 annot['trackIndex'] = -1;
             }
 
             if ('color' in annot) {
+                // console.log(annot);
                 color = annot['color'];
             }
 
