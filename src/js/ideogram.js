@@ -1562,7 +1562,8 @@ Ideogram.prototype.drawAnnots = function(friendlyAnnots) {
  * Also adds pixel offset information.
  */
 Ideogram.prototype.processAnnotData = function(rawAnnots) {
-
+    console.log(rawAnnots);
+    
     var keys = rawAnnots.keys,
         rawAnnots = rawAnnots.annots,
         i, j, annot, annots, rawAnnot, annotsByChr,
@@ -1595,7 +1596,6 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
 
             startPx = ideo.convertBpToPx(chrModel, annot.start);
             stopPx = ideo.convertBpToPx(chrModel, annot.stop);
-
 
             // &+- added startPx and stopPx :: ranged annotation
             annot['startPx'] = startPx;

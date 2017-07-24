@@ -95,8 +95,7 @@ function toggleFilter(checkbox) {
       }
     }
   }
-      console.log(color);
-      // console.log(brushAnnots);
+      // console.log(color);
   
   if ($("#" + id).is(':checked')) {
     addTrack(selectedTrack);
@@ -164,6 +163,7 @@ function colorBlindMode(category){
     else if(category === 'deuto') config.annotationTracks = deutanopiaNoGreen;
     else if(category === 'trito') config.annotationTracks = tritanopiaNoBlue;
     else config.annotationTracks = defaultColor;
+    
     // show linear scale
     toggleLinearScale("show");
 
@@ -287,11 +287,6 @@ getViewType("Tracks");
 renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
 plugCollapsibleJQuery();
 fillColorBlock();
-
-// document.getElementById("collapsible-gq").click();
-// $('body').css({'background-color': '#E0E0E0', 'color': 'black'});
-$('#search-keyword').val('alcohol');
-// document.getElementById('search-button').click();
 
 /* default of jbrowse is hidden */
 $("#jbrowse").hide();

@@ -599,9 +599,8 @@ function processCollectedAnnotsBROKE(webService, func) {
                         d.contig
                     ];
                     compiledAnnots.push(annotContent);
-
                     if(getNumber){
-                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);                    
+                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
                         annotObject["chr"] = number;
                         getNumber = !getNumber;
                     }
@@ -613,7 +612,7 @@ function processCollectedAnnotsBROKE(webService, func) {
                 var rawAnnots = { "keys": keys, "annots": annotArray };
                 var processedAnnots = ideogram.processAnnotData(rawAnnots);
 
-                func(data);
+                func(processedAnnots);
             }
         }
     });
