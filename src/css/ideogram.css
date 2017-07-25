@@ -412,7 +412,7 @@ table {
     text-align: left;
 }
 
-/*#gene-table-content td:nth-child(1),
+#gene-table-content td:nth-child(1),
 #gene-table-content th:nth-child(1) {
     min-width: 40px;
 }
@@ -466,8 +466,8 @@ table {
 #gene-table-content th:nth-child(11) {
     min-width: 200px;
 }
-*/
 
+/*
 #gene-table-content td:nth-child(1),
 #gene-table-content th:nth-child(1) {
     min-width: 40px;
@@ -521,7 +521,7 @@ table {
 #gene-table-content td:nth-child(11),
 #gene-table-content th:nth-child(11) {
     min-width: 200px;
-}
+}*/
 
 #gene-table-content thead {
     font-weight: 900;

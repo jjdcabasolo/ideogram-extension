@@ -575,48 +575,93 @@ function addAnnotationLinks(){
     );
 }
 
+// &+- generate the links for each chromosome using the brush extent as the start and end values
+function formWebServicePlot(){
+    var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo?region=',
+        webServiceForm, commaSeparated = '';
 
-// &+- process the annotations and put it in an object that can be processed by ideogram.js
-var getNumber = true;
-function processCollectedAnnotsBROKE(webService, func) {
-  
-    d3.json(webService, function(error, data) {
-        if(error){
-            func(null);
-        }
-        else{
-            if(data.length <= 0){
-                func(null);
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            var extent = arrayOfBrushes[i].extent(),
+                start = Math.floor(extent[0]),
+                end = Math.ceil(extent[1]),
+                chrNum;
+
+            console.log("active brush " + (i+1));
+            if (i < 9) {
+                chrNum = 'chr0' + (i+1);
+            } else {
+                chrNum = 'chr' + (i+1);
             }
-            else{
-                var compiledAnnots = [], getNumber = true;
-                data.forEach(function(d){
-                    var annotContent = [
-                        (d.uniquename + '\n' + d.description),
-                        d.fmin,
-                        d.fmax - d.fmin,
-                        allTracksCount,
-                        d.contig
-                    ];
-                    compiledAnnots.push(annotContent);
-                    if(getNumber){
-                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
-                        annotObject["chr"] = number;
-                        getNumber = !getNumber;
-                    }
-                });
-                annotObject["annots"] = compiledAnnots;
-                annotArray.push(annotObject);
 
-                var keys = ["name", "start", "length", "trackIndex", "chrName"];
-                var rawAnnots = { "keys": keys, "annots": annotArray };
-                var processedAnnots = ideogram.processAnnotData(rawAnnots);
-
-                func(processedAnnots);
-            }
+            // chr01-1-20000,chr02-100000-120000,chr05-200000-220000
+            commaSeparated = chrNum + '-' + start + '-' + end + ',' + commaSeparated;
+            console.log(commaSeparated);
         }
-    });
+    }
+
+    console.log(pathname + commaSeparated);
+    return pathname + commaSeparated;
 }
+
+function configureBrushAnnot(index, colors, addToCheckboxList, flag){
+    var processedAnnots = processedAnnotsObj[index]['contents'];
+
+    d3.select("#ideogram").remove();
+
+    // &+- construction of a empty copy of annots
+    var modifiedAnnot = [], goToConstruct = false;
+    for(var j = 0; j < ideogram.numChromosomes; j++) {
+        var arr = ['1'];
+        arr.splice(0, 1);
+        var annotObj = { 'chrNum': (j+1).toString(), 'data': arr};
+        modifiedAnnot.push(annotObj);
+    }
+
+    for(var i = 0; i < processedAnnots.length; i++) {
+        var obj = processedAnnots[i],
+            pseudonclist = transformToNCList(processedAnnots[i]),
+            pseudochrnum = parseInt(String(processedAnnots[i]['contig']).replace(/[^0-9\.]/g, ''), 10);
+            
+        modifiedAnnot[pseudochrnum]['data'].push(pseudonclist);
+    }
+
+    for (var i = 0; i < modifiedAnnot.length; i++) {
+        traitData[i] = modifiedAnnot[i];
+    }
+
+    var selectedTrack;
+    if(flag === null){
+        selectedTrack = 'brush-selection-' + (geneQueryCount+59);
+    }
+    else{
+        selectedTrack = flag;
+    }
+    console.log(selectedTrack);
+    
+    if(addToCheckboxList){
+        addTrack(selectedTrack);
+        appendCheckbox('brush-selection', brushSelectionCount);
+        addColorToAnnotationTracks(selectedTrack, colors);
+    }
+
+    config.isSearchBrush = true;
+    config.annotationsColor = colors;
+    config.rawAnnots = reformatTraitData(selectedTrack);
+    config.selectedTrack = selectedTrack;
+    config.allTracks = allTracks;
+
+    // toggleSpinner(spinner, false);
+    if(addToCheckboxList){    
+        ideogram = new Ideogram(config);
+
+        setUpBrush();
+        setUpZoomButtons();
+        config.isSearchBrush = false;
+    }
+}
+
+
 // &+- "PLOT ALL GENES" option @ brush menu
 // &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
 function plotGeneAnnotation(){
@@ -647,52 +692,42 @@ function plotGeneAnnotation(){
         },
         buffering = document.getElementById("chromosome-render"),
         spinner = new Spinner(spinnerConfig).spin(buffering),
-        geneAnnotArrayURL = [];
+        webService, colors;
 
-    geneAnnotArrayURL = generateGeneAnnotURLs(geneAnnotArrayURL);
-    console.log(activeURLs);
+    webService = formWebServicePlot();
 
     var temp = ideogram.config.annotationsColor;
-    ideogram.config.annotationsColor = getRandomColor();
+    colors = ideogram.config.annotationsColor = getRandomColor();
     arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
 
     asyncLoop({
-        length: 13,
+        length: 1,
         functionToLoop: function(loop, i) {
             setTimeout(function() {
-                processCollectedAnnotsBROKE(geneAnnotArrayURL[i - 1],
+                processCollectedAnnots(webService,
                     function(processedAnnots) {
-                        // &+- change setTimeout time to cover all/longer processes
-                        ideogram.config.allTracks = allTracks;
+                        console.log(processedAnnots);
 
-                        if(processedAnnots !== null){
-                            processedAnnots.push({'mapping': 'asdf'});
-                            brushAnnots.push(processedAnnots);
-                        }
-                        ideogram.drawProcessedAnnots(processedAnnots);
-                        counterURLs = counterURLs + 1;
-                        if(counterURLs == activeURLs){
-                            ideogram.config.annotationsColor = temp;
-                            toggleSpinner(spinner, false);
-                            
-                            addAnnotationLinks();
+                        var obj = {};
+                        obj['id'] = 'brush-selection-' + (brushSelectionCount+59);
+                        obj['contents'] = processedAnnots;
+                        processedAnnotsObj[brushSelectionCount] = obj;
 
-                            $('.plot-genes').attr('class', 'active-link plot-genes');                 
+                        configureBrushAnnot(brushSelectionCount, colors, true, null);
+                        putSearchToTable(webService, colors);
 
-                            // &+- make the checkbox element for brush selection appear
-                            $('#form-render-brush').css('margin-top', '495');
-                            $('#form-render-brush').css('height', '70');
-                            $('#form-render-brush').css('width', '250');
+                        $('#searchbox-keyword-message').text('Annotations are in this color.');
+                        $('#searchbox-keyword-message').css('color', colors);
 
-                            addTrack('brush-selection-' + (geneQueryCount+59));
-                            appendCheckbox('brush-selection', brushSelectionCount);
-                        }
+                        $('.plot-genes').attr('class', 'active-link plot-genes'); 
+                        toggleSpinner(spinner, false);
                     }
                 );
                 loop();
-            }, 1000);
+            }, 100);
         },
         callback: function() {
+            // console.log("here at callback function");
         }
     });
 }
@@ -808,7 +843,6 @@ function putSearchToTable(webService, color){
 }
 
 function addColorToAnnotationTracks(selectedTrack, color){
-
     var newColorObj = {};
     newColorObj['id'] = selectedTrack;
     newColorObj['color'] = color;
@@ -819,7 +853,8 @@ function addColorToAnnotationTracks(selectedTrack, color){
     console.log(config.annotationTracks);
 }
 
-function configureSearchAnnot(index, colors, addToCheckboxList){
+function configureSearchAnnot(index, colors, addToCheckboxList, flag){
+    console.log(processedAnnotsObj[index]);
     var processedAnnots = processedAnnotsObj[index]['contents'];
 
     d3.select("#ideogram").remove();
@@ -845,11 +880,17 @@ function configureSearchAnnot(index, colors, addToCheckboxList){
         traitData[i] = modifiedAnnot[i];
     }
 
-    var selectedTrack = 'search-query-' + (geneQueryCount+59);
-    
+    var selectedTrack;
+    if(flag === null){
+        selectedTrack = 'search-query-' + (geneQueryCount+59);        
+    }
+    else{
+        selectedTrack = flag;
+    }
+
     if(addToCheckboxList){
         addTrack(selectedTrack);
-        appendCheckbox('search-query', searchQueryAnnot);
+        appendCheckbox($('#search-keyword').val(), searchQueryAnnot);
         addColorToAnnotationTracks(selectedTrack, colors);
     }
 
@@ -859,7 +900,6 @@ function configureSearchAnnot(index, colors, addToCheckboxList){
     config.selectedTrack = selectedTrack;
     config.allTracks = allTracks;
 
-    // toggleSpinner(spinner, false);
     if(addToCheckboxList){    
         ideogram = new Ideogram(config);
 
@@ -949,7 +989,7 @@ function triggerSearchBox(){
                             obj['contents'] = processedAnnots;
                             processedAnnotsObj[geneQueryCount] = obj;
 
-                            configureSearchAnnot(geneQueryCount, colors, true);
+                            configureSearchAnnot(geneQueryCount, colors, true, null);
                             putSearchToTable(webService, colors);
                             // countTable();
 

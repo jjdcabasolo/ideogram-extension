@@ -71,18 +71,18 @@ function toggleFilter(checkbox) {
   console.log(allTracks);
 
   var id = checkbox.id,
-    color, counts, key, count, isBrushSearchAnnot = false;
+    color, counts, key, count, isBrushAnnot = false, isSearchAnnot = false;
   /* get value of tracks attribute */
   var selectedTrack = $("#" + id).attr("tracks"),
       number = parseInt(checkbox.id.replace(/[^0-9\.]/g, ''), 10);
 
   if(selectedTrack.indexOf('brush') !== -1){
     color = arrayOfColorsBrushes[(number-59)];
-    isBrushSearchAnnot = true;
+    isBrushAnnot = true;
   }
   else if(selectedTrack.indexOf('search') !== -1){
     color = arrayOfColorsBrushes[(number-59)];
-    isBrushSearchAnnot = true;
+    isSearchAnnot = true;
   }    
   else{
     if(isTracksOn){
@@ -100,9 +100,13 @@ function toggleFilter(checkbox) {
   if ($("#" + id).is(':checked')) {
     addTrack(selectedTrack);
 
-    if(isBrushSearchAnnot){
-      configureSearchAnnot((number-59), color, false);
+    if(isBrushAnnot){
+      configureBrushAnnot((number-59), color, false, checkbox.id);
     }
+    else if(isSearchAnnot){
+      configureSearchAnnot((number-59), color, false, checkbox.id);
+    }
+
     // else{
       /* get trackData urls */
       var trackDataUrls = getTrackDataUrls(selectedTrack);
@@ -287,6 +291,9 @@ getViewType("Tracks");
 renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
 plugCollapsibleJQuery();
 fillColorBlock();
+
+// $('#search-keyword').val('alcohol');
+// document.getElementById('search-button').click();
 
 /* default of jbrowse is hidden */
 $("#jbrowse").hide();

@@ -837,6 +837,10 @@ function reformatTraitData(selectedTrack) {
         category = "traitGenes";
     }
 
+    // console.log(selectedTrack);
+    // console.log(filterMap[category]);
+    // console.log(filterMap[category][selectedTrack]);
+
     /* assign annots */
     for (i = 0; i < traitData.length; i++) {
         var td = traitData[i],

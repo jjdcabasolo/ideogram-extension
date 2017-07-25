@@ -1578,7 +1578,7 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
         annotsByChr = rawAnnots[i];
         annots.push({ "chr": annotsByChr.chr, "annots": [] });
 
-        // console.log(rawAnnots[i]);
+        console.log(rawAnnots[i]);
 
         for (j = 0; j < annotsByChr.annots.length; j++) {
             chr = annotsByChr.chr;
@@ -1621,15 +1621,17 @@ Ideogram.prototype.processAnnotData = function(rawAnnots) {
                 }
 
                 // &+- true true true
-                // color = ideo.config.annotationTracks[ra[3] - 1].color;
-
+                // console.log(ra);
+                color = ideo.config.annotationTracks[ra[3] - 1].color;
+                // console.log(color);
+                
                 // &+- dry run presentation
-                if(keys.length != 5){
-                    color = ideo.config.annotationTracks[ra[3] - 1].color;
-                }
-                else{
-                    color = ideo.config.annotationsColor;
-                }
+                // if(keys.length != 5){
+                //     color = ideo.config.annotationTracks[ra[3] - 1].color;
+                // }
+                // else{
+                //     color = ideo.config.annotationsColor;
+                // }
             } else {
                 annot['trackIndex'] = -1;
             }
