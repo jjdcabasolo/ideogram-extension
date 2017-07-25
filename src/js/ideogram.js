@@ -1320,12 +1320,12 @@ Ideogram.prototype.convertBpToPx = function(chr, bp) {
         lastbandstop= band.bp.stop;
     }
 
-    // added by lmansueto for case gene miR172a where position in chr09 is > chr09 length.. just set to end
-    bpToIscnScale = (band.iscn.stop - band.iscn.start) / (band.bp.stop - band.bp.start);
-    iscn = band.iscn.start + (lastbandstop - band.bp.start) * bpToIscnScale;
+    // // added by lmansueto for case gene miR172a where position in chr09 is > chr09 length.. just set to end
+    // bpToIscnScale = (band.iscn.stop - band.iscn.start) / (band.bp.stop - band.bp.start);
+    // iscn = band.iscn.start + (lastbandstop - band.bp.start) * bpToIscnScale;
 
-    px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
-    return px;
+    // px = 30 + band.px.start + (band.px.width * (iscn - band.iscn.start) / (band.iscn.stop - band.iscn.start));
+    // return px;
 };
 
 /**

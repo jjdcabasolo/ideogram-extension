@@ -287,6 +287,7 @@ var ideogram;
 /* render default view as histogram */
 // getViewType("Histogram");
 getViewType("Tracks");
+$('#view-type_tracks').attr('checked', true);
 
 renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
 plugCollapsibleJQuery();

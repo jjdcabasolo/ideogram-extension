@@ -621,7 +621,7 @@ function configureBrushAnnot(index, colors, addToCheckboxList, flag){
     for(var i = 0; i < processedAnnots.length; i++) {
         var obj = processedAnnots[i],
             pseudonclist = transformToNCList(processedAnnots[i]),
-            pseudochrnum = parseInt(String(processedAnnots[i]['contig']).replace(/[^0-9\.]/g, ''), 10);
+            pseudochrnum = parseInt(String(processedAnnots[i]['contig']).replace(/[^0-9\.]/g, ''), 10) - 1;
             
         modifiedAnnot[pseudochrnum]['data'].push(pseudonclist);
     }
