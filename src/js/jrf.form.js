@@ -125,16 +125,15 @@ var filterMap = {
         fps: 20,
         zIndex: 2e9,
         className: 'spinner',
-        top: '400px',
-        left: '500px',
-        // top: '20%',
-        // left: '25%',
+        top: '20%',
+        left: '25%',
         shadow: true,
         hwaccel: false,
         position: 'absolute'
     },
     traitData = [],
     lfUrls = [],
+    // dropdown menu for brush
     dropdownMenuForm = '<div><ul class="hover"><li class="hoverli"><ul class="file_menu"><li class="header-menu"><b class="white-text">Options</b></li><li><a id="brush0" class="show-jbrowse" onclick="redirectToJBrowse(this.id)">Show in JBrowse</a></li><li><a class="plot-genes" onclick="plotGeneAnnotation()">Plot all genes</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Brush</b></li><li><a id="brush0" class="identify-the-brush" onclick="deleteThisBrush(this.id)">Delete this brush</a></li><li><a onclick="deleteAllBrush()">Delete all brush</a></li><hr id="divider"><li class="header-menu"><b class="white-text">Set base pair range</b></li><li><form class="white-text-default"><label for="StartBP">Start:</label><input type="number" name="StartBP" value="startBp" class="inline-textbox" id="startBPTextbox"></form></li><li><form class="white-text-default"><label for="EndBP">End:</label><input type="number" name="EndBP" value="stopBp" class="inline-textbox" id="endBPTextbox"></form></li><li id="range-details"><p class="white-text-smaller" id="chr-name-details"><b class="white-text-smaller" id="chr-name"></b>max:<b class="white-text-smaller" id="chr-name-max"></b><button type="button" id="brush0" class="submit-chr-details" onclick="setTheBrush(this.id)">Submit</button></p></li><li><p class="red-text" id="message-input-menu"></li></ul></li></ul></div>',
     defaultColor = [
         { "id": "oryzabase_trait_genes",
@@ -256,8 +255,8 @@ var filterMap = {
           "color": "#212122" },
         { "id": "qtaroqtl_submergency_tolerance",
           "color": "#BDBDBE" },
-
     ],
+    // &+- color blind friendly color scheme
     protanopiaNoRed = [
         { "id": "oryzabase_trait_genes",
           "color": "#000E1F" },
@@ -703,6 +702,7 @@ var renderForm = function(filepath, category) {
     });
 }
 
+// &+- fills the color blockw hich acts like a legend for the tracks at the track selector
 function fillColorBlock(){
     var index = 0, colorFillBlock;
     
@@ -717,7 +717,7 @@ function fillColorBlock(){
     });
 }
 
-
+// &+- new rendering function (reading json file then rendering it into html file using jquery) for collapsible structure
 var renderCollapsible = function(filepath) {
     $.getJSON(filepath, function(data) {
         for (var category in data) {
@@ -822,7 +822,7 @@ var asyncLoop = function(o) {
 function reformatTraitData(selectedTrack) {
     var i, j, category;
 
-    // &+- added to determine if the option is a qtl
+    // &+- added to determine if the option is a qtl or genequery
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         brushIdentifier = new RegExp("brush"),
         searchIdentifier = new RegExp("search");
@@ -1011,6 +1011,7 @@ function getTrackData(selectedTrack, trackDataUrls) {
     });
 }
 
+// &+- counts all of the active data set inside gene query
 var brushTrackCount = 59;
 
 /*
@@ -1034,7 +1035,7 @@ function removeSelectedTrack(selectedTrack) {
 }
 
 function removeSelectedTrack(selectedTrack) {
-    // &+-
+    // &+- added to determine if the option is a qtl or genequery
     var qtlIdentifier = new RegExp("(qtl|QTL)"),
         brushIdentifier = new RegExp("brush"),
         searchIdentifier = new RegExp("search"),
@@ -1097,7 +1098,7 @@ function addTrack(track) {
         console.log(category + " | " + mapValue);
     } 
     else if(brushIdentifier.test(track) || searchIdentifier.test(track)){
-        // &+-
+        // &+- checks if the key is already present on the filtermap
         if(!filterMap.brush.hasOwnProperty(track)){
             brushTrackCount = brushTrackCount + 1;
         }
@@ -1120,7 +1121,7 @@ function addTrack(track) {
 function removeTrack(track) {
     var saveIndex = 0;
 
-    // &+- redesigned the deletion of the track 
+    // &+- reworked the deletion of the track 
     // &+- step 1: find and delete the track at the track array
     for(var i = 0; i < allTracks.length; i++) {
         var obj = allTracks[i];

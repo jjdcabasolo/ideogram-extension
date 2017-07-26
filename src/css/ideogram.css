@@ -65,7 +65,6 @@ text {
     shape-rendering: crispEdges;
 }
 
-
 /* NCBI stain density colors */
 
 .gneg {
@@ -151,8 +150,8 @@ text {
     fill: #EEF
 }
 
-
-/* for side bar */
+/* lmlawas [*] */
+/* for side bar [*] */
 
 ul {
     list-style: none;
@@ -160,8 +159,7 @@ ul {
     float: left;
 }
 
-
-/* for linear scale */
+/* for linear scale [*] */
 
 .axis {
     shape-rendering: crispEdges;
@@ -174,12 +172,11 @@ ul {
 }
 
 
-/* for divs */
+/* for divs [*] */
 
 #jbrowse {
     width: 100%;
     height: 450px;
-    /*margin-top: 750px;*/
 }
 
 #sidebar {
@@ -248,9 +245,10 @@ ul {
 #chromosome-render {
     position: absolute;
     margin-left: 250px;
-    /*width: 2000px;*/
 }
 
+/* jjdcabasolo &+- */
+/* &+- css for the buttons */
 .button-color button {
     border: 0;
     padding: 8px;
@@ -331,6 +329,8 @@ ul {
     margin-left: 6px;
 }
 
+/* &+- color blocks found at the track selector */
+
 .color-block {
     background-color: blue;
     display: inline;
@@ -343,13 +343,11 @@ ul {
     margin-top: 22%;
 }
 
-.gt-spinner {
-    /*top: 67%;*/
-}
-
 #divider {
     border: 1px solid #757575;
 }
+
+/* &+- annotation css */
 
 .singleposition path:hover {
     fill: #424242;
@@ -368,6 +366,8 @@ ul {
     /* Safari */
     transition: transform 0.2s;
 }
+
+/* &+- gene table css */
 
 .gene-table {
     margin-top: 850px;
@@ -728,8 +728,4 @@ div.tab button.active {
     width: 220px;
     padding-left: 16px;
     margin-left: -15px;
-}
-
-#canvas {
-    visibility: hidden;
 }

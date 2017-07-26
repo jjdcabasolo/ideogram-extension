@@ -34,6 +34,8 @@
     <link type="text/css" rel="stylesheet" href="src/css/dropdownMenu.css">
   </head>
 
+  <!-- all of the comments starting with the sequence of symbols &, +, and - [&+-] are all lines/blocks of code added by Jourish Abasolo (jjdcabasolo@github.com) -->
+
   <body>
     <div id="main-container">
       <div id="sidebar">
@@ -56,6 +58,7 @@
         </div>
         <br>
         <div id="form-render-category">
+          <!-- &+- collapsbile structure inside the html that will eb fileed later on with the data coming from a json file -->
           <div class="expandable-panel" id="cp-1">
             <div class="expandable-panel-heading" id="collapsible-tg">
                 <p><img src="https://maxcdn.icons8.com/Share/icon/Arrows//expand_arrow1600.png" alt="Smiley face" height="10" width="10" id="arrow-tg" class="arrow-left-stuff"><span id="span-tg"></span></p>
@@ -149,7 +152,7 @@
           <button class="tablinks" onclick="toggleResult(event, 'GeneTable')" id="goToTable">Gene table</button>
         </div>
         <div id="JBrowseView" class="tabcontent">
-          <!-- <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe> -->
+          <iframe id="jbrowse" src="http://172.29.4.215:8080/jbrowse-dev2/"></iframe>
         </div>
         <div id="GeneTable" class="tabcontent">
           <table id="gene-table-content" border="1" class="table"></table>

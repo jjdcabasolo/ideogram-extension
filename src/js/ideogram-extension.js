@@ -1,3 +1,6 @@
+// &+- thank you very much for this awesome project, IRRI
+// &+- code for the extension of the whole genome browser
+
 $(document).ready(function() {
     searchEnterOverride();
     collapsibleArrowAnimate();
@@ -71,11 +74,8 @@ function setUpBrush(){
 
 var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [], arrayOfColorsBrushes = [];
 
+// &+- set the settings of the SVG
 function adjustIdeogramSVG(){
-    // &+- providing a larger svg for the dropdown menu 
-    // $('#ideogram').attr('width', '1200');
-    // $('#ideogram').attr('height', '1200');
-
     $('#ideogram').attr('width', '1000');
     $('#ideogram').attr('height', '900');
     
@@ -83,6 +83,7 @@ function adjustIdeogramSVG(){
     $('.background').css('cursor', 'zoom-in');
 }
 
+// &+- dropdown menu settings
 function dropdownMenuSetup(){
     // &+- add dropdown menu after using the brush
     $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
@@ -297,6 +298,7 @@ function setTheBrush(brush){
     }
 } 
 
+// &+- counts all of the active brushes
 function countActiveBrushes(){
     var countActive = 0;
     for (var i = 0; i < ideogram.numChromosomes; i++) {
@@ -342,10 +344,8 @@ function showStatiscalTable(table){
             fps: 20,
             zIndex: 2e9,
             className: 'gt-spinner',
-            // top: '-100px',
-            // left: '38%',
-            top: '200px',
-            left: '42%',
+            top: '-100px',
+            left: '38%',
             shadow: true,
             hwaccel: false,
             position: 'absolute'
@@ -604,6 +604,7 @@ function formWebServicePlot(){
     return pathname + commaSeparated;
 }
 
+// &+- generates the brush selection annotations
 function configureBrushAnnot(index, colors, addToCheckboxList, flag){
     var processedAnnots = processedAnnotsObj[index]['contents'];
 
@@ -637,7 +638,7 @@ function configureBrushAnnot(index, colors, addToCheckboxList, flag){
     else{
         selectedTrack = flag;
     }
-    console.log(selectedTrack);
+    // console.log(selectedTrack);
     
     if(addToCheckboxList){
         addTrack(selectedTrack);
@@ -660,7 +661,6 @@ function configureBrushAnnot(index, colors, addToCheckboxList, flag){
         config.isSearchBrush = false;
     }
 }
-
 
 // &+- "PLOT ALL GENES" option @ brush menu
 // &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
@@ -790,6 +790,7 @@ function fixAnnotChr(processedAnnots){
     return modifiedAnnot;
 }
 
+// &+- conversion of data coming from the rice genes to an object which can be processed by the functions provided last year in order to process data to be read in the ideogram.js for generating track annotation
 function transformToNCList(processedAnnots){
     var nclistCopy = [];
 
@@ -805,6 +806,7 @@ function transformToNCList(processedAnnots){
     return nclistCopy;
 }
 
+// &+- puts the results/details of the genes at the gene table
 function putSearchToTable(webService, color){
     // &+- put the results in a table
     var arrayCatch;
@@ -842,6 +844,7 @@ function putSearchToTable(webService, color){
     });
 }
 
+// &+- add the randomly generated color to the ideogram settings/config object
 function addColorToAnnotationTracks(selectedTrack, color){
     var newColorObj = {};
     newColorObj['id'] = selectedTrack;
@@ -853,6 +856,7 @@ function addColorToAnnotationTracks(selectedTrack, color){
     console.log(config.annotationTracks);
 }
 
+// &+- used for generating annottaions for search queries
 function configureSearchAnnot(index, colors, addToCheckboxList, flag){
     console.log(processedAnnotsObj[index]);
     var processedAnnots = processedAnnotsObj[index]['contents'];
@@ -1004,24 +1008,12 @@ function triggerSearchBox(){
             }, 100);
         },
         callback: function() {
-            // console.log("here at callback function");
-                        
-            // var selectedTrack = 'search-query-' + (geneQueryCount+59);
-            // config.rawAnnots = reformatTraitData(selectedTrack);
-            // console.log(config.rawAnnots);
-            // config.selectedTrack = selectedTrack;
-            // config.allTracks = allTracks;
-            // toggleSpinner(spinner, false);
-
-            // ideogram = new Ideogram(config);
-            // setUpBrush();
-            // setUpZoomButtons();
-            // return ideogram;
+            // console.log("here at callback function");                        
         }
     });
 }
 
-// "TURN NIGHT MODE ON" at settings tab, ideogram page
+// "TURN NIGHT MODE ON" at settings tab, ideogram page - under development
 var isNightMode = true;
 function turnNightMode(){
     $('style').detach();
@@ -1442,15 +1434,12 @@ function exportSVG(){
     svg.setAttribute("style", "background: transparent;");
 }
 
+// &+- under development: color guides for the screenshot - tell the color of teh annotation and the tracks activated at the current view of the ideogram.
 function drawColorGuides(){
     $('.legend-section').attr('transform', 'translate(700, 700)');
 
     var legend = '<p>Color guides</p>';
     // console.log(filterMap);
 
-    data.forEach(function(d){
-
-    });
-
-    $('.legend-section').wrapInner(legend);
+    // $('.legend-section').wrapInner(legend);
 }

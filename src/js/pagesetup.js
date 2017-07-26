@@ -1,3 +1,7 @@
+// &+- relocated this javascript code to a separate file which will load
+// &+- all of the necessary functions, such as activating a track and
+// &+- initializing the ideogram
+
 /* 
  * toggles view using radio buttons
  */
@@ -95,11 +99,12 @@ function toggleFilter(checkbox) {
       }
     }
   }
-      // console.log(color);
+    // console.log(color);
   
   if ($("#" + id).is(':checked')) {
     addTrack(selectedTrack);
 
+    // &+- this is used for recraeting the annotations made via brush selection and search query
     if(isBrushAnnot){
       configureBrushAnnot((number-59), color, false, checkbox.id);
     }
@@ -107,19 +112,18 @@ function toggleFilter(checkbox) {
       configureSearchAnnot((number-59), color, false, checkbox.id);
     }
 
-    // else{
-      /* get trackData urls */
-      var trackDataUrls = getTrackDataUrls(selectedTrack);
+    // &+- recreating the tracks at the default data set (QTL and traitgenes)
+    /* get trackData urls */
+    var trackDataUrls = getTrackDataUrls(selectedTrack);
 
-      /* empty traitData to avoid duplication */
-      traitData = [];
+    /* empty traitData to avoid duplication */
+    traitData = [];
 
-      /* clear current view */
-      d3.select("#ideogram").remove();
+    /* clear current view */
+    d3.select("#ideogram").remove();
 
-      /* create new view w/ selectedTrack annots */
-      ideogram = getTrackData(selectedTrack, trackDataUrls, config);
-    // }
+    /* create new view w/ selectedTrack annots */
+    ideogram = getTrackData(selectedTrack, trackDataUrls, config);
 
     /* show annots/tracks (tracks view filtering) */
     d3.selectAll("path[fill = '" + color + "']").attr("visibility", "show");
@@ -139,18 +143,6 @@ function toggleFilter(checkbox) {
 
     /* hide annots/tracks (tracks view filtering) */
     d3.selectAll("path[fill = '" + color + "']").attr("visibility", "hidden");
-
-    // if(brushAnnots.length > 0){
-    //   for(var i = 0; i < brushAnnots.length; i++) {
-    //     var selection = brushAnnots[i][annots];
-    //     for(var j = 0; j < brushAnnots.length; j++) {
-    //       selection[j]['trackIndex'] = selection[j]['trackIndex'] - 1;
-    //     }
-        
-    //     // ideogram.drawProcessedAnnots(brushAnnots[i]);
-    //     // addAnnotationLinks();
-    //   }
-    // }
   }
   if (getAllTracksCount() > 0) {
     $("#jb-div").show();
@@ -161,17 +153,14 @@ function toggleFilter(checkbox) {
 // &+- fills up the color blocks. the color in the color blocks will correspond to the
 // &+- color used in the tracks annotations (only) || triggered when a user picks one from the 
 // &+- checkbox of trait genes/qtl
-
 function colorBlindMode(category){
     if(category === 'proto') config.annotationTracks = protanopiaNoRed;
     else if(category === 'deuto') config.annotationTracks = deutanopiaNoGreen;
     else if(category === 'trito') config.annotationTracks = tritanopiaNoBlue;
     else config.annotationTracks = defaultColor;
     
-    // show linear scale
     toggleLinearScale("show");
 
-    // clear current view
     d3.select("svg").remove();
 
     ideogram = new Ideogram(config);
@@ -184,6 +173,7 @@ function colorBlindMode(category){
 document.getElementById("defaultOpen").click();
 document.getElementById("goToInstr").click();
 
+// &+- this filtermap was used to get the index of the color listed on jrf.form.js which was initially coded by Ms. Lawas
 var filterMap = {
   "traitGenes": {
     "oryzabase_trait_genes": 1,
@@ -278,23 +268,17 @@ var config = {
   brush: true,
   onBrushMove: writeSelectedRange,
   onLoad: writeSelectedRange,
-
-  isSearchBrush: false,
 };
 
 var ideogram;
 
 /* render default view as histogram */
-// getViewType("Histogram");
 getViewType("Tracks");
 $('#view-type_tracks').attr('checked', true);
 
 renderCollapsible("/ideogram-extension/data/filter/dataSet.json");
 plugCollapsibleJQuery();
 fillColorBlock();
-
-// $('#search-keyword').val('alcohol');
-// document.getElementById('search-button').click();
 
 /* default of jbrowse is hidden */
 $("#jbrowse").hide();
