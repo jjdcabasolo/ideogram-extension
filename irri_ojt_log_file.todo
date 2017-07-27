@@ -83,7 +83,7 @@ other changes made
  ✔ link QTL click to JBrowse, @created(17-07-03 16:57) @done (17-07-04 12:44)
 
 4 Jul 2017 tues || meeting jbrowse:
- ☐ BUG: sa unang creation ng brush, kapag hindi siya sa first ginawa, hindi magrereflect yung change (extent) @created(17-07-04 10:14)
+ ✔ BUG: sa unang creation ng brush, kapag hindi siya sa first ginawa, hindi magrereflect yung change (extent) @created(17-07-04 10:14) @done (17-07-20 08:42)
  ✔ lakihan ng kaunti yung width ng ranged track annotation @created(17-07-04 10:17) @done (17-07-04 11:31)
  ✘ add length nung brush @created(17-07-04 10:27) @cancelled (17-07-11 16:23)
  ✘ WHYNOT: draggable and resizable jbrowse frame! @created(17-07-04 10:56) @cancelled (17-07-11 16:23)
@@ -94,10 +94,15 @@ other changes made
 11 July 2017 tues || wtf happened (one week after):
  ✔ change show statistics to show all genes @created(17-07-11 16:18) @done (17-07-11 17:33)
  ✔ remove force histogram - show results for brush selection tracks @created(17-07-11 16:19) @done (17-07-11 17:33)
- ☐ append search queries dun sa gene query na table hahaha @created(17-07-11 16:19)
+ ✔ append search queries dun sa gene query na table hahaha @created(17-07-11 16:19) @done (17-07-20 08:42)
  ✔ create a tab for jbrowse and genetable @created(17-07-11 16:20) @done (17-07-11 17:33)
- ☐ pagsamahin yung contents ng trait genes sa QTL na .json file @created(17-07-11 16:20)
- ☐ add gene query section (both brush selection and search queries) @created(17-07-11 16:20)
- ☐ add collapsible with three rows: QTL, traitdata, geneQuery @created(17-07-11 16:21)
- ☐ download table button daw (.tsb) @created(17-07-11 16:22)
- ☐ color blind se @created(17-07-11 16:22)
+ ✔ pagsamahin yung contents ng trait genes sa QTL na .json file @created(17-07-11 16:20) @done (17-07-13 16:04)
+ ✔ add gene query section (both brush selection and search queries) @created(17-07-11 16:20) @done (17-07-13 16:04)
+ ✔ add collapsible with three rows: QTL, traitdata, geneQuery @created(17-07-11 16:21) @done (17-07-13 16:04)
+ ✔ download table button daw (.tsb) @created(17-07-11 16:22) @done (17-07-20 08:42)
+ ☐ color blind section @created(17-07-11 16:22)
+
+ 17 Jul 2017 mon || other features:
+ ☐ fix histogram links @created(17-07-17 09:57)
+ ☐ fix histogram colros @created(17-07-17 09:57)
+ ☐  @created(17-07-17 09:58)

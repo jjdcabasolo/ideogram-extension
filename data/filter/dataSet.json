@@ -378,7 +378,7 @@
                     "name": "qtaroqtl",
                     "id": "filter-qtl-qtaroqtl",
                     "type": "checkbox",
-                    "caption": "Rice Quantitative Trait Loci (QTLs)",
+                    "caption": "Rice Quantitative Trait Loci",
                     "onclick": "return toggleFilter(this)",
                     "tracks": "QTARO QTL",
                     "class": "checkbox-data-qtl"

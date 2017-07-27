@@ -1,22 +1,94 @@
-// HTML DOM changes on brush-related elements
+// &+- thank you very much for this awesome project, IRRI
+// &+- code for the extension of the whole genome browser
+
+$(document).ready(function() {
+    searchEnterOverride();
+    collapsibleArrowAnimate();
+    setUpBrush();
+});  
+
+// &+- zoom-related functions :: setting up the jquery plugin svg-pan-zoom (https://github.com/ariutta/svg-pan-zoom)
+var panZoomTiger, isZoomOn = true, isPanOn = true, initialize = false;
+function setUpZoomButtons(){
+    var svgElement = document.querySelector('#ideogram');
+    panZoomTiger = svgPanZoom(svgElement, {
+        panEnabled: false,
+        controlIconsEnabled: true,
+        mouseWheelZoomEnabled: true,
+        zoomScaleSensitivity: 0.5,
+        minZoom: 1,
+        maxZoom: 5,
+    });
+
+    $('g#svg-pan-zoom-zoom-in').attr('transform', 'translate(-250.5 33) scale(0.027)'); 
+    $('g#svg-pan-zoom-zoom-out').attr('transform', 'translate(-200.5 33) scale(0.027)'); 
+    $('g#svg-pan-zoom-reset-pan-zoom').attr('transform', 'translate(-150.5 28.5) scale(0.7)'); 
+
+    // &+- zoom features are disabled by default
+    panZoomTiger.disableZoom();
+    panZoomTiger.disablePan();
+}
+
+// &+- "ENABLE ZOOM" button, an ideogram overlay
+function toggleZoom(){
+    if(!initialize){
+        setUpZoomButtons();
+        initialize = !initialize;
+    }
+
+    if(isZoomOn){
+        panZoomTiger.enableZoom();
+        panZoomTiger.enablePan();
+        $('#enable-zoom button').text('Zoom enabled');
+        $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'visible'); 
+    }
+    else{
+        panZoomTiger.disableZoom();
+        panZoomTiger.disablePan();
+        $('#enable-zoom button').text('Zoom disabled');
+        $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'hidden'); 
+    }
+    isZoomOn = !isZoomOn;
+}
+
+// &+- "ENABLE PAN" button, an ideogram overlay
+function togglePan(){
+    if(isPanOn){
+        panZoomTiger.enablePan();
+        $('#enable-pan button').text('Pan enabled');
+    }
+    else{
+        panZoomTiger.disablePan();
+        $('#enable-pan button').text('Pan disabled');
+    }
+    isPanOn = !isPanOn;
+}
+
+function setUpBrush(){
+    // &+- SVG MENU SETTINGS
+    adjustIdeogramSVG();
+    // &+- DROPDOWN MENU
+    dropdownMenuSetup();
+    $('g#svg-pan-zoom-controls, #enable-pan button').css('visibility', 'hidden'); 
+}
+
 var brushID, xCoordinates = [], isMenuOpen = [], previousBrush = 'some-id-i-used-to-know', brushExtent = [], arrayOfColorsBrushes = [];
 
+// &+- set the settings of the SVG
 function adjustIdeogramSVG(){
-    // &+- providing a larger svg for the dropdown menu 
-    $('#ideogram').attr('width', '1200');
-    $('#ideogram').attr('height', '1200');
+    $('#ideogram').attr('width', '1000');
+    $('#ideogram').attr('height', '900');
     
     // &+- change cursor
     $('.background').css('cursor', 'zoom-in');
 }
 
+// &+- dropdown menu settings
 function dropdownMenuSetup(){
-    // &+- makes the dropdown be located somewhere outside the user's view
-    $('.dynamic-dropdown').attr('transform', 'translate(-300, -300)');
-
     // &+- add dropdown menu after using the brush
     $('.dynamic-dropdown').wrapInner(dropdownMenuForm);
-    
+    $('ul.file_menu').stop(true, true).slideUp(1);   
+
     // &+- makes the dropdown menu appear when the mouse is hovered on the selection of the brush
     $(".extent").hover(
         function( event ) {
@@ -94,70 +166,7 @@ function dropdownMenuSetup(){
     });
 }
 
-$(document).ready(function() {    
-    // SVG MENU SETTINGS
-    adjustIdeogramSVG();
-
-    // DROPDOWN MENU
-    dropdownMenuSetup();
-
-    // thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
-    $('#search-keyword').bind("keypress", {}, keypressInBox);
-    function keypressInBox(e) {
-        var code = (e.keyCode ? e.keyCode : e.which);
-        if (code == 13) { //Enter keycode                        
-            e.preventDefault();
-            triggerSearchBox();
-        }
-    };
-    
-    // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
-    // &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
-    var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
-    jQuery.fn.rotate = function(degrees) {
-        $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
-                     '-moz-transform' : 'rotate('+ degrees +'deg)',
-                     '-ms-transform' : 'rotate('+ degrees +'deg)',
-                     'transform' : 'rotate('+ degrees +'deg)'});
-    };
-
-    $('#collapsible-tg').click(function() {
-        if(arrowTGOn){
-            $('#arrow-tg').rotate(0);
-            $('#collapsible-tg').css('background-color', '#E0E0E0');
-        }
-        else{
-            $('#arrow-tg').rotate(-90);
-            $('#collapsible-tg').css('background-color', '#EEEEEE');
-        }
-        arrowTGOn = !arrowTGOn;
-    });
-    
-    $('#collapsible-qtl').click(function() {
-        if(arrowQTLOn) {
-            ('#arrow-qtl').rotate(0);
-            $('#collapsible-qtl').css('background-color', '#E0E0E0');
-        }
-        else{
-            $('#arrow-qtl').rotate(-90);
-            $('#collapsible-qtl').css('background-color', '#EEEEEE');
-        }
-        arrowQTLOn = !arrowQTLOn;
-    });
-    
-    $('#collapsible-gq').click(function() {
-        if(arrowGQOn){
-            $('#arrow-gq').rotate(0);
-            $('#collapsible-gq').css('background-color', '#E0E0E0');
-        }
-        else{
-            $('#arrow-gq').rotate(-90);
-            $('#collapsible-gq').css('background-color', '#EEEEEE');
-        }
-        arrowGQOn = !arrowGQOn;
-    });
-});  
-
+// &+- "SHOW IN JBROWSE" option at brush menu, ideogram page
 // &+- makes the JBrowse appear with the set coordinates
 function redirectToJBrowse(brush){
     // &+- automatically open the jbrowse tab
@@ -207,6 +216,7 @@ function deleteThisBrush(brush){
     isBrushActive[parseInt(brush.replace(/[^0-9\.]/g, ''), 10)] = false;
 }
 
+// &+- "SET BASE PAIR RANGE" option at brush menu
 // &+- setting the brush extent by inputting start and end coordinates
 function setTheBrush(brush){
     var start = $('#startBPTextbox').val(),
@@ -288,6 +298,20 @@ function setTheBrush(brush){
     }
 } 
 
+// &+- counts all of the active brushes
+function countActiveBrushes(){
+    var countActive = 0;
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            countActive = countActive + 1;
+        }
+    }
+    return countActive;
+}
+
+var isHeaderPresent = false;
+
+// &+- "SHOW ALL GENES" option at brush menu
 // &+- make the table that will contain the data (the whole gene)
 function showStatiscalTable(table){
     // &+- automatically open the genetable tab
@@ -304,7 +328,6 @@ function showStatiscalTable(table){
     var pathname = "http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/",                     
         start = 'start=' + $('#startBPTextbox').val() + '&',
         end = 'end=' + $('#endBPTextbox').val(),
-        isHeaderPresent = false,
         spinnerConfig = {
             lines: 9,
             length: 9,
@@ -321,15 +344,17 @@ function showStatiscalTable(table){
             fps: 20,
             zIndex: 2e9,
             className: 'gt-spinner',
-            top: '16%',
-            left: '44%',
+            top: '-100px',
+            left: '38%',
             shadow: true,
             hwaccel: false,
             position: 'absolute'
         },
         buffering = document.getElementById("gt-div"),
         spinner = new Spinner(spinnerConfig).spin(buffering),
-        chrNum, webService, extent, from, to, arrayCatch, myList;
+        chrNum, webService, extent, from, to, arrayCatch, myList, countActive = 0, counterIndex = 0;
+
+    countActive = countActiveBrushes();
 
     for (var i = 0; i < ideogram.numChromosomes; i++) {
         if(isBrushActive[i]){
@@ -350,7 +375,7 @@ function showStatiscalTable(table){
             // snp-seek.irri.org -> 172.29.4.215:8080/iric-portal
             // http://snp-seek.irri.org/ws/genomics/gene/osnippo/chr06?start=1&end=100000        
             webService = pathname + chrNum + start + end;
-            console.log(webService);
+
             $.ajax({
                 dataType: "json",
                 crossDomain: true,
@@ -358,76 +383,93 @@ function showStatiscalTable(table){
                 data: arrayCatch,
                 success: function(arrayCatch) {
                     buildHtmlTable(arrayCatch, "#gene-table-content");  
+                    counterIndex = counterIndex + 1;
                     $('#defaultOpen').attr('class', 'active-link tablinks'); 
                     $('.show-genes').attr('class', 'active-link show-genes');                   
+
                     toggleSpinner(spinner, false);
                     isHeaderPresent = true;
+                    if(counterIndex == countActive){
+                        $('#GeneTable').css('height', '480');
+
+                        // &+- export to csv, txt, xls :: jquery plugin, TableExport (https://github.com/clarketm/TableExport) 
+                        $("table").tableExport({
+                            headings: true,                   
+                            footers: true,
+                            formats: ["xls", "csv", "txt"],          
+                            fileName: "gene-table",                        
+                            emptyCSS: ".tableexport-empty",  
+                            trimWhitespace: false        
+                        });    
+
+                        isHeaderPresent = false;
+                    }
                 }
             });
-
         }
-    }
-
-    // &+- code snippet for converting JSON to HTML table. thank you https://stackoverflow.com/a/11480797
-    // Builds the HTML Table out of myList.
-    function buildHtmlTable(myList, selector) {
-        var columns = addAllColumnHeaders(myList, selector, isHeaderPresent),
-            tBodyProper = $('<tbody/>');
-
-        for(var i = 0; i < myList.length; i++) {
-            var row = $('<tr/>');
-            for(var colIndex = 0; colIndex < columns.length; colIndex++) {
-                var cellValue = myList[i][columns[colIndex]];
-                if(cellValue == null){
-                    row.append($('<td/>').html(""));
-                }
-                else{
-                    var stringValue = String(cellValue);
-                    stringValue = stringValue.replace(/,/g, '<br>');
-                    row.append($('<td/>').html(stringValue));
-                }
-            }
-            if(!isHeaderPresent){
-                $(tBodyProper).append(row);
-            }
-            else{
-                $(selector + ' tBody').append(row);            
-            }
-        }
-
-        if(!isHeaderPresent){
-            $(selector).append(tBodyProper);
-        }
-    }
-
-    // Adds a header row to the table and returns the set of columns.
-    // Need to do union of keys from all records as some records may not contain
-    // all records.
-    function addAllColumnHeaders(myList, selector, isHeaderPresent) {
-        var columnSet = [];
-        var headerTr = $('<tr/>');
-        var tHeadProper = $('<thead/>');
-
-        for (var i = 0; i < myList.length; i++) {
-            var rowHash = myList[i];
-            for (var key in rowHash) {
-                if ($.inArray(key, columnSet) == -1) {
-                    columnSet.push(key);
-                    headerTr.append($('<th/>').html(key));
-                }
-            }
-        }
-
-        if(!isHeaderPresent){
-            $(tHeadProper).append(headerTr);
-            $(selector).append(tHeadProper);        
-        }
-
-        return columnSet;
     }
 }
 
-var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, brushSelectionAnnot = 0, brushSelectionAnnotArray = [], isCheckboxPresent = false;
+// &+- code snippet for converting JSON to HTML table. thank you https://stackoverflow.com/a/11480797
+// Builds the HTML Table out of myList.
+function buildHtmlTable(myList, selector) {
+    var columns = addAllColumnHeaders(myList, selector, isHeaderPresent),
+        tBodyProper = $('<tbody/>');
+
+    for(var i = 0; i < myList.length; i++) {
+        var row = $('<tr/>');
+        for(var colIndex = 0; colIndex < columns.length; colIndex++) {
+            var cellValue = myList[i][columns[colIndex]];
+            if(cellValue == null){
+                row.append($('<td/>').html(""));
+            }
+            else{
+                var stringValue = String(cellValue);
+                stringValue = stringValue.replace(/,/g, '<br>');
+                row.append($('<td/>').html(stringValue));
+            }
+        }
+        if(!isHeaderPresent){
+            $(tBodyProper).append(row);
+        }
+        else{
+            $(selector + ' tBody').append(row);            
+        }
+    }
+
+    if(!isHeaderPresent){
+        $(selector).append(tBodyProper);
+    }
+}
+
+// Adds a header row to the table and returns the set of columns.
+// Need to do union of keys from all records as some records may not contain
+// all records.
+function addAllColumnHeaders(myList, selector, isHeaderPresent) {
+    var columnSet = [];
+    var headerTr = $('<tr/>');
+    var tHeadProper = $('<thead/>');
+
+    for (var i = 0; i < myList.length; i++) {
+        var rowHash = myList[i];
+        for (var key in rowHash) {
+            if ($.inArray(key, columnSet) == -1) {
+                columnSet.push(key);
+                headerTr.append($('<th/>').html(key));
+            }
+        }
+    }
+
+    if(!isHeaderPresent){
+        $(tHeadProper).append(headerTr);
+        $(selector).append(tHeadProper);        
+    }
+
+    return columnSet;
+}
+
+// &+- ANNOTATION CREATION (data coming from brush selection and serach queries)
+var annotObject = {}, annotArray = [], activeURLs = 0, counterURLs = 0, geneQueryCount = 0, searchQueryAnnot = 0, brushSelectionCount = 0, geneQueryCountArray = [], isCheckboxPresent = false;
 
 // &+- generate the links for each chromosome using the brush extent as the start and end values
 function generateGeneAnnotURLs(geneAnnotArrayURL){
@@ -474,77 +516,153 @@ function processCollectedAnnots(webService, func) {
                 func(null);
             }
             else{
-                var compiledAnnots = [], getNumber = true;
-                data.forEach(function(d){
-                    var annotContent = [
-                        (d.uniquename + '\n' + d.description),
-                        d.fmin,
-                        d.fmax - d.fmin,
-                        allTracksCount,
-                        d.contig
-                    ];
-                    compiledAnnots.push(annotContent);
-                    if(getNumber){
-                        var number = parseInt(String(d.contig).replace(/[^0-9\.]/g, ''), 10);
-                        annotObject["chr"] = number;
-                        getNumber = !getNumber;
-                    }
-                });
-                annotObject["annots"] = compiledAnnots;
-                annotArray.push(annotObject);
-
-                var keys = ["name", "start", "length", "trackIndex", "chrName"];
-                var rawAnnots = { "keys": keys, "annots": annotArray };
-                var processedAnnots = ideogram.processAnnotData(rawAnnots);
-
-                func(processedAnnots);
+                func(data);
             }
         }
     });
 }
 
 // &=- insertion to the brush selection checkbox element
-function appendCheckbox(){
+function appendCheckbox(categoryQuery, nameNum){
     var open_tag = "<li>",
         close_tag = "</li>",
         attr = '<input type="checkbox" onclick="toggleFilter(this)"',
         label = "",
         id = "",
-        colorBlock = '<div class="color-block" id="color-block-' + (brushSelectionAnnot) + '"></div>';
+        colorBlock = '<div class="color-block" id="color-block-' + (geneQueryCount+59) + '" style="background-color: '+ arrayOfColorsBrushes[geneQueryCount] +' "></div>';
 
     var item,
-        id = 'brush-selection-' + brushSelectionAnnot;
-        label = "<label for='" + id + "'>" + colorBlock + id + "</label>";
+        id = categoryQuery + '-' + (geneQueryCount+59);
+        label = "<label for='" + id + "'>" + colorBlock + categoryQuery + '-' + (nameNum) + "</label>";
 
     attr = attr + 'id="' + id + '" tracks="' + id + '"></input>';
     item = open_tag + attr + label + close_tag;
 
-    $(item).appendTo("#brush-slct");
-    $('#color-block' + (brushSelectionAnnot+100)).css({"outline-color": arrayOfColorsBrushes[brushSelectionAnnot], "background-color": arrayOfColorsBrushes[brushSelectionAnnot]});    
-    brushSelectionAnnot = brushSelectionAnnot + 1;
-    $('#' + id).prop('checked', true);
+    $(item).appendTo("#category-content-gq ul");
+    // $('#color-block' + (geneQueryCount+59)).css("background-color", arrayOfColorsBrushes[geneQueryCount]);    
+    
+    $('#' + id).prop('checked', true); 
+    geneQueryCount = geneQueryCount + 1;
+
+    var searchIdentifier = new RegExp("search");
+    if(searchIdentifier.test(categoryQuery)){
+        searchQueryAnnot = searchQueryAnnot + 1;
+    }else{
+        brushSelectionCount = brushSelectionCount + 1;
+    }
 }
 
-// &+- creation of the checkbox element (created when a user clicks "Plot all genes option")
-function brushSelectionCheckbox(){
-    $.getJSON('/ideogram-extension/data/filter/brushSelection.json', function(data) {
-        var list_items = [],
-            html_wrapper = "<" + data['html']['type'] + "/>",
-            html_label = "<" + data['html']['html'][0]['type'] + ">" + data['html']['html'][0]['html'] + "</" + data['html']['html'][0]['type'] + ">";
+/* Add clickable annotations and display in jBrowse [*] */
+function addAnnotationLinks(){
+    d3.selectAll(".annot")
+        .on("click", function(d, i) {
+            toggleLinearScale("visible");
+            // var pathname = "http://oryzasnp.org/jbrowse-dev2/",
+            var pathname = "http://172.29.4.215:8080/jbrowse-dev2/",                     
+                locOnChr = d.start.toString() + ".." + (d.start + d.length).toString(),
+                track = "&tracks=DNA%2C" + ideogram.config.selectedTrack + "&highlight=",
+                chrNum;
 
-        list_items.push(html_label);
-        
-        $(html_wrapper, {
-            "id": data['html']['id'],
-            html: list_items.join("")
-        }).appendTo("#form-render-brush");
-    })
-    .done(function() {
-        isCheckboxPresent = !isCheckboxPresent;
-        appendCheckbox();
-    })
+            if (d.chr < 10) {
+                chrNum = "?loc=chr0" + d.chr + "%3A"
+            } else {
+                chrNum = "?loc=chr" + d.chr + "%3A"
+            }
+            console.log("src", pathname + chrNum + locOnChr + track);
+            $("#jbrowse").prop("src", pathname + chrNum + locOnChr + track);
+            $("#jbrowse").show();
+        }
+    );
 }
 
+// &+- generate the links for each chromosome using the brush extent as the start and end values
+function formWebServicePlot(){
+    var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo?region=',
+        webServiceForm, commaSeparated = '';
+
+    for (var i = 0; i < ideogram.numChromosomes; i++) {
+        if(isBrushActive[i]){
+            var extent = arrayOfBrushes[i].extent(),
+                start = Math.floor(extent[0]),
+                end = Math.ceil(extent[1]),
+                chrNum;
+
+            console.log("active brush " + (i+1));
+            if (i < 9) {
+                chrNum = 'chr0' + (i+1);
+            } else {
+                chrNum = 'chr' + (i+1);
+            }
+
+            // chr01-1-20000,chr02-100000-120000,chr05-200000-220000
+            commaSeparated = chrNum + '-' + start + '-' + end + ',' + commaSeparated;
+            console.log(commaSeparated);
+        }
+    }
+
+    console.log(pathname + commaSeparated);
+    return pathname + commaSeparated;
+}
+
+// &+- generates the brush selection annotations
+function configureBrushAnnot(index, colors, addToCheckboxList, flag){
+    var processedAnnots = processedAnnotsObj[index]['contents'];
+
+    d3.select("#ideogram").remove();
+
+    // &+- construction of a empty copy of annots
+    var modifiedAnnot = [], goToConstruct = false;
+    for(var j = 0; j < ideogram.numChromosomes; j++) {
+        var arr = ['1'];
+        arr.splice(0, 1);
+        var annotObj = { 'chrNum': (j+1).toString(), 'data': arr};
+        modifiedAnnot.push(annotObj);
+    }
+
+    for(var i = 0; i < processedAnnots.length; i++) {
+        var obj = processedAnnots[i],
+            pseudonclist = transformToNCList(processedAnnots[i]),
+            pseudochrnum = parseInt(String(processedAnnots[i]['contig']).replace(/[^0-9\.]/g, ''), 10) - 1;
+            
+        modifiedAnnot[pseudochrnum]['data'].push(pseudonclist);
+    }
+
+    for (var i = 0; i < modifiedAnnot.length; i++) {
+        traitData[i] = modifiedAnnot[i];
+    }
+
+    var selectedTrack;
+    if(flag === null){
+        selectedTrack = 'brush-selection-' + (geneQueryCount+59);
+    }
+    else{
+        selectedTrack = flag;
+    }
+    // console.log(selectedTrack);
+    
+    if(addToCheckboxList){
+        addTrack(selectedTrack);
+        appendCheckbox('brush-selection', brushSelectionCount);
+        addColorToAnnotationTracks(selectedTrack, colors);
+    }
+
+    config.isSearchBrush = true;
+    config.annotationsColor = colors;
+    config.rawAnnots = reformatTraitData(selectedTrack);
+    config.selectedTrack = selectedTrack;
+    config.allTracks = allTracks;
+
+    // toggleSpinner(spinner, false);
+    if(addToCheckboxList){    
+        ideogram = new Ideogram(config);
+
+        setUpBrush();
+        setUpZoomButtons();
+        config.isSearchBrush = false;
+    }
+}
+
+// &+- "PLOT ALL GENES" option @ brush menu
 // &+- plot the genes coming from http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/ on the current brush
 function plotGeneAnnotation(){
     // &+- make this option inactive while it is ongoing
@@ -574,56 +692,47 @@ function plotGeneAnnotation(){
         },
         buffering = document.getElementById("chromosome-render"),
         spinner = new Spinner(spinnerConfig).spin(buffering),
-        geneAnnotArrayURL = [];
+        webService, colors;
 
-    geneAnnotArrayURL = generateGeneAnnotURLs(geneAnnotArrayURL);
+    webService = formWebServicePlot();
 
     var temp = ideogram.config.annotationsColor;
-    ideogram.config.annotationsColor = getRandomColor();
+    colors = ideogram.config.annotationsColor = getRandomColor();
     arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
 
     asyncLoop({
-        length: 13,
+        length: 1,
         functionToLoop: function(loop, i) {
             setTimeout(function() {
-                processCollectedAnnots(geneAnnotArrayURL[i - 1],
+                processCollectedAnnots(webService,
                     function(processedAnnots) {
-                        // &+- change setTimeout time to cover all/longer processes
-                        // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
-                        ideogram.drawProcessedAnnots(processedAnnots);
-                        // ideogram.config.annotationsLayout = 'tracks';
-                        counterURLs = counterURLs + 1;
-                        if(counterURLs == activeURLs){
-                            ideogram.config.annotationsColor = temp;
-                            toggleSpinner(spinner, false);
-                            $('.plot-genes').attr('class', 'active-link plot-genes');                 
+                        console.log(processedAnnots);
 
-                            // &+- make the checkbox element for brush selection appear
-                            $('#instructions').animate({ marginTop: 540 });
-                            $('#form-render-brush').css('margin-top', '495');
-                            $('#form-render-brush').css('height', '70');
-                            $('#form-render-brush').css('width', '250');
+                        var obj = {};
+                        obj['id'] = 'brush-selection-' + (brushSelectionCount+59);
+                        obj['contents'] = processedAnnots;
+                        processedAnnotsObj[brushSelectionCount] = obj;
 
-                            addTrack('brush-selection-' + brushSelectionAnnot);
-                            if(isCheckboxPresent === false){
-                                brushSelectionCheckbox();
-                            }
-                            else{
-                                appendCheckbox();
-                            }
+                        configureBrushAnnot(brushSelectionCount, colors, true, null);
+                        putSearchToTable(webService, colors);
 
-                        }
+                        $('#searchbox-keyword-message').text('Annotations are in this color.');
+                        $('#searchbox-keyword-message').css('color', colors);
+
+                        $('.plot-genes').attr('class', 'active-link plot-genes'); 
+                        toggleSpinner(spinner, false);
                     }
                 );
                 loop();
-            }, 1000);
+            }, 100);
         },
         callback: function() {
+            // console.log("here at callback function");
         }
     });
 }
 
-// &+- thank you https://stackoverflow.com/a/1484514 for this color randomizer
+// &+- thank you https://stackoverflow.com/a/1484514 for this color randomizer :: used in search annotation and brush selection annotation
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -633,9 +742,202 @@ function getRandomColor() {
     return color;
 }
 
+// &+- "SEARCH GENE POSITION BY KEYWORD" section in ideogram page
+// thank you https://stackoverflow.com/a/10905506 for this wonderful just-press-enter-at-the-search-box-to-search technique
+function searchEnterOverride(){
+    $('#search-keyword').bind("keypress", {}, keypressInBox);
+    function keypressInBox(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) { //Enter keycode                        
+            e.preventDefault();
+            triggerSearchBox();
+        }
+    };    
+}
+
+// &+- adjustments on search results and transform it to an array of objects which the ideogram.js can procress
+function fixAnnotChr(processedAnnots){
+    var annotArray = processedAnnots,
+        obj = annotArray['0'],
+        annot = obj['annots'];
+
+    for (var i = 0; i < annot.length; i++) {
+        var innerObj = annot[i];
+            number = parseInt(innerObj['chrName'].replace(/[^0-9\.]/g, ''), 10);
+
+        processedAnnots['0']['annots'][i]['chr'] = number;
+    }
+
+    // &+- construction of a empty copy of annots
+    var modifiedAnnot = [], goToConstruct = false;
+    for(var j = 0; j < ideogram.numChromosomes; j++) {
+        var arr = ['1'];
+        arr.splice(0, 1);
+        var annotObj = { 'chr': (j+1).toString(), 'annots': arr};
+        modifiedAnnot.push(annotObj);
+    }
+
+    for(var i = 0; i < annot.length; i++) {
+        var chrObj = annot[i];
+        for(var k = 0; k < ideogram.numChromosomes; k++) {
+            if(modifiedAnnot[k]['chr'] == chrObj['chr']){
+                chrObj['chrIndex'] = (chrObj['chr'] - 1);
+                modifiedAnnot[k]['annots'].push(chrObj);
+            }
+        }
+    }
+
+    return modifiedAnnot;
+}
+
+// &+- conversion of data coming from the rice genes to an object which can be processed by the functions provided last year in order to process data to be read in the ideogram.js for generating track annotation
+function transformToNCList(processedAnnots){
+    var nclistCopy = [];
+
+    nclistCopy.push(1); // &+- [0] == unused data
+    nclistCopy.push(processedAnnots.fmin); // &+- [1] == start
+    nclistCopy.push(processedAnnots.fmax); // &+- [2] == end
+    nclistCopy.push(1); // &+- [3] == unused data
+    nclistCopy.push(1); // &+- [4] == unused data
+    nclistCopy.push(1); // &+- [5] == unused data
+    nclistCopy.push(1); // &+- [6] == unused data
+    nclistCopy.push(processedAnnots.uniquename + '\n' + processedAnnots.description); // &+- [7] == name
+
+    return nclistCopy;
+}
+
+// &+- puts the results/details of the genes at the gene table
+function putSearchToTable(webService, color){
+    // &+- put the results in a table
+    var arrayCatch;
+    
+    $.ajax({
+        dataType: "json",
+        crossDomain: true,
+        url: webService,
+        data: arrayCatch,
+        success: function(arrayCatch) {
+            var isHeaderPresent = false;
+            buildHtmlTable(arrayCatch, "#gene-table-content");  
+
+            // &+- tab links activation
+            $('#defaultOpen').attr('class', 'active-link tablinks'); 
+            $('.show-genes').attr('class', 'active-link show-genes');  
+
+            // &+- search activation
+            $("input#search-keyword").prop('disabled', false);
+            $("#search-button").prop('disabled', false);    
+
+            addAnnotationLinks();
+
+            $('#GeneTable').css('height', '480');
+            // &+- export to csv, txt, xls
+            $("table").tableExport({
+                headings: true,                   
+                footers: true,
+                formats: ["xls", "csv", "txt"],          
+                fileName: "gene-table",                        
+                emptyCSS: ".tableexport-empty",  
+                trimWhitespace: false        
+            });    
+        }
+    });
+}
+
+// &+- add the randomly generated color to the ideogram settings/config object
+function addColorToAnnotationTracks(selectedTrack, color){
+    var newColorObj = {};
+    newColorObj['id'] = selectedTrack;
+    newColorObj['color'] = color;
+
+    config.annotationTracks.push(newColorObj);
+    console.log('size of color storage: ' + config.annotationTracks.length);
+    console.log('index of new color: ' + config.annotationTracks.indexOf(newColorObj));
+    console.log(config.annotationTracks);
+}
+
+// &+- used for generating annottaions for search queries
+function configureSearchAnnot(index, colors, addToCheckboxList, flag){
+    console.log(processedAnnotsObj[index]);
+    var processedAnnots = processedAnnotsObj[index]['contents'];
+
+    d3.select("#ideogram").remove();
+
+    // &+- construction of a empty copy of annots
+    var modifiedAnnot = [], goToConstruct = false;
+    for(var j = 0; j < ideogram.numChromosomes; j++) {
+        var arr = ['1'];
+        arr.splice(0, 1);
+        var annotObj = { 'chrNum': (j+1).toString(), 'data': arr};
+        modifiedAnnot.push(annotObj);
+    }
+
+    for(var i = 0; i < processedAnnots.length; i++) {
+        var obj = processedAnnots[i],
+            pseudonclist = transformToNCList(processedAnnots[i]),
+            pseudochrnum = parseInt(String(processedAnnots[i]['contig']).replace(/[^0-9\.]/g, ''), 10);
+            
+        modifiedAnnot[pseudochrnum]['data'].push(pseudonclist);
+    }
+
+    for (var i = 0; i < modifiedAnnot.length; i++) {
+        traitData[i] = modifiedAnnot[i];
+    }
+
+    var selectedTrack;
+    if(flag === null){
+        selectedTrack = 'search-query-' + (geneQueryCount+59);        
+    }
+    else{
+        selectedTrack = flag;
+    }
+
+    if(addToCheckboxList){
+        addTrack(selectedTrack);
+        appendCheckbox($('#search-keyword').val(), searchQueryAnnot);
+        addColorToAnnotationTracks(selectedTrack, colors);
+    }
+
+    config.isSearchBrush = true;
+    config.annotationsColor = colors;
+    config.rawAnnots = reformatTraitData(selectedTrack);
+    config.selectedTrack = selectedTrack;
+    config.allTracks = allTracks;
+
+    if(addToCheckboxList){    
+        ideogram = new Ideogram(config);
+
+        setUpBrush();
+        setUpZoomButtons();
+        config.isSearchBrush = false;
+    }
+}
+
 // &+- plot the position of the genes with the description that matches the input in the searchbox
 function triggerSearchBox(){
+    // &+- automatically open the genetable tab
+    $('#defaultOpen').attr('class', 'inactive-link tablinks'); 
+    document.getElementById("goToTable").click();
+    $('#no-content-gt').remove();
+    $('#GeneTable').css('height', '440');
+
+    // &+- disable another search
+    $("input#search-keyword").prop('disabled', true);
+    $("#search-button").prop('disabled', true);    
+
+    // &+- automatic scrolling to bottom
+    $('#gene-table-content').empty();
+
+    // &+- clear message
     $('#searchbox-keyword-message').text('');
+
+    var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/search/word/',
+        keyword = $("#search-keyword").val(),
+        webService = pathname + keyword,
+        temp = ideogram.config.annotationsColor,
+        colors,
+        arrayCatch = [];
+
     var spinnerConfig = {
             lines: 9,
             length: 9,
@@ -660,12 +962,9 @@ function triggerSearchBox(){
         },
         buffering = document.getElementById("chromosome-render"),
         spinner = new Spinner(spinnerConfig).spin(buffering);
-
-    var pathname = 'http://172.29.4.215:8080/iric-portal/ws/genomics/gene/osnippo/search/word/',
-        keyword = $("#search-keyword").val(),
-        webService = pathname + keyword,
-        temp = ideogram.config.annotationsColor,
-        colors = ideogram.config.annotationsColor = getRandomColor();
+               
+    colors = ideogram.config.annotationsColor = getRandomColor();
+    arrayOfColorsBrushes.push(ideogram.config.annotationsColor);
 
     asyncLoop({
         length: 1,
@@ -675,29 +974,46 @@ function triggerSearchBox(){
                     function(processedAnnots) {
                         if(processedAnnots === null){
                             $('#searchbox-keyword-message').text('No results found.');
+
+                            $('#GeneTable').css('height', '140');
+                            $('#GeneTable').append('<div id="no-content-gt"><h3>Gene table has no results yet.</h3><p>You can get to view genomic data by performing one of the following:</p><p class="li-content">- Searching a keyword</p><p class="li-content">- Create a brush, then click "Plot all genes" to view the results.</p></div>');
+                            
+
+                            // &+- tab links activation
+                            $('#defaultOpen').attr('class', 'active-link tablinks'); 
+                            $('.show-genes').attr('class', 'active-link show-genes');  
+
+                            // &+- search activation
+                            $("input#search-keyword").prop('disabled', false);
+                            $("#search-button").prop('disabled', false);    
                         }
                         else{
-                            // if(ideogram.config.annotationsLayout === 'histogram') ideogram.config.annotationsLayout = 'tracks';
-                            ideogram.drawProcessedAnnots(processedAnnots);
-                            // ideogram.config.annotationsLayout = 'tracks';
-                            // $("#searchbox-color").html('testing <b>1 2 3</b>');
-                            // $('#searchbox-color').css('color', colors);
-                            $('#searchbox-keyword-message').text('Results are in this');
-                            $('#searchbox-keyword-message').css('font-weight', 'normal');
-                            $('#searchbox-keyword-message').css('color', 'black');
+                            var obj = {};
+                            obj['id'] = 'search-query-' + (geneQueryCount+59);
+                            obj['contents'] = processedAnnots;
+                            processedAnnotsObj[geneQueryCount] = obj;
+
+                            configureSearchAnnot(geneQueryCount, colors, true, null);
+                            putSearchToTable(webService, colors);
+                            // countTable();
+
+                            $('#searchbox-keyword-message').text('Annotations are in this color.');
+                            $('#searchbox-keyword-message').css('color', colors);
                         }
-                        toggleSpinner(spinner, false);                            
+
+                        toggleSpinner(spinner, false);
                     }
                 );
                 loop();
-            }, 1000);
+            }, 100);
         },
         callback: function() {
-            // console.log("here at callback function");
+            // console.log("here at callback function");                        
         }
     });
 }
 
+// "TURN NIGHT MODE ON" at settings tab, ideogram page - under development
 var isNightMode = true;
 function turnNightMode(){
     $('style').detach();
@@ -792,6 +1108,7 @@ function turnNightMode(){
             "</style>";
         $('.nightmodebutton button').text('Day mode');
         $(document.head).append(cssConfig);
+        ideogram.config.annotationTracks = nightModeColor;
         ideogram.config.annotationsColor = 'white';
     }
     else{
@@ -885,11 +1202,13 @@ function turnNightMode(){
             "</style>";
         $('.nightmodebutton button').text('Night mode');
         $(document.head).append(cssConfig);
+        ideogram.config.annotationTracks = defaultColor;
         ideogram.config.annotationsColor = 'black';        
     }
     isNightMode = !isNightMode;
 }
 
+// &+- TABS (show results and ideogram settings/instructions tabs)
 var emptyJB = true, emptyGT = true;
 // &+- tabs:: thank you https://www.w3schools.com/howto/howto_js_tabs.asp for this awesome tab html structure and css
 function toggleResult(evt, category) {
@@ -933,8 +1252,89 @@ function toggleResult(evt, category) {
     evt.currentTarget.className += " active";
 }
 
+// &+- tab settings for the instruction and color scheme settings
+function anotherTab(evt, category) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent-anotherone");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks-anotherone");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.getElementById(category).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+// &+- ANNOTATION CLICK :: opening the jbrowse tab and triggering the application of jbrowse settings
+function showJBrowseAnnotClick(){
+    $('.annot').click(function() {
+        $("html, body").animate({ scrollTop: $(document).height(), scrollLeft: 0 }, "slow");
+        document.getElementById("defaultOpen").click();
+        $('#JBrowseView').css('height', '460');
+        $('#no-content-jb').remove();
+    });
+}
+
+// &+- COLLAPSIBLE STRUCTURE JQUERY
+// &+- thank you https://stackoverflow.com/a/17348698 for rotating the triangle pointer to show whether the contents of the collapsible is visible or not
+function collapsibleArrowAnimate(){
+    // &+- collapsible icon : onclick, it rotates downward to indicate that the collapsible content is visible, else, rotates (/points) to the right 
+    var arrowTGOn = true, arrowQTLOn = true, arrowGQOn = true;
+    jQuery.fn.rotate = function(degrees) {
+        $(this).css({'-webkit-transform' : 'rotate('+ degrees +'deg)',
+                     '-moz-transform' : 'rotate('+ degrees +'deg)',
+                     '-ms-transform' : 'rotate('+ degrees +'deg)',
+                     'transform' : 'rotate('+ degrees +'deg)'});
+    };
+
+    $('#collapsible-tg').click(function() {
+        if(arrowTGOn){
+            $('#arrow-tg').rotate(0);
+            $('#collapsible-tg').css('background-color', '#E0E0E0');
+        }
+        else{
+            $('#arrow-tg').rotate(-90);
+            $('#collapsible-tg').css('background-color', '#EEEEEE');
+        }
+        arrowTGOn = !arrowTGOn;
+    });
+    
+    $('#collapsible-qtl').click(function() {
+        if(arrowQTLOn) {
+            $('#arrow-qtl').rotate(0);
+            $('#collapsible-qtl').css('background-color', '#E0E0E0');
+        }
+        else{
+            $('#arrow-qtl').rotate(-90);
+            $('#collapsible-qtl').css('background-color', '#EEEEEE');
+        }
+        arrowQTLOn = !arrowQTLOn;
+    });
+    
+    $('#collapsible-gq').click(function() {
+        if(arrowGQOn){
+            $('#arrow-gq').rotate(0);
+            $('#collapsible-gq').css('background-color', '#E0E0E0');
+        }
+        else{
+            $('#arrow-gq').rotate(-90);
+            $('#collapsible-gq').css('background-color', '#EEEEEE');
+        }
+        arrowGQOn = !arrowGQOn;
+    });
+}
+
+// &+- thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
 function plugCollapsibleJQuery(){
-    // thank you https://webdevdoor.com/jquery/expandable-collapsible-panels-jquery for the collapsible settings
     var panelspeed = 500; //panel animate speed in milliseconds
     var totalpanels = 3; //total number of collapsible panels   
     var defaultopenpanel = 0; //leave 0 for no panel open   
@@ -993,4 +1393,53 @@ function plugCollapsibleJQuery(){
     }
     
     panelinit();
+}
+
+// "EXPORT TO PNG" button at ideogram page
+// &+- thank you https://stackoverflow.com/a/41735524 for this function that exports svg to .png
+function exportSVG(){
+    var svg = document.querySelector("svg");
+
+    // &+- svg settings for exporting
+    svg.setAttribute("width", "1100");
+    svg.setAttribute("style", "background: white;");
+
+    var svgData = new XMLSerializer().serializeToString(svg);
+    var canvas = document.createElement("canvas");
+    var svgSize = svg.getBoundingClientRect();
+    canvas.width = svgSize.width * 3;
+    canvas.height = svgSize.height * 3;
+    canvas.style.width = svgSize.width;
+    canvas.style.height = svgSize.height;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(3, 3);
+    var img = document.createElement("img");
+    img.setAttribute("src", "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData))));
+    img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        var canvasdata = canvas.toDataURL("image/png", 1);
+
+        var pngimg = '<img src="' + canvasdata + '">';
+        d3.select("#pngdataurl").html(pngimg);
+
+        var a = document.createElement("a");
+        a.download = "download_img" + ".png";
+        a.href = canvasdata;
+        document.body.appendChild(a);
+        a.click();
+    };
+
+    // &+- reset svg settings
+    svg.setAttribute("width", "1000");
+    svg.setAttribute("style", "background: transparent;");
+}
+
+// &+- under development: color guides for the screenshot - tell the color of teh annotation and the tracks activated at the current view of the ideogram.
+function drawColorGuides(){
+    $('.legend-section').attr('transform', 'translate(700, 700)');
+
+    var legend = '<p>Color guides</p>';
+    // console.log(filterMap);
+
+    // $('.legend-section').wrapInner(legend);
 }
